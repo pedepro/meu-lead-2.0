@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/get-imovel/${imovelId}`);
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/get-imovel/${imovelId}`);
         const imovel = await response.json();
 
         if (!imovel.id) {
