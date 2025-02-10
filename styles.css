@@ -42,7 +42,6 @@ header h1 {
     color: #333;
 }
 
-/* Sidebar oculta inicialmente */
 .sidebar {
     height: 100%;
     width: 0;
@@ -56,6 +55,39 @@ header h1 {
     z-index: 1;
     padding-top: 60px;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+
+    /* Corrigindo o alinhamento */
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: column; /* Organiza os itens em coluna */
+    justify-content: space-between; /* Distribui os itens nas extremidades */
+}
+
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribui os elementos nas extremidades */
+    padding: 10px 20px;
+    border-bottom: 2px solid #ddd;
+    background-color: #ddd;
+    margin: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+
+}
+
+
+.user-info:hover {
+    background-color: #e6e6e6;
+}
+
+#logout-icon {
+    color: rgb(119, 119, 119);
+    font-size: 18px;
+    cursor: pointer;
 }
 
 /* Sidebar aberta */

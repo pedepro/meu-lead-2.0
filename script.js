@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     : "https://source.unsplash.com/400x300/?house";
         
                 // Define a URL base estaticamente e adiciona o id como parâmetro, incluindo explicitamente o index.html
-                const detalhesUrl = "http://127.0.0.1:5500/detalhes/index.html?id=" + imovel.id;
+                const detalhesUrl = "http://meuleaditapema.com.br/detalhes/index.html?id=" + imovel.id;
         
                 card.innerHTML = `
                     <img src="${imagem}" alt="Imóvel">
