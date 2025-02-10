@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Login -->
+        <div class="login-box">
+            <h2>Entrar</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="E-mail" required>
+                <input type="password" id="login-senha" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
+        </div>
+
+        <!-- Cadastro -->
+        <div class="register-box hidden">
+            <h2>Criar Conta</h2>
+            <form id="cadastro-form">
+                <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
+                <input type="text" id="cadastro-cpf" placeholder="CPF" required>
+                <input type="text" id="cadastro-creci" placeholder="CRECI (Opcional)">
+                <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp" required>
+                <input type="password" id="cadastro-senha" placeholder="Senha" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+            <p>Já tem uma conta? <a href="#" onclick="toggleForms()">Entrar</a></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms() {
+            document.querySelector('.login-box').classList.toggle('hidden');
+            document.querySelector('.register-box').classList.toggle('hidden');
+        }
+
+        // Formatação automática do WhatsApp para +55 (Brasil)
+        document.getElementById("cadastro-whatsapp").addEventListener("input", function(e) {
+            let value = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
+            if (!value.startsWith("55")) {
+                value = "55" + value;
+            }
+            e.target.value = "+" + value;
+        });
+    </script>
+
+</body>
+</html>

@@ -35,9 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis");
             const data = await response.json();
             const imoveis = Array.isArray(data) ? data : data.imoveis || [];
-        
-            imoveisContainer.innerHTML = ""; // Limpa antes de adicionar os imóveis
-        
+                
             imoveis.forEach(imovel => {
                 const card = document.createElement("div");
                 card.classList.add("card");
