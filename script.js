@@ -74,6 +74,17 @@ document.addEventListener("DOMContentLoaded", function () {
     
             clientesContainer.innerHTML = ""; // Limpa antes de adicionar os clientes
     
+            // Cria a nova div antes dos cards
+            const filtrosDiv = document.createElement("div");
+            filtrosDiv.classList.add("filtros-leads");
+            filtrosDiv.innerHTML = `
+                <h2>Filtros</h2>
+                <!-- Adicione aqui os filtros ou qualquer conteúdo que você deseja -->
+            `;
+            
+            // Adiciona a div antes dos cards
+            clientesContainer.insertBefore(filtrosDiv, clientesContainer.firstChild);
+    
             clientes.forEach(cliente => {
                 const card = document.createElement("div");
                 card.classList.add("card-cliente");
@@ -94,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Erro ao carregar clientes:", error);
         }
     }
+    
 
     carregarImoveis(); // Carregar imóveis ao iniciar
 });
