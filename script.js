@@ -25,24 +25,38 @@ document.addEventListener("DOMContentLoaded", function () {
         sidebar.classList.remove("open");
         imoveisContainer.style.display = "flex"; // Exibir imóveis
         clientesContainer.style.display = "none"; // Esconder clientes
+
+        // Esconde o container dos leads adquiridos
+        const meusLeadsContainer = document.getElementById("meus-leads");
+        if (meusLeadsContainer) {
+            meusLeadsContainer.style.display = "none";
+            meusLeadsContainer.innerHTML = ""; // Limpa o conteúdo
+        }
     });
 
-   // Alternar para exibição de clientes ao clicar em "Leads (Clientes)"
-clientesLink.addEventListener("click", function () {
-    sidebar.classList.remove("open");
-    clientesContainer.style.display = "flex"; // Exibir clientes
-    imoveisContainer.style.display = "none";    // Esconder imóveis (container principal)
-    
-    // Esconde o container dos imóveis afiliados (meus-imoveis-container)
-    const meusImoveisContainer = document.getElementById("meus-imoveis-container");
-    if (meusImoveisContainer) {
-        meusImoveisContainer.style.display = "none";
-    }
+    // Alternar para exibição de clientes ao clicar em "Leads (Clientes)"
+    clientesLink.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        clientesContainer.style.display = "flex"; // Exibir clientes
+        imoveisContainer.style.display = "none";    // Esconder imóveis (container principal)
 
-    carregarClientes(); // Carrega clientes
-});
+        // Esconde o container dos imóveis afiliados (meus-imoveis-container)
+        const meusImoveisContainer = document.getElementById("meus-imoveis-container");
+        if (meusImoveisContainer) {
+            meusImoveisContainer.style.display = "none";
+        }
 
+        // Esconde o container dos leads adquiridos
+        const meusLeadsContainer = document.getElementById("meus-leads");
+        if (meusLeadsContainer) {
+            meusLeadsContainer.style.display = "none";
+            meusLeadsContainer.innerHTML = ""; // Limpa o conteúdo
+        }
 
+        carregarClientes(); // Carrega clientes
+    });
+
+    // Função para carregar os imóveis
     async function carregarImoveis() {
         try {
             const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis");
@@ -76,6 +90,7 @@ clientesLink.addEventListener("click", function () {
         }
     }
 
+    // Função para carregar os clientes
     async function carregarClientes() {
         try {
             const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
@@ -120,6 +135,7 @@ clientesLink.addEventListener("click", function () {
 });
 
 
+
 async function carregaraImoveis() {
     try {
         const container = document.getElementById("meus-imoveis-container");
@@ -131,6 +147,7 @@ async function carregaraImoveis() {
         // Esconde os outros containers
         document.getElementById("imoveis-container").style.display = "none";
         document.getElementById("clientes-container").setAttribute("style", "display: none;"); // Usando setAttribute para garantir o estilo
+        document.getElementById("meus-leads").setAttribute("style", "display: none;"); // Usando setAttribute para garantir o estilo
 
         // Torna a div visível antes de carregar os imóveis
         container.style.display = "block";
@@ -268,4 +285,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Seleciona a div com id "user-info-container"
+    const userInfoContainer = document.getElementById("user-info-container");
+
+    if (userInfoContainer) {
+        // Adiciona o evento de clique
+        userInfoContainer.addEventListener("click", function () {
+            // Limpa o token do localStorage
+            localStorage.removeItem("token");
+
+            // Redireciona para a pasta "login"
+            window.location.href = "/login"; // Navega para a pasta "login" diretamente
+        });
+    }
+});
 
