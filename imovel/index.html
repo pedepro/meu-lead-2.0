@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Imóvel</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Imóvel</title>
+  <!-- Importando fonte moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Link para o arquivo CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1 id="titulo-imovel">Detalhes do Imóvel</h1>
-        <a href="index.html" class="btn-voltar">Voltar</a>
-    </header>
-    <main>
-        <div id="detalhes-imovel" class="detalhes-container">
-            <p>Carregando detalhes...</p>
-        </div>
-    </main>
-    <script src="script.js"></script>
+  <!-- Slider em tela inteira -->
+  <div id="slider-container">
+    <div class="slider" id="slider-imagens"></div>
+  </div>
+
+  <!-- Container com os detalhes do imóvel -->
+  <div class="container" id="detalhes-imovel">
+    <h1 id="titulo-imovel">Imóvel</h1>
+    <p class="price" id="preco-imovel"></p>
+    <div id="descricao-imovel"></div>
+    <button class="btn">Afiliar-se</button>
+    <p class="info">
+      Ao se afiliar a um imóvel, você passa a receber atualizações sobre a disponibilidade do imóvel, e pode usá-lo para indicar aos seus clientes para comprarem.
+    </p>
+  </div>
+  
+  <!-- Link para o arquivo JS -->
+  <script src="script.js"></script>
 </body>
 </html>
