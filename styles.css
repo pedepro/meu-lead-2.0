@@ -102,7 +102,7 @@ header h1 {
 }
 
 .sidebar ul li {
-    padding: 15px;
+    padding: 10px;
     text-align: left;
 }
 
@@ -112,6 +112,8 @@ header h1 {
     color: #333;
     display: block;
     transition: background 0.3s;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .sidebar ul li a:hover {
@@ -129,6 +131,22 @@ header h1 {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+}
+
+#meus-imoveis-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+#meus-leads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card {
@@ -173,7 +191,10 @@ header h1 {
     }
 
     .card {
-        width: 90%;
+        width: 95%;
+        margin-bottom: 10px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .card-cliente {
@@ -196,7 +217,7 @@ header h1 {
 }
 
 .btn-detalhes {
-    background-color: #28a745;
+    background-color: #007BFF;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -208,7 +229,7 @@ header h1 {
 }
 
 .btn-detalhes:hover {
-    background-color: #218838;
+    background-color: #007bffcc;
 }
 
 /* Estilo dos cards de clientes */
@@ -220,6 +241,14 @@ header h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 350px;
     text-align: center;
+    gap: 2px;
+}
+
+.card-cliente .btn-detalhes {
+    margin-top: 5px; /* Aplica a margem superior apenas dentro de card-cliente */
+    align-self: flex-end; /* Alinha o botão à direita do card */
+    width: 100%; /* Ocupa toda a largura */
+
 }
 
 
@@ -228,12 +257,14 @@ header h1 {
     justify-content: space-between;
     margin: 20px;
     height: 80px;
-    width: calc(100% - 20px); /* Corrigido */
+    width: 95%; /* Corrigido */
     background-color: white;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
     margin-bottom: -5px;
+    margin-left: auto;
+    margin-right: auto;
 
 }
 
