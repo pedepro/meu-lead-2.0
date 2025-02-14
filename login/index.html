@@ -17,6 +17,7 @@
                 <input type="password" id="login-senha" placeholder="Senha" required>
                 <button type="submit">Entrar</button>
             </form>
+            <p id="login-mensagem"></p>
             <p>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
         </div>
 
@@ -25,23 +26,107 @@
             <h2>Criar Conta</h2>
             <form id="cadastro-form">
                 <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
-                <input type="text" id="cadastro-cpf" placeholder="CPF" required>
+                <input type="email" id="cadastro-email" placeholder="E-mail" required>
                 <input type="text" id="cadastro-creci" placeholder="CRECI (Opcional)">
-                <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp" required>
+                <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp">
                 <input type="password" id="cadastro-senha" placeholder="Senha" required>
                 <button type="submit">Cadastrar</button>
             </form>
+            <p id="cadastro-mensagem"></p>
             <p>Já tem uma conta? <a href="#" onclick="toggleForms()">Entrar</a></p>
         </div>
     </div>
 
     <script>
+        const API_URL = "https://pedepro-meulead.6a7cul.easypanel.host";
+
         function toggleForms() {
             document.querySelector('.login-box').classList.toggle('hidden');
             document.querySelector('.register-box').classList.toggle('hidden');
         }
 
-        // Formatação automática do WhatsApp para +55 (Brasil)
+        // 📌 Login
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-senha").value;
+            const mensagem = document.getElementById("login-mensagem");
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    mensagem.textContent = data.error || "Erro ao fazer login.";
+                    mensagem.style.color = "red";
+                    return;
+                }
+
+                // Salvar token e ID no localStorage
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userId", data.id);
+
+                mensagem.textContent = "Login realizado com sucesso!";
+                mensagem.style.color = "green";
+
+                // Redirecionar ou atualizar a página após o login
+                setTimeout(() => window.location.href = "dashboard.html", 1000);
+
+            } catch (error) {
+                mensagem.textContent = "Erro de conexão.";
+                mensagem.style.color = "red";
+                console.error("Erro no login:", error);
+            }
+        });
+
+        // 📌 Cadastro
+        document.getElementById("cadastro-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("cadastro-nome").value;
+            const email = document.getElementById("cadastro-email").value;
+            const creci = document.getElementById("cadastro-creci").value || null;
+            const phone = document.getElementById("cadastro-whatsapp").value || null;
+            const password = document.getElementById("cadastro-senha").value;
+            const mensagem = document.getElementById("cadastro-mensagem");
+
+            try {
+                const response = await fetch(`${API_URL}/corretores`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, creci, phone, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    mensagem.textContent = data.error || "Erro ao cadastrar.";
+                    mensagem.style.color = "red";
+                    return;
+                }
+
+                // Salvar token e ID no localStorage
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userId", data.id);
+
+                mensagem.textContent = "Cadastro realizado com sucesso!";
+                mensagem.style.color = "green";
+
+                // Redirecionar após o cadastro
+                setTimeout(() => window.location.href = "dashboard.html", 1000);
+
+            } catch (error) {
+                mensagem.textContent = "Erro de conexão.";
+                mensagem.style.color = "red";
+                console.error("Erro no cadastro:", error);
+            }
+        });
+
+        // 📌 Formatação automática do WhatsApp para +55 (Brasil)
         document.getElementById("cadastro-whatsapp").addEventListener("input", function(e) {
             let value = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
             if (!value.startsWith("55")) {
