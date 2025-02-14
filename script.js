@@ -294,6 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
         userInfoContainer.addEventListener("click", function () {
             // Limpa o token do localStorage
             localStorage.removeItem("token");
+            localStorage.removeItem("userId");
 
             // Redireciona para a pasta "login"
             window.location.href = "/login"; // Navega para a pasta "login" diretamente
@@ -301,3 +302,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+
+
+
+
+async function carregarCorretor() {
+    const id = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!id || !token) {
+        console.warn("ID ou token não encontrados no localStorage.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${id}&token=${token}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            // Salva os dados no objeto window
+            window.corretor = data;
+
+            // Atualiza o nome na div
+            document.getElementById("name").textContent = `Olá, ${data.name}`;
+        } else {
+            console.error("Erro ao carregar corretor:", data.error);
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+    }
+}
+
+// Chama a função quando a página carregar
+window.onload = carregarCorretor;

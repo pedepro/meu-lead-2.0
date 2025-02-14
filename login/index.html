@@ -74,8 +74,8 @@
                 mensagem.textContent = "Login realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redirecionar ou atualizar a página após o login
-                setTimeout(() => window.location.href = "dashboard.html", 1000);
+                // Redirecionar para a raiz do projeto
+                setTimeout(() => window.location.href = "/", 1000);
 
             } catch (error) {
                 mensagem.textContent = "Erro de conexão.";
@@ -116,8 +116,9 @@
                 mensagem.textContent = "Cadastro realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redirecionar após o cadastro
-                setTimeout(() => window.location.href = "dashboard.html", 1000);
+                // Redirecionar para a raiz do projeto
+                setTimeout(() => window.location.href = "/", 1000);
+
 
             } catch (error) {
                 mensagem.textContent = "Erro de conexão.";

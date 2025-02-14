@@ -83,9 +83,20 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.appendChild(overlay);
 
       // Eventos dos botões
-      document.getElementById("notificacao-btn-login").addEventListener("click", () => {
-          window.location.href = "/login"; // Redireciona para a página de login
-      });
+document.getElementById("notificacao-btn-login").addEventListener("click", () => {
+    // Captura o parâmetro 'id' da URL atual
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+
+    // Monta a URL de redirecionamento com o parâmetro 'id' se ele existir
+    let loginUrl = "/login";
+    if (id) {
+        loginUrl += `?id=${id}`;
+    }
+
+    // Redireciona para a página de login
+    window.location.href = loginUrl;
+});
 
       document.getElementById("notificacao-btn-cancelar").addEventListener("click", () => {
           document.body.removeChild(overlay);
