@@ -13,6 +13,27 @@ body {
     padding-top: 70px; /* Ajuste para evitar sobreposição */
 }
 
+/* Estiliza o preloader */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white; /* Fundo branco */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000; /* Garante que fique sobre tudo */
+}
+
+/* Ajusta o tamanho da imagem */
+#preloader-img {
+    max-height: 100px; /* Ajuste conforme necessário */
+    width: auto;
+}
+
+
 /* Estilo do cabeçalho */
 header {
     position: fixed; /* Fixa o cabeçalho na tela */
@@ -21,12 +42,18 @@ header {
     width: 100%; /* Ocupa toda a largura */
     display: flex;
     align-items: center;
-    justify-content: space-between;
     background-color: white;
     padding: 15px 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1500;
+    gap: 10px; /* Adiciona espaçamento entre os elementos */
 }
+
+#logo {
+    max-height: 50px;
+    width: auto; /* Mantém a largura proporcional */
+}
+
 
 header h1 {
     font-size: 22px;
@@ -53,7 +80,7 @@ header h1 {
     overflow-x: hidden;
     transition: 0.3s ease;
     z-index: 1;
-    padding-top: 60px;
+    padding-top: 80px;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
 
     /* Corrigindo o alinhamento */
