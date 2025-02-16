@@ -20,7 +20,7 @@ async function carregarLeads(pagina = 1) {
         const tipoImovel = document.getElementById("tipoImovel").value;
         const valorMax = document.getElementById("valorMax").value;
 
-        let url = new URL("http://localhost:3000/list-clientes");
+        let url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
 
         if (nome) url.searchParams.append("nome", nome);
         if (tipoImovel) url.searchParams.append("tipo_imovel", tipoImovel);
