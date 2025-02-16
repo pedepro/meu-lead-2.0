@@ -1,3 +1,63 @@
-<div id="clientes" class="clientes">
-    <p>olá</p>
+<div class="leads-container">
+    <h2>Lista de Leads</h2>
+    <div class="filters">
+        <input type="text" id="searchNome" placeholder="Buscar por nome" class="search-input" />
+    <div class="filters-dropdows">
+        <select id="tipoImovel">
+            <option value="">Todos os tipos</option>
+            <option value="Casa">Casa</option>
+            <option value="Apartamento">Apartamento</option>
+            <option value="Terreno">Terreno</option>
+            <option value="Loft">Loft</option>
+            <option value="Chácara">Chácara</option>
+
+
+        </select>
+    
+        <select id="valorMax">
+            <option value="">Qualquer valor</option>
+            <option value="500000">Até 500 mil</option>
+            <option value="700000">Até 700 mil</option>
+            <option value="1000000">Até 1.000.000</option>
+            <option value="1500000">Até 1.500.000</option>
+            <option value="2000000">Até 2.000.000</option>
+        </select>
+    </div>
+        <button id="btnAplicarFiltros" onclick="carregarLeads()">Aplicar Filtros</button>
+
+    </div>
+    
+
+    <div class="leads-list">
+        <!-- Os cards de leads serão injetados aqui via JavaScript -->
+    </div>
+    <div id="pagination"></div>
+
 </div>
+
+<!-- Popup de Edição -->
+<div id="uniqueEditPopup" class="unique-overlay" style="display: none;">
+    <div class="unique-popup-content">
+        <h3>Editar Lead</h3>
+        <form id="uniqueEditForm">
+            <label for="leadName">Nome:</label>
+            <input type="text" id="leadName" name="name" required />
+            
+            <label for="leadEmail">Email:</label>
+            <input type="email" id="leadEmail" name="email" required />
+            
+            <label for="leadPhone">Telefone:</label>
+            <input type="text" id="leadPhone" name="phone" required />
+            
+            <label for="leadAvailability">Disponibilidade:</label>
+            <select id="leadAvailability" name="disponibilidade" required>
+                <option value="disponivel">Disponível</option>
+                <option value="indisponivel">Indisponível</option>
+            </select>
+            
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="closeUniquePopup()">Fechar</button>
+        </form>
+    </div>
+</div>
+

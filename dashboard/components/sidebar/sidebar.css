@@ -4,14 +4,14 @@
     left: 0px; /* Inicialmente fora da tela à esquerda */
     width: 270px;
     height: calc(100% - 70px); /* Garante que a altura seja adequada considerando a margem superior */
-    background-color: #13274E; /* Fundo azul */
+    background-color: #0865FE; /* Fundo azul */
     transition: left 0.3s ease; /* Animação suave para o movimento */
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
     overflow-y: auto; /* Permite rolagem vertical */
     overflow-x: hidden; /* Evita rolagem horizontal */
     scrollbar-width: thin; /* Estilo da barra de rolagem para navegadores suportados */
-    scrollbar-color: #0b022c #1b1b53; /* Cores da barra de rolagem */
+    scrollbar-color: #003c9c #498fff; /* Cores da barra de rolagem */
 }
 
 /* Personalização da barra de rolagem para navegadores baseados em WebKit (Chrome, Edge, Safari) */

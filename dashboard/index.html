@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PedePro Dashboard</title>
+    <title>Meu Lead Dashboard</title>
     <link rel="icon" type="image/x-icon" href="assets/icon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,16 +15,14 @@
     <link rel="stylesheet" href="pedidos/pedidos.css"> <!-- Estilos do sidebar -->
 </head>
 <body>
-    
+    <div id="preloader">
+        <img src="assets/logohorizontal.png" alt="Carregando..." id="preloader-img">
+    </div>
     <!-- Cabeçalho -->
     <header>
-        <div class="logo">
-            <img src="https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Fccc1de47663730c9d968d11d27291701.cdn.bubble.io%2Ff1709194322527x721668235051563800%2FVertical%2520principal%2520%25281%2529%2520%25283%2529.png?w=256&h=76&auto=compress&dpr=0.75&fit=max" alt="Logo PedePro" />
-        </div>
-
-        <!-- Botão para abrir/fechar a coluna -->
-    <button class="toggle-btn" onclick="toggleSlider()">Abrir/Fechar Menu</button>
-
+        <button class="menu-toggle" onclick="toggleSlider()">☰</button>
+        <img id="logo" src="assets/logohorizontal.png" alt="Descrição da imagem">
+    </header>
     <!-- Coluna lateral flutuante -->
     <div class="floating-column" id="floatingColumn">
         <!-- Campo de pesquisa -->
@@ -33,7 +31,6 @@
         <!-- Botões do menu serão carregados aqui -->
          
     </div>
-    </header>
 
         <!-- Container principal onde o conteúdo dinâmico será carregado -->
         <main id="dashboard-container">

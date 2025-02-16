@@ -1,0 +1,245 @@
+#clientes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 100%;
+  max-width: 100%;
+}
+
+
+.filters {
+    gap: 5px;
+
+}
+
+
+.filters-dropdows {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* Espaçamento de 10px entre os elementos */
+    align-items: center;
+}
+
+#btnAplicarFiltros {
+    margin-left: calc(100% - 200px);
+    width: 200px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+
+}
+
+#searchNome {
+    font-family: inherit;
+    color: #333; /* Cinza escuro */
+    border: 1px solid #333; /* Borda fina cinza escuro */
+    padding: 5px;
+    border-radius: 4px;
+    margin: 0;
+    background-color: #ffffff;
+}
+
+#searchNome::placeholder {
+    color: #bbb; /* Cinza claro para o texto de ajuda */
+}
+
+/* Estilos gerais */
+.leads-container {
+    width: 100%;
+    padding: 20px;
+    background-color: #f0f2f5;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.leads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilos dos cards */
+.card-lead {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100px;
+    width: 100%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-lead:hover {
+    transform: translateY(-2px);
+}
+
+.lead-status {
+    width: 5px;
+    height: 100%;
+    background-color: #1877f2;
+}
+
+.lead-info {
+    flex: 1;
+    padding: 10px 15px;
+}
+
+.lead-info h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.lead-info p {
+    margin: 3px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-editar {
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-editar:hover {
+    background-color: #155db2;
+}
+
+/* Overlay que ocupa 100% da tela */
+.unique-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Conteúdo do popup */
+.unique-popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 600px;
+    height: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+}
+
+.unique-popup-content h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.unique-popup-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.unique-popup-content input,
+.unique-popup-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.unique-popup-content button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1877f2;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.unique-popup-content button[type="button"] {
+    background-color: #ccc;
+    margin-left: 10px;
+}
+
+.unique-popup-content button:hover {
+    background-color: #155db2;
+}
+
+.unique-popup-content button[type="button"]:hover {
+    background-color: #aaa;
+}
+
+/* Media Query para telas menores que 450px */
+@media (max-width: 450px) {
+    .unique-overlay {
+        height: 100%;
+    }
+
+    .unique-popup-content {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+        padding: 20px;
+    }
+
+    .unique-popup-content h3 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    .unique-popup-content input,
+    .unique-popup-content select,
+    .unique-popup-content button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+
+#pagination {
+    display: flex;
+    flex-direction: row; /* Alinhamento da esquerda para a direita */
+    align-items: center; /* Centraliza verticalmente */
+    margin-top: 10px;
+    height: 40px;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+#pagination span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+#pagination span:first-child {
+    order: -1; /* Move a seta para esquerda para a primeira posição */
+}
+
+#pagination span i {
+    font-size: 24px;
+}

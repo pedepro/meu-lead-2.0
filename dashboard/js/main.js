@@ -119,3 +119,12 @@ function carregarBotoesMenu() {
 window.onload = function() {
     carregarBotoesMenu();  // Carrega os botões do menu flutuante
 };
+
+
+// Aguarda a página carregar completamente
+window.addEventListener("load", function () {
+    setTimeout(function () {
+        const preloader = document.getElementById("preloader");
+        preloader.style.display = "none"; // Esconde o preloader após 1s
+    }, 1000); // 1000ms = 1 segundo
+});

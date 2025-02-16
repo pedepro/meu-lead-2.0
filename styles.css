@@ -244,7 +244,7 @@ header h1 {
 }
 
 .btn-detalhes {
-    background-color: #007BFF;
+    background-color: #0865FE;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -256,7 +256,7 @@ header h1 {
 }
 
 .btn-detalhes:hover {
-    background-color: #007bffcc;
+    background-color: #0865FEcc;
 }
 
 /* Estilo dos cards de clientes */

@@ -1,19 +1,35 @@
-/* Estilo básico para o cabeçalho */
+/* Estilo do cabeçalho */
 header {
-    background-color: #FFFFFF; /* Fundo branco */
-    height: 70px; /* Altura do cabeçalho */
-    display: flex; /* Usando flexbox para alinhar os itens */
-    justify-content: flex-start; /* Alinha os itens à esquerda */
-    align-items: center; /* Alinha os itens verticalmente no centro */
-    padding: 0 20px; /* Espaçamento interno à esquerda e direita */
+    position: fixed; /* Fixa o cabeçalho na tela */
+    top: 0; /* Mantém no topo */
+    left: 0;
+    width: 100%; /* Ocupa toda a largura */
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 5000;
+    gap: 10px; /* Adiciona espaçamento entre os elementos */
 }
 
-/* Logo */
-header .logo img {
-    height: 60px; /* Ajusta o tamanho do logo */
-    width: auto; /* Mantém a proporção do logo */
-    object-fit: contain; /* Garante que a logo se ajuste bem sem distorcer */
-    margin: 0; /* Remove qualquer margem ao redor da imagem */
-    padding: 0; /* Remove qualquer padding ao redor da imagem */
+#logo {
+    max-height: 50px;
+    width: auto; /* Mantém a largura proporcional */
+}
 
+
+header h1 {
+    font-size: 22px;
+    color: #333;
+}
+
+/* Botão de menu */
+.menu-toggle {
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    padding: 0%;
 }
