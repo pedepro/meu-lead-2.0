@@ -56,39 +56,53 @@ document.addEventListener("DOMContentLoaded", function () {
         carregarClientes(); // Carrega clientes
     });
 
-    // Função para carregar os imóveis
-    async function carregarImoveis() {
-        try {
-            const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis");
-            const data = await response.json();
-            const imoveis = Array.isArray(data) ? data : data.imoveis || [];
+// Função para carregar os imóveis
+async function carregarImoveis() {
+    try {
+        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis");
+        const data = await response.json();
+        const imoveis = Array.isArray(data) ? data : data.imoveis || [];
 
-            imoveis.forEach(imovel => {
-                const card = document.createElement("div");
-                card.classList.add("card");
-
-                const imagem = imovel.imagens.length > 0 
-                    ? imovel.imagens[0] 
-                    : "https://source.unsplash.com/400x300/?house";
-
-                const detalhesUrl = "http://meuleaditapema.com.br/imovel/index.html?id=" + imovel.id;
-
-                card.innerHTML = `
-                    <img src="${imagem}" alt="Imóvel">
-                    <h2>${imovel.texto_principal}</h2>
-                    <p>${imovel.quartos} quartos, ${imovel.banheiros} banheiros, ${imovel.metros_quadrados}m²</p>
-                    <p>R$ ${imovel.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                    <button class="btn-detalhes" onclick="window.location.href='${detalhesUrl}'">
-                        Ver Detalhes
-                    </button>
-                `;
-
-                imoveisContainer.appendChild(card);
-            });
-        } catch (error) {
-            console.error("Erro ao carregar imóveis:", error);
+        const imoveisContainer = document.getElementById("imoveis-container");
+        if (!imoveisContainer) {
+            console.error("Erro: Elemento #imoveis-container não encontrado.");
+            return;
         }
+
+        imoveis.forEach(imovel => {
+            const card = document.createElement("div");
+            card.classList.add("card");
+
+            const imagem = imovel.imagens.length > 0 
+                ? imovel.imagens[0] 
+                : "https://source.unsplash.com/400x300/?house";
+
+            const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
+
+            card.innerHTML = `
+                <div class="image-container">
+                    <img src="${imagem}" alt="Imóvel">
+                    <div class="overlay">
+                        <span><i class="material-icons">king_bed</i> ${imovel.quartos || 0}</span>
+                        <span><i class="material-icons">bathtub</i> ${imovel.banheiros || 0}</span>
+                        <span><i class="material-icons">square_foot</i> ${imovel.metros_quadrados || 0}m²</span>
+                    </div>
+                </div>
+                <h2>${imovel.texto_principal}</h2>
+                <p>${imovel.quartos} quartos, ${imovel.banheiros} banheiros, ${imovel.metros_quadrados}m²</p>
+                <p>R$ ${imovel.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                <button class="btn-detalhes" onclick="window.location.href='${detalhesUrl}'">
+                    Ver Detalhes
+                </button>
+            `;
+
+            imoveisContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar imóveis:", error);
     }
+}
+
 
     // Função para carregar os clientes
     async function carregarClientes() {
@@ -146,19 +160,19 @@ async function carregaraImoveis() {
 
         // Esconde os outros containers
         document.getElementById("imoveis-container").style.display = "none";
-        document.getElementById("clientes-container").setAttribute("style", "display: none;"); // Usando setAttribute para garantir o estilo
-        document.getElementById("meus-leads").setAttribute("style", "display: none;"); // Usando setAttribute para garantir o estilo
+        document.getElementById("clientes-container").setAttribute("style", "display: none;");
+        document.getElementById("meus-leads").setAttribute("style", "display: none;");
 
         // Torna a div visível antes de carregar os imóveis
         container.style.display = "block";
-        container.innerHTML = ""; // Limpa antes de adicionar os imóveis
+        container.innerHTML = ""; 
 
         // Adiciona o título antes dos cards
         const titulo = document.createElement("h2");
         titulo.textContent = "Imóveis que me afiliei";
-        titulo.style.marginBottom = "15px"; // Dá um espaço abaixo do título
-        titulo.style.marginLeft = "15px"; // Dá um espaço abaixo do título
-        titulo.style.color = "#555555"; // Dá um espaço abaixo do título
+        titulo.style.marginBottom = "15px";
+        titulo.style.marginLeft = "15px";
+        titulo.style.color = "#555555";
 
         container.appendChild(titulo);
 
@@ -173,24 +187,27 @@ async function carregaraImoveis() {
 
         imoveis.forEach(imovel => {
             const card = document.createElement("div");
-            card.classList.add("card"); // Mesmo estilo da outra função
+            card.classList.add("card");
 
-            // Obtém a imagem (se não houver, usa uma padrão)
             const imagem = (imovel.imagens && imovel.imagens.length > 0) 
                 ? imovel.imagens[0] 
                 : "https://source.unsplash.com/400x300/?house";
 
-            // Define a URL para detalhes do imóvel
             const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
 
             card.innerHTML = `
-                <img src="${imagem}" alt="Imóvel">
+                <div class="image-container">
+                    <img src="${imagem}" alt="Imóvel">
+                    <div class="overlay">
+                        <span><i class="material-icons">king_bed</i> ${imovel.quartos || 0}</span>
+                        <span><i class="material-icons">bathtub</i> ${imovel.banheiros || 0}</span>
+                        <span><i class="material-icons">square_foot</i> ${imovel.metros_quadrados || 0}m²</span>
+                    </div>
+                </div>
                 <h2>${imovel.texto_principal || "Sem título"}</h2>
-                <p>${imovel.quartos || 0} quartos, ${imovel.banheiros || 0} banheiros, ${imovel.metros_quadrados || 0}m²</p>
                 <p>${imovel.valor 
                     ? imovel.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
                     : "Preço não informado"}</p>
-                
             `;
 
             container.appendChild(card);
@@ -199,6 +216,7 @@ async function carregaraImoveis() {
         console.error("Erro ao carregar imóveis:", error);
     }
 }
+
 
 
 
