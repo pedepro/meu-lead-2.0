@@ -79,18 +79,33 @@ async function carregarImoveis() {
 
             const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
 
+            // Função auxiliar para formatar singular/plural corretamente
+            const formatarTexto = (quantidade, singular, plural) => 
+                `${quantidade} ${quantidade === 1 ? singular : plural}`;
+
             card.innerHTML = `
                 <div class="image-container">
                     <img src="${imagem}" alt="Imóvel">
                     <div class="overlay">
-                        <span><i class="material-icons">king_bed</i> ${imovel.quartos || 0}</span>
-                        <span><i class="material-icons">bathtub</i> ${imovel.banheiros || 0}</span>
-                        <span><i class="material-icons">square_foot</i> ${imovel.metros_quadrados || 0}m²</span>
+                        <div class="overlay-item">
+                            <i class="material-icons">king_bed</i>
+                            <span>${formatarTexto(imovel.quartos || 0, "quarto", "quartos")}</span>
+                        </div>
+                        <div class="overlay-item">
+                            <i class="material-icons">directions_car</i>
+                            <span>${formatarTexto(imovel.vagas_garagem || 0, "vaga", "vagas")}</span>
+                        </div>
+                        <div class="overlay-item">
+                            <i class="material-icons">square_foot</i>
+                            <span>${imovel.metros_quadrados || 0}m²</span>
+                        </div>
                     </div>
                 </div>
                 <h2>${imovel.texto_principal}</h2>
-                <p>${imovel.quartos} quartos, ${imovel.banheiros} banheiros, ${imovel.metros_quadrados}m²</p>
-                <p>R$ ${imovel.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                <p><strong>${imovel.cidade} - ${imovel.estado}</strong></p> <!-- Exibe cidade e estado -->
+                <p>${imovel.descricao}</p>
+                <h2>${parseFloat(imovel.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+
                 <button class="btn-detalhes" onclick="window.location.href='${detalhesUrl}'">
                     Ver Detalhes
                 </button>
@@ -102,6 +117,57 @@ async function carregarImoveis() {
         console.error("Erro ao carregar imóveis:", error);
     }
 }
+
+async function exibirDropdown() {
+    const filtrosContainer = document.getElementById("filtros-imoveis");
+    if (!filtrosContainer) {
+        console.error("Elemento com id 'filtros-imoveis' não encontrado.");
+        return;
+    }
+
+    // Remove o dropdown anterior (se já existir)
+    const existente = document.getElementById("dropdown-cidades");
+    if (existente) {
+        existente.remove();
+    }
+
+    try {
+        // Faz a requisição para a API
+        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/cidades");
+        const cidades = await response.json();
+
+        if (!Array.isArray(cidades)) {
+            throw new Error("Resposta da API inválida");
+        }
+
+        // Cria o elemento <select>
+        const select = document.createElement("select");
+        select.id = "dropdown-cidades";
+
+        // Adiciona opção padrão
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Selecione uma cidade...";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+
+        // Adiciona as cidades como opções
+        cidades.forEach(cidade => {
+            const option = document.createElement("option");
+            option.value = cidade.id; // Assume que a API retorna um objeto { id, name }
+            option.textContent = cidade.name;
+            select.appendChild(option);
+        });
+
+        // Adiciona o dropdown à div de filtros
+        filtrosContainer.appendChild(select);
+    } catch (error) {
+        console.error("Erro ao carregar cidades:", error);
+    }
+}
+
+
 
 
     // Função para carregar os clientes
@@ -146,7 +212,9 @@ async function carregarImoveis() {
     }
 
     carregarImoveis(); // Carregar imóveis ao iniciar
+    exibirDropdown(); // Exibir dropdown de cidades
 });
+
 
 
 
@@ -165,7 +233,7 @@ async function carregaraImoveis() {
 
         // Torna a div visível antes de carregar os imóveis
         container.style.display = "block";
-        container.innerHTML = ""; 
+        container.innerHTML = "";
 
         // Adiciona o título antes dos cards
         const titulo = document.createElement("h2");
@@ -189,33 +257,60 @@ async function carregaraImoveis() {
             const card = document.createElement("div");
             card.classList.add("card");
 
-            const imagem = (imovel.imagens && imovel.imagens.length > 0) 
+            const imagem = imovel.imagens.length > 0 
                 ? imovel.imagens[0] 
                 : "https://source.unsplash.com/400x300/?house";
 
+            // Definindo a URL de detalhes
             const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
 
-            card.innerHTML = `
-                <div class="image-container">
-                    <img src="${imagem}" alt="Imóvel">
-                    <div class="overlay">
-                        <span><i class="material-icons">king_bed</i> ${imovel.quartos || 0}</span>
-                        <span><i class="material-icons">bathtub</i> ${imovel.banheiros || 0}</span>
-                        <span><i class="material-icons">square_foot</i> ${imovel.metros_quadrados || 0}m²</span>
-                    </div>
-                </div>
-                <h2>${imovel.texto_principal || "Sem título"}</h2>
-                <p>${imovel.valor 
-                    ? imovel.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
-                    : "Preço não informado"}</p>
-            `;
+            // Limpa o número removendo qualquer caractere que não seja dígito
+            const phone = imovel.whatsapp.replace(/\D/g, '');
+            // Cria a mensagem de WhatsApp
+            const mensagem = `Olá ${imovel.nome_proprietario}`;
+            // Constrói a URL do WhatsApp corretamente
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(mensagem)}`;
 
+            // Função auxiliar para formatar singular/plural corretamente
+            const formatarTexto = (quantidade, singular, plural) => 
+                `${quantidade} ${quantidade === 1 ? singular : plural}`;
+
+            card.innerHTML = `
+    <div class="image-container">
+        <img src="${imagem}" alt="Imóvel">
+        <div class="overlay">
+            <div class="overlay-item">
+                <i class="material-icons">king_bed</i>
+                <span>${formatarTexto(imovel.quartos || 0, "quarto", "quartos")}</span>
+            </div>
+            <div class="overlay-item">
+                <i class="material-icons">directions_car</i>
+                <span>${formatarTexto(imovel.vagas_garagem || 0, "vaga", "vagas")}</span>
+            </div>
+            <div class="overlay-item">
+                <i class="material-icons">square_foot</i>
+                <span>${imovel.metros_quadrados || 0}m²</span>
+            </div>
+        </div>
+    </div>
+    <h2>${imovel.texto_principal}</h2>
+    <p><strong>${imovel.cidade} - ${imovel.estado}</strong></p>
+    <p>${imovel.descricao}</p>
+    <h2>${parseFloat(imovel.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+    <button class="btn-detalhes" onclick="window.location.href='${whatsappUrl}'">
+        Conversar com o Proprietário
+    </button>
+`;
             container.appendChild(card);
         });
     } catch (error) {
         console.error("Erro ao carregar imóveis:", error);
     }
 }
+
+
+
+
 
 
 
