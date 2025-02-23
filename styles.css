@@ -120,6 +120,7 @@ header h1 {
 /* Sidebar aberta */
 .sidebar.open {
     width: 250px;
+    z-index: 10; /* Garante que fique acima de outros elementos */
 }
 
 /* Estilo do menu lateral */
@@ -346,63 +347,213 @@ header h1 {
 }
 
 
-#filtros-imoveis {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px;
-    height: 80px;
-    width: calc(100% - 20px); /* Corrigido */
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin-bottom: -5px;
-    margin-left: auto;
-    margin-right: auto;
 
-}
 
 
 .filtros-leads {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
+    padding: 15px;
     margin: 20px;
-    height: 80px;
-    width: calc(100% - 20px); /* Corrigido */
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin-bottom: -5px;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #F0F2F5; /* Cinza claro do Facebook */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    flex-wrap: wrap;
 }
 
 
-#dropdown-cidades {
-    width: 100%;
-    max-width: 300px; /* Define uma largura máxima */
-    padding: 10px;
-    font-size: 16px;
-    border: 2px solid #007bff; /* Cor azul para destacar */
-    border-radius: 8px;
-    background-color: #fff;
-    color: #333;
+#dropdown-padrao-leads, #dropdown-valores-leads, #dropdown-ordenacao-leads {
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1C1E21;
+    border: 1px solid #CCD0D5;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    width: 200px;
+    max-width: 100%;
+    box-sizing: border-box;
     cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2360697B" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+#dropdown-padrao-leads:hover, #dropdown-valores-leads:hover, #dropdown-ordenacao-leads:hover,
+#dropdown-padrao-leads:focus, #dropdown-valores-leads:focus, #dropdown-ordenacao-leads:focus {
+    border-color: #1877F2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
     outline: none;
 }
 
-/* Estiliza quando o usuário interage */
-#dropdown-cidades:focus {
-    border-color: #0056b3;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+@media (max-width: 420px) {
+    .filtros-leads {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    #dropdown-padrao-leads, #dropdown-valores-leads, #dropdown-ordenacao-leads {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 14px;
+    }
 }
 
-/* Para navegadores que suportam múltipla seleção */
-#dropdown-cidades option {
-    padding: 5px;
-    font-size: 14px;
+
+
+
+
+
+
+
+.image-container {
+    position: relative; /* Necessário para posicionar o label */
 }
 
-/* Adiciona um pequeno espaço ao redor do dropdown */
+.padrao-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo preto com 60% de opacidade */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 12px; /* Bordas arredondadas */
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1; /* Garante que fique acima da imagem */
+}
+
+
 #filtros-imoveis {
+    display: flex; /* Mantém o Flexbox para alinhamento horizontal */
+    gap: 12px; /* Espaçamento entre dropdowns um pouco maior para respirar */
+    padding: 15px; /* Padding interno equilibrado */
+    margin: 20px; /* Margem externa consistente */
+    justify-content: flex-start; /* Alinha à esquerda */
+    align-items: center; /* Centraliza verticalmente */
+    max-width: 100%; /* Não ultrapassa o contêiner */
+    background-color: #F0F2F5; /* Cinza claro, padrão Facebook */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border-radius: 8px; /* Bordas arredondadas suaves */
+    flex-wrap: wrap; /* Quebra linha em telas menores */
+}
+
+#dropdown-cidades, #dropdown-precos {
+    padding: 10px 14px; /* Padding confortável */
+    font-size: 14px; /* Tamanho de fonte moderno e legível */
+    font-family: 'Helvetica', 'Arial', sans-serif; /* Fonte clean, padrão Facebook */
+    color: #1C1E21; /* Cor de texto escura e suave */
+    border: 1px solid #CCD0D5; /* Borda cinza clara */
+    border-radius: 6px; /* Bordas arredondadas leves */
+    background-color: #FFFFFF; /* Fundo branco para contraste */
+    width: 200px; /* Largura um pouco maior para melhor usabilidade */
+    max-width: 100%; /* Respeita o contêiner pai */
+    box-sizing: border-box; /* Inclui borda e padding na largura */
+    cursor: pointer; /* Indica interatividade */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transição suave */
+    appearance: none; /* Remove estilo nativo do sistema */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2360697B" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Ícone de seta personalizado */
+    background-repeat: no-repeat;
+    background-position: right 10px center; /* Posiciona a seta à direita */
+}
+
+/* Remove margem extra no #dropdown-precos */
+#dropdown-precos {
+    margin-top: 10px; /* Remove margem desnecessária */
+}
+
+/* Estilização ao focar ou passar o mouse */
+#dropdown-cidades:hover, #dropdown-precos:hover,
+#dropdown-cidades:focus, #dropdown-precos:focus {
+    border-color: #1877F2; /* Azul do Facebook */
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2); /* Halo azul sutil */
+    outline: none; /* Remove contorno padrão */
+}
+
+/* Estilização das opções (se suportado pelo navegador) */
+#dropdown-cidades option, #dropdown-precos option {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1C1E21;
+}
+
+/* Ajuste responsivo para telas menores que 420px */
+@media (max-width: 420px) {
+    #filtros-imoveis {
+        flex-direction: column; /* Empilha verticalmente */
+        gap: 10px; /* Espaçamento reduzido */
+        padding: 10px; /* Padding menor */
+        margin: 10px; /* Margem reduzida */
+    }
+    
+    #dropdown-cidades, #dropdown-precos {
+        width: 100%; /* Ocupa toda a largura */
+        font-size: 16px; /* Fonte maior para mobile */
+        padding: 12px 14px; /* Padding ajustado para toque */
+    }
+}
+
+
+
+.contagem-leads {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #F0F2F5;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #555555;
+}
+
+.outros-resultados {
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+.outros-resultados h3 {
+    font-size: 18px;
+    color: #555555;
+    margin-bottom: 10px;
+}
+
+.outros-resultados hr {
+    border: 0;
+    border-top: 1px solid #CCD0D5;
     margin-bottom: 15px;
+}
+
+
+.paginacao {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+}
+
+.paginacao button {
+    padding: 8px 16px;
+    margin: 0 10px;
+    background-color: #1877F2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.paginacao button:disabled {
+    background-color: #CCD0D5;
+    cursor: not-allowed;
+}
+
+.paginacao button:hover:not(:disabled) {
+    background-color: #1659C1;
+}
+
+.paginacao span {
+    font-size: 16px;
+    color: #555555;
 }
