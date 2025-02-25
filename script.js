@@ -1,6 +1,9 @@
 // Variáveis globais
 let imoveisOriginais = [];
 let cidades = [];
+let imoveisPorPagina = 3; // Número de imóveis por página
+let paginaImoveisAtual = 1;
+let totalImoveis = 0; // Variável para armazenar o total retornado pelo servidor
 
 // Função para carregar as cidades da API
 async function carregarCidades() {
@@ -19,19 +22,30 @@ function getNomeCidade(cidadeId) {
     return cidade ? cidade.name : "Cidade não encontrada";
 }
 
-// Função para carregar os imóveis
+// Função para carregar os imóveis iniciais
 async function carregarImoveis() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis");
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis?limite=${imoveisPorPagina}&offset=0`);
         const data = await response.json();
-        imoveisOriginais = Array.isArray(data) ? data : data.imoveis || [];
-        renderizarImoveis(imoveisOriginais, []); // Inicialmente, todos são exibidos como filtrados
+        if (data.success) {
+            imoveisOriginais = data.imoveis;
+            totalImoveis = data.total;
+            renderizarImoveis(data.imoveis);
+        } else {
+            console.error("Erro ao carregar imóveis:", data.error);
+            imoveisOriginais = [];
+            totalImoveis = 0;
+            renderizarImoveis([]);
+        }
     } catch (error) {
         console.error("Erro ao carregar imóveis:", error);
+        imoveisOriginais = [];
+        totalImoveis = 0;
+        renderizarImoveis([]);
     }
 }
 
-// Função para criar o HTML de um card de imóvel
+// Função para criar o HTML de um card de imóvel (mantida como está)
 function criarCardImovel(imovel) {
     const imagem = imovel.imagens.length > 0 
         ? imovel.imagens[0] 
@@ -83,31 +97,87 @@ function criarCardImovel(imovel) {
 }
 
 // Função para renderizar os imóveis
-function renderizarImoveis(imoveisFiltrados, imoveisNaoFiltrados) {
+function renderizarImoveis(imoveis) {
     const imoveisContainer = document.getElementById("imoveis-container");
     if (!imoveisContainer) {
         console.error("Erro: Elemento #imoveis-container não encontrado.");
         return;
     }
 
-    imoveisContainer.innerHTML = ''; // Limpa o container
+    console.log("Renderizando página:", paginaImoveisAtual, "Itens:", imoveis.length, "Total imóveis:", totalImoveis);
 
-    // Renderiza os imóveis filtrados
-    imoveisFiltrados.forEach(imovel => {
-        imoveisContainer.innerHTML += criarCardImovel(imovel);
-    });
-
-    // Se houver imóveis não filtrados, adiciona a divisão e os renderiza
-    if (imoveisNaoFiltrados.length > 0) {
-        const divisor = document.createElement("div");
-        divisor.classList.add("resultados-divisor");
-        divisor.innerHTML = '<h3>Outros Resultados</h3><hr>';
-        imoveisContainer.appendChild(divisor);
-
-        imoveisNaoFiltrados.forEach(imovel => {
+    imoveisContainer.innerHTML = '';
+    if (imoveis.length === 0 && totalImoveis === 0) {
+        imoveisContainer.innerHTML = '<p class="nenhum-resultado">Nenhum resultado encontrado para os filtros aplicados.</p>';
+    } else {
+        imoveis.forEach(imovel => {
             imoveisContainer.innerHTML += criarCardImovel(imovel);
         });
     }
+
+    criarPaginacaoImoveis(totalImoveis);
+}
+
+// Função para criar paginação específica para imóveis (com scroll ao topo)
+function criarPaginacaoImoveis(totalImoveis) {
+    const totalPaginas = Math.ceil(totalImoveis / imoveisPorPagina);
+    const paginacaoContainer = document.getElementById("paginacao-imoveis") || createPaginationImoveisContainer();
+    paginacaoContainer.innerHTML = '';
+
+    const paginationWrapper = document.createElement("div");
+    paginationWrapper.className = "paginacao-imoveis-wrapper";
+
+    const setaEsquerda = document.createElement("i");
+    setaEsquerda.className = "material-icons paginacao-imoveis-seta paginacao-imoveis-seta-esquerda";
+    setaEsquerda.textContent = "chevron_left";
+    setaEsquerda.onclick = () => {
+        if (paginaImoveisAtual > 1) {
+            paginaImoveisAtual--;
+            filtrarImoveis();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+        }
+    };
+    paginationWrapper.appendChild(setaEsquerda);
+
+    const paginaTexto = document.createElement("span");
+    paginaTexto.className = "paginacao-imoveis-texto";
+    paginaTexto.textContent = `Página ${paginaImoveisAtual} de ${totalPaginas || 1}`;
+    paginationWrapper.appendChild(paginaTexto);
+
+    const setaDireita = document.createElement("i");
+    setaDireita.className = "material-icons paginacao-imoveis-seta paginacao-imoveis-seta-direita";
+    setaDireita.textContent = "chevron_right";
+    setaDireita.onclick = () => {
+        if (paginaImoveisAtual < totalPaginas) {
+            paginaImoveisAtual++;
+            filtrarImoveis();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+        }
+    };
+    paginationWrapper.appendChild(setaDireita);
+
+    paginacaoContainer.appendChild(paginationWrapper);
+
+    setaEsquerda.style.opacity = paginaImoveisAtual === 1 ? '0.5' : '1';
+    setaEsquerda.style.cursor = paginaImoveisAtual === 1 ? 'not-allowed' : 'pointer';
+    setaDireita.style.opacity = paginaImoveisAtual === totalPaginas ? '0.5' : '1';
+    setaDireita.style.cursor = paginaImoveisAtual === totalPaginas ? 'not-allowed' : 'pointer';
+
+    console.log("Página atual:", paginaImoveisAtual, "Total de páginas:", totalPaginas, "Total de imóveis:", totalImoveis);
+}
+
+// Função para criar o container de paginação, se não existir
+function createPaginationImoveisContainer() {
+    const paginacao = document.createElement("div");
+    paginacao.id = "paginacao-imoveis";
+    paginacao.className = "paginacao-imoveis";
+    const imoveisContainer = document.getElementById("imoveis-container");
+    if (imoveisContainer && imoveisContainer.parentNode) {
+        imoveisContainer.parentNode.appendChild(paginacao);
+    } else {
+        document.body.appendChild(paginacao);
+    }
+    return paginacao;
 }
 
 // Função para filtrar os imóveis
@@ -115,39 +185,55 @@ function filtrarImoveis() {
     const cidadeSelecionada = document.getElementById("dropdown-cidades")?.value || "";
     const precoSelecionado = document.getElementById("dropdown-precos")?.value || "";
 
-    // Filtra os imóveis que atendem aos critérios
-    let imoveisFiltrados = [...imoveisOriginais];
-    let imoveisNaoFiltrados = [];
+    let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis";
+    const params = new URLSearchParams();
 
-    if (cidadeSelecionada || precoSelecionado) {
-        imoveisFiltrados = imoveisOriginais.filter(imovel => {
-            let matchCidade = true;
-            let matchPreco = true;
-
-            if (cidadeSelecionada) {
-                matchCidade = imovel.cidade === parseInt(cidadeSelecionada);
-            }
-
-            if (precoSelecionado) {
-                const [min, max] = precoSelecionado.split('-').map(Number);
-                const valor = parseFloat(imovel.valor);
-                matchPreco = max ? (valor >= min && valor <= max) : (valor >= min);
-            }
-
-            return matchCidade && matchPreco;
-        });
-
-        // Os não filtrados são os que não estão em imoveisFiltrados
-        imoveisNaoFiltrados = imoveisOriginais.filter(imovel => 
-            !imoveisFiltrados.some(filtrado => filtrado.id === imovel.id)
-        );
-    } else {
-        // Sem filtros, todos são "filtrados" e não há "outros"
-        imoveisFiltrados = [...imoveisOriginais];
-        imoveisNaoFiltrados = [];
+    if (cidadeSelecionada) {
+        params.append("cidade", cidadeSelecionada);
     }
 
-    renderizarImoveis(imoveisFiltrados, imoveisNaoFiltrados);
+    if (precoSelecionado) {
+        const [min, max] = precoSelecionado.split('-').map(Number);
+        params.append("precoMin", min);
+        if (max) params.append("precoMax", max);
+    }
+
+    params.append("limite", imoveisPorPagina);
+    params.append("offset", (paginaImoveisAtual - 1) * imoveisPorPagina);
+
+    if (params.toString()) {
+        url += `?${params.toString()}`;
+    }
+
+    console.log("Requisição para:", url);
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro HTTP! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Resposta do servidor:", data);
+            if (data.success) {
+                imoveisOriginais = data.imoveis;
+                totalImoveis = data.total;
+                renderizarImoveis(data.imoveis);
+            } else {
+                imoveisOriginais = [];
+                totalImoveis = 0;
+                renderizarImoveis([]);
+                console.log(data.message || "Nenhum imóvel encontrado para os filtros aplicados.");
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao filtrar imóveis:", error);
+            imoveisOriginais = [];
+            totalImoveis = 0;
+            renderizarImoveis([]);
+            alert("Ocorreu um erro ao carregar os imóveis. Tente novamente mais tarde.");
+        });
 }
 
 // Função para garantir que o container de filtros exista
@@ -156,12 +242,14 @@ function garantirFiltrosContainer() {
     if (!filtrosContainer) {
         filtrosContainer = document.createElement("div");
         filtrosContainer.id = "filtros-imoveis";
-        filtrosContainer.classList.add("container");
+        const dropdownsWrapper = document.createElement("div");
+        dropdownsWrapper.className = "dropdowns-wrapper";
+        filtrosContainer.appendChild(dropdownsWrapper);
         const imoveisContainer = document.getElementById("imoveis-container");
         if (imoveisContainer && imoveisContainer.parentNode) {
             imoveisContainer.parentNode.insertBefore(filtrosContainer, imoveisContainer);
         } else {
-            document.querySelector(".main-content")?.appendChild(filtrosContainer) || document.body.appendChild(filtrosContainer);
+            document.body.appendChild(filtrosContainer);
         }
     }
     return filtrosContainer;
@@ -170,26 +258,24 @@ function garantirFiltrosContainer() {
 // Função para exibir o dropdown de cidades
 async function exibirDropdownCidades() {
     const filtrosContainer = garantirFiltrosContainer();
+    const dropdownsWrapper = filtrosContainer.querySelector(".dropdowns-wrapper") || filtrosContainer;
 
     const existente = document.getElementById("dropdown-cidades");
-    if (existente) {
-        existente.remove();
-    }
+    if (existente) existente.remove();
 
     try {
-        if (cidades.length === 0) {
-            await carregarCidades();
-        }
+        if (cidades.length === 0) await carregarCidades();
 
         const select = document.createElement("select");
         select.id = "dropdown-cidades";
-        select.onchange = filtrarImoveis;
+        select.onchange = () => {
+            paginaImoveisAtual = 1; // Reseta para a primeira página ao mudar o filtro
+            filtrarImoveis();
+        };
 
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
-        defaultOption.textContent = "Selecione uma cidade...";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
+        defaultOption.textContent = "Todas as cidades";
         select.appendChild(defaultOption);
 
         cidades.forEach(cidade => {
@@ -199,7 +285,7 @@ async function exibirDropdownCidades() {
             select.appendChild(option);
         });
 
-        filtrosContainer.appendChild(select);
+        dropdownsWrapper.appendChild(select);
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
     }
@@ -208,31 +294,31 @@ async function exibirDropdownCidades() {
 // Função para exibir o dropdown de preços
 function exibirDropdownPrecos() {
     const filtrosContainer = garantirFiltrosContainer();
+    const dropdownsWrapper = filtrosContainer.querySelector(".dropdowns-wrapper") || filtrosContainer;
 
     const existente = document.getElementById("dropdown-precos");
-    if (existente) {
-        existente.remove();
-    }
+    if (existente) existente.remove();
 
     const select = document.createElement("select");
     select.id = "dropdown-precos";
-    select.onchange = filtrarImoveis;
+    select.onchange = () => {
+        paginaImoveisAtual = 1; // Reseta para a primeira página ao mudar o filtro
+        filtrarImoveis();
+    };
 
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
-    defaultOption.textContent = "FILTRO IMÓVEIS";
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
+    defaultOption.textContent = "Todos os preços";
     select.appendChild(defaultOption);
 
     const faixasPreco = [
-        { value: "0-500000", text: "Até R$ 500.000" },
-        { value: "500000-1000000", text: "R$ 500.000 - R$ 1.000.000" },
-        { value: "1000000-2000000", text: "R$ 1.000.000 - R$ 2.000.000" },
-        { value: "2000000-5000000", text: "R$ 2.000.000 - R$ 5.000.000" },
-        { value: "5000000-10000000", text: "R$ 5.000.000 - R$ 10.000.000" },
-        { value: "10000000-20000000", text: "R$ 10.000.000 - R$ 20.000.000" },
-        { value: "20000000", text: "+ R$ 20.000.000" }
+        { value: "0-500000", text: "Até R$ 500 mil" },
+        { value: "500000-1000000", text: "R$ 500 mil - R$ 1 milhão" },
+        { value: "1000000-2000000", text: "R$ 1 milhão - R$ 2 milhões" },
+        { value: "2000000-5000000", text: "R$ 2 milhões - R$ 5 milhões" },
+        { value: "5000000-10000000", text: "R$ 5 milhões - R$ 10 milhões" },
+        { value: "10000000-20000000", text: "R$ 10 milhões - R$ 20 milhões" },
+        { value: "20000000", text: "+ R$ 20 milhões" }
     ];
 
     faixasPreco.forEach(faixa => {
@@ -242,13 +328,15 @@ function exibirDropdownPrecos() {
         select.appendChild(option);
     });
 
-    filtrosContainer.appendChild(select);
+    dropdownsWrapper.appendChild(select);
 }
 
-
-
-
-
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+    exibirDropdownCidades();
+    exibirDropdownPrecos();
+    carregarImoveis();
+});
 
 
 
@@ -293,7 +381,8 @@ function criarCardLead(cliente) {
         </div>
     `;
 }
-// Função para renderizar os leads com paginação
+
+// Função para renderizar os leads com paginação (com scroll ao topo)
 function renderizarLeads(leadsFiltrados) {
     const clientesContainer = document.getElementById("clientes-container");
     if (!clientesContainer) {
@@ -306,7 +395,6 @@ function renderizarLeads(leadsFiltrados) {
     if (!filtrosDiv) {
         filtrosDiv = document.createElement("div");
         filtrosDiv.classList.add("filtros-leads");
-        filtrosDiv.innerHTML = `<h2>Filtros</h2>`;
         clientesContainer.appendChild(filtrosDiv);
         exibirDropdownPadraoLeads();
         exibirDropdownValoresLeads();
@@ -314,45 +402,63 @@ function renderizarLeads(leadsFiltrados) {
     }
 
     // Remover elementos existentes (exceto filtros)
-    const existingElements = clientesContainer.querySelectorAll(".contagem-leads, .card-cliente, .outros-resultados, .paginacao");
+    const existingElements = clientesContainer.querySelectorAll(".contagem-leads, .card-cliente, .outros-resultados, .paginacao-leads");
     existingElements.forEach(element => element.remove());
-
-    // Adicionar contagem de leads filtrados
-    const contagemDiv = document.createElement("div");
-    contagemDiv.classList.add("contagem-leads");
-    contagemDiv.innerHTML = `<p><strong>Leads encontrados:</strong> ${leadsFiltrados.length} de ${totalLeads} (Página ${paginaAtual})</p>`;
-    clientesContainer.insertAdjacentElement('beforeend', contagemDiv);
 
     // Adicionar os cards dos leads filtrados
     leadsFiltrados.forEach(cliente => {
         clientesContainer.insertAdjacentHTML('beforeend', criarCardLead(cliente));
     });
 
-    // Adicionar controles de paginação
+    // Adicionar controles de paginação (igual ao layout dos imóveis)
     const paginacaoDiv = document.createElement("div");
-    paginacaoDiv.classList.add("paginacao");
+    paginacaoDiv.id = "paginacao-leads"; // ID único para leads
+    paginacaoDiv.className = "paginacao-leads";
     const totalPaginas = Math.ceil(totalLeads / itensPorPagina);
 
-    paginacaoDiv.innerHTML = `
-        <button id="prev-page" ${paginaAtual === 1 ? "disabled" : ""}>Anterior</button>
-        <span>Página ${paginaAtual} de ${totalPaginas}</span>
-        <button id="next-page" ${paginaAtual === totalPaginas ? "disabled" : ""}>Próximo</button>
-    `;
-    clientesContainer.insertAdjacentElement('beforeend', paginacaoDiv);
+    const paginationWrapper = document.createElement("div");
+    paginationWrapper.className = "paginacao-leads-wrapper";
 
-    // Adicionar eventos aos botões de paginação
-    document.getElementById("prev-page")?.addEventListener("click", () => {
+    // Botão de seta esquerda (anterior)
+    const setaEsquerda = document.createElement("i");
+    setaEsquerda.className = "material-icons paginacao-leads-seta paginacao-leads-seta-esquerda";
+    setaEsquerda.textContent = "chevron_left";
+    setaEsquerda.onclick = () => {
         if (paginaAtual > 1) {
             paginaAtual--;
             carregarClientesPaginados();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
         }
-    });
-    document.getElementById("next-page")?.addEventListener("click", () => {
+    };
+    paginationWrapper.appendChild(setaEsquerda);
+
+    // Texto "Página X de Y"
+    const paginaTexto = document.createElement("span");
+    paginaTexto.className = "paginacao-leads-texto";
+    paginaTexto.textContent = `Página ${paginaAtual} de ${totalPaginas || 1}`;
+    paginationWrapper.appendChild(paginaTexto);
+
+    // Botão de seta direita (próxima)
+    const setaDireita = document.createElement("i");
+    setaDireita.className = "material-icons paginacao-leads-seta paginacao-leads-seta-direita";
+    setaDireita.textContent = "chevron_right";
+    setaDireita.onclick = () => {
         if (paginaAtual < totalPaginas) {
             paginaAtual++;
             carregarClientesPaginados();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
         }
-    });
+    };
+    paginationWrapper.appendChild(setaDireita);
+
+    paginacaoDiv.appendChild(paginationWrapper);
+    clientesContainer.insertAdjacentElement('beforeend', paginacaoDiv);
+
+    // Desativa setas se não houver navegação possível
+    setaEsquerda.style.opacity = paginaAtual === 1 ? '0.5' : '1';
+    setaEsquerda.style.cursor = paginaAtual === 1 ? 'not-allowed' : 'pointer';
+    setaDireita.style.opacity = paginaAtual === totalPaginas ? '0.5' : '1';
+    setaDireita.style.cursor = paginaAtual === totalPaginas ? 'not-allowed' : 'pointer';
 }
 
 // Função para exibir o dropdown de padrão
@@ -503,6 +609,11 @@ async function carregarClientes() {
     paginaAtual = 1; // Resetar para a primeira página
     await carregarClientesPaginados();
 }
+
+// Inicialização (adicione isso se quiser carregar ao iniciar a página)
+document.addEventListener("DOMContentLoaded", () => {
+    carregarClientes();
+});
 
 
 
@@ -703,6 +814,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    // Função auxiliar para gerenciar a visibilidade da paginação de imóveis
+    function gerenciarPaginacaoImoveis(visivel) {
+        const paginacaoImoveis = document.getElementById("paginacao-imoveis");
+        if (paginacaoImoveis) {
+            paginacaoImoveis.style.display = visivel ? "block" : "none";
+        } else if (!visivel) {
+            // Remove a paginação se já existir e não deve ser exibida
+            const existingPagination = document.querySelector(".paginacao-imoveis");
+            if (existingPagination) {
+                existingPagination.remove();
+            }
+        }
+    }
+
+    // Função para garantir que a paginação de imóveis seja centralizada
+    function centralizarPaginacaoImoveis() {
+        const paginacaoImoveis = document.getElementById("paginacao-imoveis");
+        if (paginacaoImoveis) {
+            paginacaoImoveis.style.width = "100%";
+            paginacaoImoveis.style.display = "flex";
+            paginacaoImoveis.style.justifyContent = "center";
+        }
+    }
+
     if (menuToggle && sidebar) {
         menuToggle.addEventListener("click", function () {
             sidebar.classList.toggle("open");
@@ -710,59 +845,68 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     if (imoveisLink) {
-        imoveisLink.addEventListener("click", async function () {
+        imoveisLink.addEventListener("click", async function (e) {
+            e.preventDefault(); // Previne comportamento padrão do link, se houver
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "flex";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
             
-            // Mostrar filtros
+            // Mostrar filtros e paginação de imóveis, e garantir centralização
             gerenciarFiltros(true);
+            gerenciarPaginacaoImoveis(true);
             await carregarImoveis();
             await exibirDropdownCidades();
             exibirDropdownPrecos();
+            centralizarPaginacaoImoveis();
         });
     }
 
     if (clientesLink) {
-        clientesLink.addEventListener("click", function () {
+        clientesLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Previne comportamento padrão do link, se houver
             sidebar.classList.remove("open");
             clientesContainer.style.display = "flex";
             imoveisContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
             
-            // Esconder filtros
+            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
+            gerenciarPaginacaoImoveis(false);
             carregarClientes();
         });
     }
 
     if (meusImoveisLink) {
-        meusImoveisLink.addEventListener("click", function () {
+        meusImoveisLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Previne comportamento padrão do link, se houver
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "block";
             meusLeadsContainer.style.display = "none";
             
-            // Esconder filtros
+            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
+            gerenciarPaginacaoImoveis(false);
             carregaraImoveis();
         });
     }
 
     if (meusLeadsLink) {
-        meusLeadsLink.addEventListener("click", function () {
+        meusLeadsLink.addEventListener("click", function (e) {
+            e.preventDefault(); // Previne comportamento padrão do link, se houver
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "block";
             
-            // Esconder filtros
+            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
+            gerenciarPaginacaoImoveis(false);
             carregarLeadsAdquiridos(1);
         });
     }
@@ -775,12 +919,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // Inicialização padrão (com filtros visíveis)
+    // Inicialização padrão (com filtros e paginação visíveis para imóveis)
     await carregarCidades();
     await carregarImoveis();
     await exibirDropdownCidades();
     exibirDropdownPrecos();
     gerenciarFiltros(true); // Garante que os filtros estejam visíveis ao carregar a página
+    gerenciarPaginacaoImoveis(true); // Garante que a paginação de imóveis esteja visível ao carregar
+    centralizarPaginacaoImoveis(); // Garante que a paginação esteja centralizada ao carregar
     carregarCorretor();
 });
 

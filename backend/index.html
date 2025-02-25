@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Banco de Dados</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f5f7f9;
+            color: #333;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px 0;
+            overflow-y: auto;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            padding: 0 20px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .sidebar li {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .sidebar li:hover, .sidebar li.active {
+            background: #f0f4f8;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 8px;
+            visibility: hidden;
+        }
+
+        .sidebar li:hover .delete-btn, .sidebar li.active .delete-btn {
+            visibility: visible;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            height: calc(100vh - 40px);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .content-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        .btn:hover {
+            background: #f0f4f8;
+            border-color: #b0c4de;
+        }
+
+        .btn-primary {
+            background: #ffcc00;
+            border: none;
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            background: #e6b800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f5f7f9;
+            font-weight: 600;
+            color: #666;
+        }
+
+        td.actions {
+            text-align: right;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .action-btn:hover {
+            color: #333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            width: min(500px, 90%);
+            max-height: 80vh; /* Limita a altura máxima do modal */
+            overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .form-group label.required::after {
+            content: ' *';
+            color: #ff4444;
+            font-weight: normal;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                margin-bottom: 20px;
+            }
+
+            .content {
+                width: 100%;
+                height: auto;
+                padding: 10px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+
+            .modal-content {
+                width: 90%;
+                max-height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Gerenciamento de Banco de Dados</h1>
+            <button class="btn" style="width: 90%; margin: 10px 20px;" onclick="showAddTableModal()">Criar Nova Tabela</button>
+            <ul id="tablesList"></ul>
+        </div>
+        <div class="content" id="content">
+            <div class="content-header">
+                <h2 id="tableNameHeader"></h2>
+                <div>
+                    <button class="btn btn-primary" onclick="showAddRowModal()">Inserir Linha</button>
+                    <button class="btn" onclick="showAddColumnModal()">Adicionar Coluna</button>
+                </div>
+            </div>
+            <table id="dataTable">
+                <thead><tr></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="addRowModal">
+        <div class="modal-content">
+            <h2>Inserir Nova Linha</h2>
+            <form id="rowForm" onsubmit="submitRow(event)">
+                <div id="rowFields"></div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn" onclick="closeModal('addRowModal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="addColumnModal">
+        <div class="modal-content">
+            <h2>Adicionar Coluna</h2>
+            <form id="columnForm" onsubmit="addColumn(event)">
+                <div class="form-group">
+                    <label>Nome da Coluna</label>
+                    <input type="text" id="columnName" placeholder="Ex: email" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="columnType" required>
+                        <option value="INTEGER">Inteiro (INTEGER)</option>
+                        <option value="TEXT">Texto (TEXT)</option>
+                        <option value="NUMERIC">Numérico (NUMERIC)</option>
+                        <option value="UUID">UUID</option>
+                        <option value="BOOLEAN">Booleano (BOOLEAN)</option>
+                        <option value="TIMESTAMP">Data/Hora (TIMESTAMP)</option>
+                        <option value="VARCHAR(255)">Texto Curto (VARCHAR(255))</option>
+                        <option value="TEXT[]">Lista de Texto (TEXT[])</option>
+                        <option value="INTEGER[]">Lista de Inteiros (INTEGER[])</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Único?</label>
+                    <input type="checkbox" id="isUnique">
+                </div>
+                <div class="form-group">
+                    <label>Indexado?</label>
+                    <input type="checkbox" id="isIndexed">
+                </div>
+                <div class="form-group">
+                    <label>Permitir Nulo?</label>
+                    <input type="checkbox" id="allowNull" checked>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                    <button type="button" class="btn" onclick="closeModal('addColumnModal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="addTableModal">
+        <div class="modal-content">
+            <h2>Criar Nova Tabela</h2>
+            <div class="form-group">
+                <label>Nome da Tabela</label>
+                <input type="text" id="tableName" placeholder="Ex: usuarios">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="createTable()">Criar</button>
+                <button class="btn" onclick="closeModal('addTableModal')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTable = null;
+        const ws = new WebSocket('ws://localhost:3001');
+
+        ws.onopen = () => {
+            console.log('Conectado ao WebSocket');
+            fetchTables();
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                updateTableData(data.table, data.data);
+            } catch (err) {
+                console.error('Erro ao processar mensagem WebSocket:', err);
+            }
+        };
+
+        async function fetchTables() {
+            try {
+                const response = await fetch('http://localhost:3000/tables');
+                const tables = await response.json();
+                renderTables(tables);
+            } catch (err) {
+                console.error('Erro ao buscar tabelas:', err);
+            }
+        }
+
+        function renderTables(tables) {
+            const list = document.getElementById('tablesList');
+            list.innerHTML = '';
+            tables.forEach(table => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${table.name}
+                    <button class="delete-btn" onclick="deleteTable('${table.name}')">Excluir</button>
+                `;
+                li.className = currentTable === table.name ? 'active' : '';
+                li.addEventListener('click', () => {
+                    currentTable = table.name;
+                    document.querySelectorAll('.sidebar li').forEach(item => item.classList.remove('active'));
+                    li.classList.add('active');
+                    updateContent(table.name);
+                });
+                list.appendChild(li);
+            });
+            if (tables.length > 0 && !currentTable) {
+                currentTable = tables[0].name;
+                list.querySelector('li').classList.add('active');
+                updateContent(currentTable);
+            }
+        }
+
+        async function updateContent(tableName) {
+            document.getElementById('tableNameHeader').textContent = tableName;
+            await fetchTableData(tableName);
+        }
+
+        async function fetchTableData(tableName) {
+            try {
+                const response = await fetch(`http://localhost:3000/tables/${tableName}`);
+                const data = await response.json();
+                updateTableData(tableName, data);
+                return data; // Retornar os dados para uso em outras funções
+            } catch (err) {
+                console.error('Erro ao buscar dados da tabela:', err);
+                return null;
+            }
+        }
+
+        function updateTableData(tableName, data) {
+            if (!data || !data.columns) {
+                console.warn('Dados inválidos ou sem colunas:', data);
+                return;
+            }
+            document.getElementById('tableNameHeader').textContent = tableName;
+            const table = document.getElementById('dataTable');
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+
+            thead.innerHTML = '';
+            data.columns.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col.name;
+                thead.appendChild(th);
+            });
+
+            tbody.innerHTML = '';
+            data.rows.forEach(row => {
+                const tr = document.createElement('tr');
+                data.columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = row[col.name] !== null && row[col.name] !== undefined ? row[col.name] : '';
+                    tr.appendChild(td);
+                });
+                const actionsTd = document.createElement('td');
+                actionsTd.className = 'actions';
+                actionsTd.innerHTML = `
+                    <button class="action-btn" onclick="deleteRow('${tableName}', ${row.id || 0})">Excluir</button>
+                `;
+                tr.appendChild(actionsTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showAddRowModal() {
+            if (!currentTable) return;
+            document.getElementById('addRowModal').style.display = 'flex';
+            const fields = document.getElementById('rowFields');
+            fields.innerHTML = '';
+            fetchTableData(currentTable).then(data => {
+                if (data && data.columns) {
+                    data.columns.forEach(col => {
+                        const div = document.createElement('div');
+                        div.className = 'form-row';
+                        let inputHtml = '';
+                        const inputType = col.name === 'id' ? 'number' : 
+                                         col.name.toLowerCase().includes('date') ? 'datetime-local' : 
+                                         col.name.toLowerCase().includes('boolean') ? 'select' : 'text';
+
+                        if (inputType === 'select') { // Para campos booleanos
+                            inputHtml = `
+                                <div class="form-group">
+                                    <label>${col.name}</label>
+                                    <select name="${col.name}">
+                                        <option value="true">Sim</option>
+                                        <option value="false">Não</option>
+                                    </select>
+                                </div>
+                            `;
+                        } else if (inputType === 'datetime-local') { // Para campos TIMESTAMP
+                            inputHtml = `
+                                <div class="form-group">
+                                    <label>${col.name}</label>
+                                    <input type="datetime-local" name="${col.name}" placeholder="Selecione data e hora">
+                                </div>
+                            `;
+                        } else { // Para outros tipos (text, number, etc.)
+                            inputHtml = `
+                                <div class="form-group">
+                                    <label class="${!col.nullable ? 'required' : ''}">${col.name}</label>
+                                    <input type="${inputType}" name="${col.name}" placeholder="Digite ${col.name}">
+                                </div>
+                            `;
+                        }
+                        div.innerHTML = inputHtml;
+                        fields.appendChild(div);
+                    });
+                } else {
+                    console.error('Nenhuma coluna encontrada para a tabela:', currentTable);
+                }
+            });
+        }
+
+        function showAddColumnModal() {
+            if (!currentTable) return;
+            document.getElementById('addColumnModal').style.display = 'flex';
+        }
+
+        function showAddTableModal() {
+            document.getElementById('addTableModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Limpa os campos do formulário ao fechar
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+
+        async function submitRow(event) {
+            event.preventDefault();
+            if (!currentTable) return;
+            const formData = new FormData(document.getElementById('rowForm'));
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                if (value === 'true' || value === 'false') {
+                    data[key] = value === 'true';
+                } else {
+                    data[key] = value || null;
+                }
+            }
+            try {
+                await fetch(`http://localhost:3000/tables/${currentTable}/rows`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                closeModal('addRowModal');
+                await fetchTableData(currentTable);
+            } catch (err) {
+                console.error('Erro ao inserir linha:', err);
+            }
+        }
+
+        async function deleteRow(tableName, id) {
+            if (confirm('Tem certeza que deseja excluir esta linha?')) {
+                try {
+                    await fetch(`http://localhost:3000/tables/${tableName}/rows/${id}`, {
+                        method: 'DELETE'
+                    });
+                    await fetchTableData(tableName);
+                } catch (err) {
+                    console.error('Erro ao excluir linha:', err);
+                }
+            }
+        }
+
+        async function addColumn(event) {
+            event.preventDefault(); // Previne o comportamento padrão do formulário
+            if (!currentTable) return;
+            const columnName = document.getElementById('columnName').value;
+            const columnType = document.getElementById('columnType').value;
+            const isUnique = document.getElementById('isUnique').checked;
+            const isIndexed = document.getElementById('isIndexed').checked;
+            const allowNull = document.getElementById('allowNull').checked;
+
+            let sqlType = columnType;
+            // Ajusta o tipo para lista se for um array
+            if (columnType.endsWith('[]')) {
+                sqlType = columnType; // Mantém como está (ex.: TEXT[])
+            }
+
+            try {
+                await fetch(`http://localhost:3000/tables/${currentTable}/columns`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: columnName, 
+                        type: sqlType, 
+                        nullable: allowNull, 
+                        unique: isUnique, 
+                        indexed: isIndexed 
+                    })
+                });
+                closeModal('addColumnModal');
+                await fetchTableData(currentTable);
+            } catch (err) {
+                console.error('Erro ao adicionar coluna:', err);
+            }
+        }
+
+        async function createTable() {
+            const tableName = document.getElementById('tableName').value;
+            try {
+                await fetch('http://localhost:3000/tables', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: tableName })
+                });
+                closeModal('addTableModal');
+                await fetchTables();
+            } catch (err) {
+                console.error('Erro ao criar tabela:', err);
+            }
+        }
+
+        async function deleteTable(tableName) {
+            if (confirm('Tem certeza que deseja excluir esta tabela e todos os seus dados?')) {
+                try {
+                    await fetch(`http://localhost:3000/tables/${tableName}`, {
+                        method: 'DELETE'
+                    });
+                    currentTable = null;
+                    await fetchTables();
+                } catch (err) {
+                    console.error('Erro ao excluir tabela:', err);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

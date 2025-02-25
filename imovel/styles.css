@@ -1,98 +1,166 @@
 /* Reset e configurações globais */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #ffffff;
-    color: #000;
-    line-height: 1.6;
-  }
-  
-  /* Slider em tela cheia */
-  #slider-container {
-    width: 100vw;
-    overflow: hidden;
-  }
-  .slider {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .slider::-webkit-scrollbar {
-    display: none;
-  }
-  .slider img {
-    width: 100vw;
-    height: 60vh;
-    object-fit: cover;
-    scroll-snap-align: start;
-  }
-  
-  /* Container de detalhes */
-  .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-  }
-  h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    font-weight: 700;
-  }
-  .price {
-    font-size: 24px;
-    font-weight: 500;
-    margin: 10px 0;
-    color: #007BFF;
-  }
-  #descricao-imovel p {
-    margin: 5px 0;
-  }
-  
-  /* Botão de afiliação */
-  .btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #007BFF;
-    color: #fff;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    margin: 20px 0;
-    cursor: pointer;
-  }
-  .info {
-    font-size: 14px;
-    color: #555;
-  }
-  
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: #F0F2F5; /* Cinza claro do Facebook */
+  color: #1C1E21; /* Texto preto do Facebook */
+  line-height: 1.6;
+}
+
+/* Slider em tela cheia */
+.slider-container {
+  width: 100%;
+  max-height: 60vh;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.slider img {
+  width: 100vw;
+  height: 60vh;
+  object-fit: cover;
+  scroll-snap-align: start;
+}
+
+/* Container de detalhes */
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.detalhes-imovel {
+  background-color: #FFFFFF; /* Branco puro do Facebook */
+  border-radius: 8px; /* Bordas arredondadas sutis */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.titulo-imovel {
+  font-size: 32px;
+  color: #1C1E21;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.preco-imovel {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1877F2; /* Azul do Facebook */
+  margin: 12px 0;
+}
+
+/* Grid de detalhes do imóvel */
+.detalhes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.detalhe-item {
+  background-color: #FFFFFF;
+  border: 1px solid #E9ECEF; /* Cinza claro do Facebook */
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.detalhe-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.material-icons {
+  font-size: 24px;
+  color: #1877F2; /* Azul do Facebook */
+  margin-bottom: 8px;
+  display: block;
+}
+
+.detalhe-valor {
+  font-size: 16px;
+  color: #1C1E21;
+  font-weight: 500;
+}
+
+/* Descrição do imóvel */
+.descricao-imovel {
+  margin: 20px 0;
+  font-size: 16px;
+  color: #60697B; /* Cinza médio do Facebook */
+  line-height: 1.8;
+}
 
 /* Container dos botões */
 .botoes-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  gap: 16px;
+  margin-top: 24px;
   text-align: center;
 }
 
-/* Botão secundário */
-#btn-conectar {
-  background-color: #28a745; /* Verde */
+/* Botões */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  color: #FFFFFF;
+  background-color: #1877F2; /* Azul do Facebook */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 100%;
+  max-width: 350px;
+  align-self: center;
 }
 
+.btn:hover {
+  background-color: #166FE5; /* Azul mais escuro do Facebook */
+  transform: translateY(-2px);
+}
 
+.btn-secundario {
+  background-color: #42B72A; /* Verde do Facebook */
+}
 
+.btn-secundario:hover {
+  background-color: #36A420;
+}
 
+/* Informações abaixo dos botões */
+.info-conectar, .info-afiliar {
+  font-size: 14px;
+  color: #60697B;
+  margin-top: 8px;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.5;
+}
 
+/* Notificação de login */
 #notificacao-overlay {
   position: fixed;
   top: 0;
@@ -107,44 +175,150 @@
 }
 
 .notificacao {
-  background: white;
-  padding: 20px;
+  background: #FFFFFF;
+  padding: 24px;
   border-radius: 8px;
   text-align: center;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .notificacao p {
   font-size: 16px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  color: #1C1E21;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
 .botoes {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .notificacao-btn-azul {
-  background: #007BFF;
+  background: #1877F2;
   color: white;
-  padding: 10px 15px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
   width: 48%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.notificacao-btn-azul:hover {
+  background-color: #166FE5;
+  transform: translateY(-2px);
 }
 
 .notificacao-btn-cinza {
-  background: #ddd;
-  color: black;
-  padding: 10px 15px;
+  background: #E9ECEF;
+  color: #1C1E21;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
   width: 48%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
+.notificacao-btn-cinza:hover {
+  background-color: #D1D5DB;
+  transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .slider-container {
+    max-height: 50vh;
+  }
+
+  .slider img {
+    height: 50vh;
+  }
+
+  .container {
+    margin: 16px auto;
+    padding: 0 16px;
+  }
+
+  .detalhes-imovel {
+    padding: 16px;
+  }
+
+  .titulo-imovel {
+    font-size: 28px;
+  }
+
+  .preco-imovel {
+    font-size: 20px;
+  }
+
+  .detalhes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .notificacao {
+    padding: 16px;
+    max-width: 350px;
+  }
+
+  .notificacao p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider-container {
+    max-height: 40vh;
+  }
+
+  .slider img {
+    height: 40vh;
+  }
+
+  .titulo-imovel {
+    font-size: 24px;
+  }
+
+  .preco-imovel {
+    font-size: 18px;
+  }
+
+  .detalhes-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .detalhe-item {
+    padding: 10px;
+  }
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  .detalhe-valor {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .info-conectar, .info-afiliar {
+    font-size: 12px;
+  }
+}
