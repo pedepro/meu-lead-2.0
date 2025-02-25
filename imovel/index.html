@@ -419,9 +419,12 @@
       </div>
       <div class="botoes-container">
         <button id="btn-conectar" class="btn btn-secundario">Conectar-se com o proprietário por R$ 39,90</button>
-        <p class="info-conectar" id="texto-conectar">Ao pagar R$ 39,90, você pode entrar em contato diretamente com o proprietário para tirar dúvidas e negociar.</p>
+        <p class="info-conectar" id="texto-conectar">Ao pagar R$ 39,90, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
+          Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.
+          </p>
         <button id="btn-afiliar" class="btn">Afiliar-se</button>
-        <p class="info-afiliar">Ao se afiliar a um imóvel, você passa a receber atualizações sobre a disponibilidade e pode indicá-lo para seus clientes.</p>
+        <p class="info-afiliar">Ao se afliar a um imóvel, você passa a receber atualizações sobre sua disponibilidade, imagens, valores e condições de negociação.
+        </p>
       </div>
     </div>
   </div>
@@ -470,7 +473,9 @@
           if (btnConectar && textoConectar) {
               const precoContato = Number(imovel.price_contato) || 39.90; // Converte para número e usa 39.90 como fallback
               btnConectar.textContent = `Conectar-se com o proprietário por R$ ${precoContato.toFixed(2).replace('.', ',')}`;
-              textoConectar.textContent = `Ao pagar R$ ${precoContato.toFixed(2).replace('.', ',')}, você pode entrar em contato diretamente com o proprietário para tirar dúvidas e negociar.`;
+              textoConectar.textContent = `Ao pagar R$ ${precoContato.toFixed(2).replace('.', ',')}, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
+Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.
+`;
           }
 
           // Ajuste no slider para melhor navegação
