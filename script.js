@@ -1,7 +1,7 @@
 // Variáveis globais
 let imoveisOriginais = [];
 let cidades = [];
-let imoveisPorPagina = 3; // Número de imóveis por página
+let imoveisPorPagina = 6; // Número de imóveis por página
 let paginaImoveisAtual = 1;
 let totalImoveis = 0; // Variável para armazenar o total retornado pelo servidor
 
