@@ -163,9 +163,26 @@ header h1 {
 
 #meus-imoveis-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajusta automaticamente o número de colunas */
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px; /* Espaçamento entre os cards */
+    padding: 20px; /* Espaçamento interno do container */
+}
+
+/* Estilo para os cards dentro do container */
+#meus-imoveis-container .card {
+    width: 100%; /* Garante que o card ocupe toda a largura da célula da grade */
+    box-sizing: border-box; /* Inclui padding e borda na largura */
+    margin: 0; /* Remove qualquer margem padrão que possa interferir no gap */
+}
+
+/* Estilo para o título "Meus Imóveis" */
+#meus-imoveis-container h2 {
+    grid-column: 1 / -1; /* Faz o título ocupar todas as colunas da grade */
+    width: 100%; /* Garante que o título ocupe toda a largura disponível */
+    margin: 0 0 15px 0; /* Remove margens laterais, mantém a inferior */
+    padding-left: 15px; /* Mantém o alinhamento à esquerda como no JS */
+    color: #555555;
+    box-sizing: border-box;
 }
 
 
@@ -697,4 +714,91 @@ header h1 {
     font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
     color: #333;
     padding: 8px;
+}
+
+
+
+
+/* Estilo para o popup de afiliação */
+.affiliation-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+}
+
+.affiliation-popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.affiliation-popup-content h3 {
+    margin: 0 0 15px;
+    font-size: 18px;
+    color: #333;
+}
+
+.affiliation-popup-content p {
+    margin: 0 0 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.affiliation-popup-content button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0 10px;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+/* Botão "Confirmar" no popup */
+.affiliation-confirm-btn {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+.affiliation-confirm-btn:hover {
+    background-color: #45a049; /* Verde mais escuro no hover */
+}
+
+/* Botão "Cancelar" no popup */
+.affiliation-cancel-btn {
+    background-color: #f44336; /* Vermelho */
+    color: white;
+}
+
+.affiliation-cancel-btn:hover {
+    background-color: #d32f2f; /* Vermelho mais escuro no hover */
+}
+
+/* Botão "Remover Afiliação" no card */
+.btn-remove-affiliation {
+    background-color: #ff4d4d; /* Vermelho suave */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-remove-affiliation:hover {
+    background-color: #cc0000; /* Vermelho mais escuro no hover */
 }

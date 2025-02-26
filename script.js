@@ -623,6 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // Função para carregar imóveis afiliados
+// Função para carregar imóveis afiliados e comprados
 async function carregaraImoveis() {
     try {
         const container = document.getElementById("meus-imoveis-container");
@@ -631,24 +632,11 @@ async function carregaraImoveis() {
             return;
         }
 
-        // Ocultar outros containers
-        document.getElementById("imoveis-container").style.display = "none";
-        document.getElementById("clientes-container").style.display = "none";
-        document.getElementById("meus-leads").style.display = "none";
-
-        // Exibir o container de imóveis afiliados
-        container.style.display = "block";
-        container.innerHTML = "";
-
-        // Remover os filtros existentes
-        const filtrosContainer = document.getElementById("filtros-imoveis");
-        if (filtrosContainer) {
-            filtrosContainer.style.display = "none"; // Oculta os filtros
-            // Ou, se preferir remover completamente: filtrosContainer.innerHTML = "";
-        }
+        // Não mexemos na visibilidade aqui, pois já foi definida no evento de clique
+        container.innerHTML = ""; // Limpa o conteúdo antes de adicionar os cards
 
         const titulo = document.createElement("h2");
-        titulo.textContent = "Imóveis que me afiliei";
+        titulo.textContent = "Meus Imóveis";
         titulo.style.marginBottom = "15px";
         titulo.style.marginLeft = "15px";
         titulo.style.color = "#555555";
@@ -656,7 +644,7 @@ async function carregaraImoveis() {
 
         const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/1");
         const data = await response.json();
-        const imoveis = Array.isArray(data) ? data : data.imoveis || [];
+        const imoveis = Array.isArray(data.imoveis) ? data.imoveis : [];
 
         if (imoveis.length === 0) {
             container.innerHTML += "<p>Nenhum imóvel encontrado.</p>";
@@ -667,19 +655,26 @@ async function carregaraImoveis() {
             const card = document.createElement("div");
             card.classList.add("card");
 
-            const imagem = imovel.imagens.length > 0 
+            const imagem = imovel.imagens && imovel.imagens.length > 0 
                 ? imovel.imagens[0] 
                 : "https://source.unsplash.com/400x300/?house";
 
-            const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
-            const phone = imovel.whatsapp.replace(/\D/g, '');
-            const mensagem = `Olá ${imovel.nome_proprietario}`;
+            const phone = imovel.whatsapp ? imovel.whatsapp.replace(/\D/g, '') : '';
+            const mensagem = `Olá ${imovel.nome_proprietario || 'Proprietário'}`;
             const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(mensagem)}`;
 
             const formatarTexto = (quantidade, singular, plural) => 
                 `${quantidade} ${quantidade === 1 ? singular : plural}`;
 
-            const nomeCidade = getNomeCidade(imovel.cidade);
+            const nomeCidade = getNomeCidade(imovel.cidade || '');
+
+            const origemTexto = imovel.origem === 'comprado' ? 'Comprado' : 
+                               imovel.origem === 'afiliado' ? 'Apenas Afiliado' : 
+                               'Comprado e Afiliado';
+
+            const botaoAcao = imovel.origem === 'afiliado' 
+                ? `<button class="btn-remove-affiliation" onclick="mostrarPopupRemover(${imovel.id})">Remover Afiliação</button>`
+                : `<button class="btn-detalhes" onclick="window.location.href='${whatsappUrl}'">Conversar com o Proprietário</button>`;
 
             card.innerHTML = `
                 <div class="image-container">
@@ -699,18 +694,17 @@ async function carregaraImoveis() {
                         </div>
                     </div>
                 </div>
-                <h2>${imovel.texto_principal}</h2>
-                <p><strong>${nomeCidade} - ${imovel.estado}</strong></p>
-                <p>${imovel.descricao}</p>
-                <h2>${parseFloat(imovel.valor).toLocaleString('pt-BR', { 
+                <h2>${imovel.texto_principal || 'Imóvel sem título'}</h2>
+                <p><strong>${nomeCidade} - ${imovel.estado || ''}</strong></p>
+                <p>${imovel.descricao || 'Sem descrição'}</p>
+                <h2>${parseFloat(imovel.valor || 0).toLocaleString('pt-BR', { 
                     style: 'currency', 
                     currency: 'BRL', 
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2 
                 })}</h2>
-                <button class="btn-detalhes" onclick="window.location.href='${whatsappUrl}'">
-                    Conversar com o Proprietário
-                </button>
+                <p><em>${origemTexto}</em></p>
+                ${botaoAcao}
             `;
             container.appendChild(card);
         });
@@ -718,6 +712,45 @@ async function carregaraImoveis() {
         console.error("Erro ao carregar imóveis:", error);
     }
 }
+
+// Função para mostrar o popup de confirmação
+function mostrarPopupRemover(imovelId) {
+    const popup = document.createElement("div");
+    popup.classList.add("affiliation-popup"); // Classe renomeada
+    popup.innerHTML = `
+        <div class="affiliation-popup-content"> <!-- Classe renomeada -->
+            <h3>Confirmar Remoção</h3>
+            <p>Deseja realmente remover a afiliação deste imóvel?</p>
+            <button class="affiliation-confirm-btn" onclick="removerAfiliacao(${imovelId})">Confirmar</button> <!-- Classe adicionada -->
+            <button class="affiliation-cancel-btn" onclick="this.parentElement.parentElement.remove()">Cancelar</button> <!-- Classe adicionada -->
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+// Função para remover a afiliação
+async function removerAfiliacao(imovelId) {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/remover-afiliacao/1/${imovelId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert("Afiliação removida com sucesso!");
+            document.querySelector(".affiliation-popup").remove(); // Classe renomeada
+            carregaraImoveis(); // Recarrega a lista
+        } else {
+            alert("Erro ao remover afiliação: " + data.message);
+        }
+    } catch (error) {
+        console.error("Erro ao remover afiliação:", error);
+        alert("Erro ao remover afiliação.");
+    }
+}
+
+
+
+
 
 // Função para carregar leads adquiridos
 async function carregarLeadsAdquiridos(corretorId) {
@@ -784,6 +817,7 @@ async function carregarCorretor() {
 
 
 // Único evento DOMContentLoaded para inicialização
+// Único evento DOMContentLoaded para inicialização
 document.addEventListener("DOMContentLoaded", async function () {
     const menuToggle = document.querySelector(".menu-toggle");
     const sidebar = document.querySelector(".sidebar");
@@ -803,7 +837,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.querySelector(".main-content")?.appendChild(clientesContainer) || document.body.appendChild(clientesContainer);
     }
 
-    const meusImoveisContainer = document.getElementById("meus-imoveis-container");
+    // Garantir que o meus-imoveis-container exista
+    let meusImoveisContainer = document.getElementById("meus-imoveis-container");
+    if (!meusImoveisContainer) {
+        console.warn("Elemento #meus-imoveis-container não encontrado. Criando um novo.");
+        meusImoveisContainer = document.createElement("div");
+        meusImoveisContainer.id = "meus-imoveis-container";
+        meusImoveisContainer.style.display = "none"; // Inicialmente oculto
+        document.querySelector(".main-content")?.appendChild(meusImoveisContainer) || document.body.appendChild(meusImoveisContainer);
+    }
+
     const meusLeadsContainer = document.getElementById("meus-leads");
 
     // Função auxiliar para mostrar/esconder filtros
@@ -820,7 +863,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (paginacaoImoveis) {
             paginacaoImoveis.style.display = visivel ? "block" : "none";
         } else if (!visivel) {
-            // Remove a paginação se já existir e não deve ser exibida
             const existingPagination = document.querySelector(".paginacao-imoveis");
             if (existingPagination) {
                 existingPagination.remove();
@@ -846,14 +888,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (imoveisLink) {
         imoveisLink.addEventListener("click", async function (e) {
-            e.preventDefault(); // Previne comportamento padrão do link, se houver
+            e.preventDefault();
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "flex";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
             
-            // Mostrar filtros e paginação de imóveis, e garantir centralização
             gerenciarFiltros(true);
             gerenciarPaginacaoImoveis(true);
             await carregarImoveis();
@@ -865,14 +906,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (clientesLink) {
         clientesLink.addEventListener("click", function (e) {
-            e.preventDefault(); // Previne comportamento padrão do link, se houver
+            e.preventDefault();
             sidebar.classList.remove("open");
             clientesContainer.style.display = "flex";
             imoveisContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
             
-            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregarClientes();
@@ -881,14 +921,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (meusImoveisLink) {
         meusImoveisLink.addEventListener("click", function (e) {
-            e.preventDefault(); // Previne comportamento padrão do link, se houver
+            e.preventDefault();
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
-            meusImoveisContainer.style.display = "block";
+            meusImoveisContainer.style.display = "grid"; // Exibe como grid
             meusLeadsContainer.style.display = "none";
             
-            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregaraImoveis();
@@ -897,14 +936,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (meusLeadsLink) {
         meusLeadsLink.addEventListener("click", function (e) {
-            e.preventDefault(); // Previne comportamento padrão do link, se houver
+            e.preventDefault();
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "block";
             
-            // Esconder filtros e paginação de imóveis
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregarLeadsAdquiridos(1);
@@ -919,14 +957,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // Inicialização padrão (com filtros e paginação visíveis para imóveis)
+    // Inicialização padrão
     await carregarCidades();
     await carregarImoveis();
     await exibirDropdownCidades();
     exibirDropdownPrecos();
-    gerenciarFiltros(true); // Garante que os filtros estejam visíveis ao carregar a página
-    gerenciarPaginacaoImoveis(true); // Garante que a paginação de imóveis esteja visível ao carregar
-    centralizarPaginacaoImoveis(); // Garante que a paginação esteja centralizada ao carregar
+    gerenciarFiltros(true);
+    gerenciarPaginacaoImoveis(true);
+    centralizarPaginacaoImoveis();
     carregarCorretor();
 });
 
@@ -939,3 +977,4 @@ window.addEventListener("load", function () {
         }
     }, 1000);
 });
+
