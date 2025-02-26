@@ -45,10 +45,10 @@ async function carregarImoveis() {
     }
 }
 
-// Função para criar o HTML de um card de imóvel (mantida como está)
 function criarCardImovel(imovel) {
-    const imagem = imovel.imagens.length > 0 
-        ? imovel.imagens[0] 
+    const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : []; // Garante que seja um array
+    const imagem = imagens.length > 0 
+        ? imagens[0] 
         : "https://source.unsplash.com/400x300/?house";
 
     const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
@@ -95,7 +95,6 @@ function criarCardImovel(imovel) {
         </div>
     `;
 }
-
 // Função para renderizar os imóveis
 function renderizarImoveis(imoveis) {
     const imoveisContainer = document.getElementById("imoveis-container");
