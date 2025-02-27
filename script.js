@@ -49,7 +49,7 @@ function criarCardImovel(imovel) {
     const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : []; // Garante que seja um array
     const imagem = imagens.length > 0 
         ? imagens[0] 
-        : "https://imobiliariapedroso.com.br/images/imovel-sem-foto3.jpg"; // Imagem padrão atualizada
+        : "assets/icon.ico"; // Usando o icon.ico como imagem padrão
 
     const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
@@ -95,6 +95,7 @@ function criarCardImovel(imovel) {
         </div>
     `;
 }
+
 // Função para renderizar os imóveis
 function renderizarImoveis(imoveis) {
     const imoveisContainer = document.getElementById("imoveis-container");
