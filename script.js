@@ -49,7 +49,7 @@ function criarCardImovel(imovel) {
     const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : []; // Garante que seja um array
     const imagem = imagens.length > 0 
         ? imagens[0] 
-        : "https://source.unsplash.com/400x300/?house";
+        : "https://imobiliariapedroso.com.br/images/imovel-sem-foto3.jpg"; // Imagem padrão atualizada
 
     const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
