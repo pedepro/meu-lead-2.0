@@ -459,59 +459,68 @@
       </div>
       <div class="botoes-container">
         <button id="btn-conectar" class="btn btn-secundario">Conectar-se com o proprietário por R$ 39,90</button>
-        <p class="info-conectar" id="texto-conectar">Ao pagar R$ 39,90, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
-          Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.
-          </p>
-        <button id="btn-afiliar" class="btn">Afiliar-se</button>
-        <p class="info-afiliar">Ao se afliar a um imóvel, você passa a receber atualizações sobre sua disponibilidade, imagens, valores e condições de negociação.
+        <p class="info-conectar" id="texto-conectar">Ao pagar R$ 39,90, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
+          Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.
         </p>
+        <button id="btn-afiliar" class="btn">Afiliar-se</button>
+        <p class="info-afiliar">Ao se afiliar a um imóvel, você passa a receber atualizações sobre sua disponibilidade, imagens, valores e condições de negociação.</p>
       </div>
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      console.log("DOM carregado, iniciando script de detalhes do imóvel");
+
       const params = new URLSearchParams(window.location.search);
       const imovelId = params.get("id");
 
+      console.log("ID do imóvel obtido da URL:", imovelId);
+
       if (!imovelId) {
+        console.log("Nenhum ID fornecido, exibindo mensagem de erro");
         document.getElementById("detalhes-imovel").innerHTML = "<p>Imóvel não encontrado.</p>";
         return;
       }
 
       try {
+        console.log(`Fazendo fetch para: https://pedepro-meulead.6a7cul.easypanel.host/get-imovel/${imovelId}`);
         const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/get-imovel/${imovelId}`);
         const imovel = await response.json();
 
+        console.log("Resposta completa do backend:", imovel);
+
         if (!imovel.id) {
+          console.log("Imóvel não encontrado na resposta, exibindo mensagem de erro");
           document.getElementById("detalhes-imovel").innerHTML = "<p>Imóvel não encontrado.</p>";
           return;
         }
 
-        document.getElementById("titulo-imovel").textContent = imovel.texto_principal;
-        document.getElementById("preco-imovel").textContent = ` ${parseFloat(imovel.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-        document.getElementById("tipo-imovel").textContent = imovel.tipo || 'Não informado';
-        document.getElementById("localizacao-imovel").textContent = `Localização: ${imovel.endereco || 'Não informado'}`;
-        document.getElementById("descricao-imovel").innerHTML = `<strong>Descrição:</strong> ${imovel.descricao || 'Sem descrição'}`;
-        document.getElementById("negociacao-imovel").innerHTML = `<strong>Descrição da negociação:</strong> ${imovel.descricao_negociacao || 'Sem descrição de negociação'}`;
-        document.getElementById("area").textContent = `${imovel.metros_quadrados || 0} m²`;
-        document.getElementById("quartos").textContent = imovel.quartos || 0;
-        document.getElementById("banheiros").textContent = imovel.banheiros || 0;
-        document.getElementById("vagas").textContent = imovel.vagas_garagem || 0;
-        document.getElementById("andar").textContent = imovel.andar || 'Não informado';
-        document.getElementById("mobiliado").textContent = imovel.mobiliado ? "Sim" : "Não";
+        // Preencher o título
+        console.log("Preenchendo título:", imovel.texto_principal);
+        document.getElementById("titulo-imovel").textContent = imovel.texto_principal || "Imóvel sem título";
 
-        // Configuração do slider
+        // Preencher o slider de imagens
         const slider = document.getElementById("slider-imagens");
         const prevArrow = document.getElementById("prev-arrow");
         const nextArrow = document.getElementById("next-arrow");
         const dotsContainer = document.getElementById("slider-dots");
-        
-        slider.innerHTML = imovel.imagens
-          .map(img => `<img src="${img}" alt="Imagem do Imóvel" loading="lazy">`)
-          .join('');
 
-        imovel.imagens.forEach((_, index) => {
+        const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : [];
+        console.log("Array de imagens recebido:", imagens);
+
+        slider.innerHTML = imagens.length > 0
+          ? imagens.map(img => {
+              const url = img.url || 'https://source.unsplash.com/400x300/?house';
+              console.log(`Mapeando imagem - ID: ${img.id}, URL: ${url}`);
+              return `<img src="${url}" alt="Imagem do Imóvel" loading="lazy">`;
+            }).join('')
+          : `<img src="https://source.unsplash.com/400x300/?house" alt="Imagem padrão" loading="lazy">`;
+
+        console.log("Slider preenchido com HTML:", slider.innerHTML);
+
+        // Configuração dos dots e navegação do slider
+        imagens.forEach((_, index) => {
           const dot = document.createElement("div");
           dot.classList.add("dot");
           if (index === 0) dot.classList.add("active");
@@ -520,17 +529,16 @@
         });
 
         let currentSlide = 0;
-        const totalSlides = imovel.imagens.length;
+        const totalSlides = imagens.length || 1;
 
         function updateSlider() {
           slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-          
           document.querySelectorAll(".dot").forEach((dot, index) => {
             dot.classList.toggle("active", index === currentSlide);
           });
-
           prevArrow.style.display = currentSlide === 0 ? "none" : "block";
           nextArrow.style.display = currentSlide === totalSlides - 1 ? "none" : "block";
+          console.log("Slider atualizado, currentSlide:", currentSlide);
         }
 
         function goToSlide(index) {
@@ -554,13 +562,38 @@
 
         updateSlider();
 
+        // Preencher os outros campos
+        console.log("Preenchendo preço:", imovel.valor);
+        document.getElementById("preco-imovel").textContent = `${parseFloat(imovel.valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+        console.log("Preenchendo tipo:", imovel.tipo);
+        document.getElementById("tipo-imovel").textContent = imovel.tipo || 'Não informado';
+
+        console.log("Preenchendo localização:", imovel.endereco);
+        document.getElementById("localizacao-imovel").textContent = `Localização: ${imovel.endereco || 'Não informado'}`;
+
+        console.log("Preenchendo descrição:", imovel.descricao);
+        document.getElementById("descricao-imovel").innerHTML = `<strong>Descrição:</strong> ${imovel.descricao || 'Sem descrição'}`;
+
+        console.log("Preenchendo descrição de negociação:", imovel.descricao_negociacao);
+        document.getElementById("negociacao-imovel").innerHTML = `<strong>Descrição da negociação:</strong> ${imovel.descricao_negociacao || 'Sem descrição de negociação'}`;
+
+        console.log("Preenchendo detalhes do imóvel");
+        document.getElementById("area").textContent = `${imovel.metros_quadrados || 0} m²`;
+        document.getElementById("quartos").textContent = imovel.quartos || 0;
+        document.getElementById("banheiros").textContent = imovel.banheiros || 0;
+        document.getElementById("vagas").textContent = imovel.vagas_garagem || 0;
+        document.getElementById("andar").textContent = imovel.andar || 'Não informado';
+        document.getElementById("mobiliado").textContent = imovel.mobiliado ? "Sim" : "Não";
+
         const btnConectar = document.getElementById("btn-conectar");
         const textoConectar = document.getElementById("texto-conectar");
         if (btnConectar && textoConectar) {
           const precoContato = Number(imovel.price_contato) || 39.90;
+          console.log("Configurando botão e texto de conexão com precoContato:", precoContato);
           btnConectar.textContent = `Conectar-se com o proprietário por R$ ${precoContato.toFixed(2).replace('.', ',')}`;
-          textoConectar.textContent = `Ao pagar R$ ${precoContato.toFixed(2).replace('.', ',')}, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
-Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.`;
+          textoConectar.textContent = `Ao pagar R$ ${precoContato.toFixed(2).replace('.', ',')}, você será conectado diretamente com o proprietário para tirar dúvidas e negociar.
+Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É você em contato direto com o proprietário do imóvel.`;
         }
 
       } catch (error) {
@@ -570,8 +603,11 @@ Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É voce
     });
 
     document.addEventListener("DOMContentLoaded", () => {
+      console.log("DOM carregado, iniciando script de verificação de login");
+
       function verificarLogin(acao) {
         const token = localStorage.getItem("token");
+        console.log(`Verificando login para ação ${acao}, token:`, token ? "presente" : "ausente");
         
         if (!token) {
           exibirNotificacao(acao);
@@ -584,6 +620,8 @@ Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É voce
         const mensagem = acao === "afiliar-se"
           ? "Efetue Login ou crie uma conta para afiliar-se."
           : "Efetue Login ou crie uma conta para conectar-se com o proprietário.";
+
+        console.log(`Exibindo notificação para ação: ${acao}`);
 
         const overlay = document.createElement("div");
         overlay.id = "notificacao-overlay";
@@ -604,10 +642,12 @@ Não cobramos taxas extras sob venda, comissões, parcerias ou outros. É voce
           const id = urlParams.get("id");
           let loginUrl = "/login";
           if (id) loginUrl += `?id=${id}`;
+          console.log("Redirecionando para login:", loginUrl);
           window.location.href = loginUrl;
         });
 
         document.getElementById("notificacao-btn-cancelar").addEventListener("click", () => {
+          console.log("Fechando notificação");
           document.body.removeChild(overlay);
         });
       }

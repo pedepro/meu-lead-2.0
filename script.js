@@ -25,7 +25,7 @@ function getNomeCidade(cidadeId) {
 // Função para carregar os imóveis iniciais
 async function carregarImoveis() {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis?limite=${imoveisPorPagina}&offset=0`);
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=${imoveisPorPagina}&offset=0`);
         const data = await response.json();
         if (data.success) {
             imoveisOriginais = data.imoveis;
