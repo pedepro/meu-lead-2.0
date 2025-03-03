@@ -13,12 +13,13 @@
                 ]
             },
             { 
-                "id": "relatorios", 
-                "label": "Relatórios", 
-                "link": "/relatorios", 
-                "icon": "fa fa-chart-line",
+                "id": "imoveis", 
+                "label": "imóveis", 
+                "link": "/imoveis", 
+                "icon": "fa fa-building",
                 "submenu": [
-                    { "id": "relatorio-de-pedidos", "label": "Relatório de pedidos", "link": "/relatorios/pedidos" }
+                    { "id": "cadastroimovel", "label": "Novo imóvel", "link": "/imoveis/novoimovel" },
+                    { "id": "listaimoveis", "label": "Lista de imóveis", "link": "/imoveis/listaimoveis" }
                 ]
             },
             { 

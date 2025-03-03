@@ -1,0 +1,384 @@
+<div class="imovel-cadastro">
+    <h2 id="titulo-form">Cadastro de Imóvel</h2>
+    <form id="form-imovel" class="form-container">
+        <!-- Seção Básica -->
+        <fieldset class="section">
+            <legend>Informações Básicas</legend>
+            <div class="field-group">
+                <div>
+                    <label for="nome_proprietario">Nome do Proprietário</label>
+                    <input type="text" id="nome_proprietario" name="nome_proprietario" placeholder="Digite o nome">
+                </div>
+                <div>
+                    <label for="valor">Valor (R$)<span class="required">*</span></label>
+                    <input type="number" id="valor" name="valor" step="0.01" placeholder="Digite o valor" required>
+                </div>
+                <div>
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" name="categoria">
+                        <option value="">Selecione</option>
+                        <option value="1">Médio Padrão</option>
+                        <option value="2">Alto Padrão</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção Características -->
+        <fieldset class="section">
+            <legend>Características do Imóvel</legend>
+            <div class="field-group">
+                <div>
+                    <label for="quartos">Quartos<span class="required">*</span></label>
+                    <input type="number" id="quartos" name="quartos" placeholder="Quantidade" required>
+                </div>
+                <div>
+                    <label for="banheiros">Banheiros<span class="required">*</span></label>
+                    <input type="number" id="banheiros" name="banheiros" placeholder="Quantidade" required>
+                </div>
+                <div>
+                    <label for="metros_quadrados">Metros Quadrados (m²)<span class="required">*</span></label>
+                    <input type="number" id="metros_quadrados" name="metros_quadrados" placeholder="Área" required>
+                </div>
+                <div>
+                    <label for="vagas_garagem">Vagas de Garagem</label>
+                    <input type="number" id="vagas_garagem" name="vagas_garagem" placeholder="Quantidade">
+                </div>
+                <div>
+                    <label for="andar">Andar</label>
+                    <input type="number" id="andar" name="andar" placeholder="Nº do andar">
+                </div>
+                <div>
+                    <label for="mobiliado">Mobiliado</label>
+                    <select id="mobiliado" name="mobiliado">
+                        <option value="sim">Sim</option>
+                        <option value="nao" selected>Não</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção Localização -->
+        <fieldset class="section">
+            <legend>Localização</legend>
+            <div class="field-group">
+                <div>
+                    <label for="cidade">Cidade</label>
+                    <select id="cidade" name="cidade">
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="endereco">Endereço<span class="required">*</span></label>
+                    <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço" required>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção Contato e Tipo -->
+        <fieldset class="section">
+            <legend>Contato e Tipo</legend>
+            <div class="field-group">
+                <div>
+                    <label for="whatsapp">WhatsApp</label>
+                    <input type="text" id="whatsapp" name="whatsapp" placeholder="Número com DDD">
+                </div>
+                <div>
+                    <label for="price_contato">Preço de Contato</label>
+                    <input type="text" id="price_contato" name="price_contato" placeholder="Preço de contato">
+                </div>
+                <div>
+                    <label for="tipoSelect">Tipo<span class="required">*</span></label>
+                    <select id="tipoSelect" name="tipo" required>
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção Descrição -->
+        <fieldset class="section">
+            <legend>Descrição</legend>
+            <div class="field-group">
+                <div class="full-width">
+                    <label for="texto_principal">Título Principal<span class="required">*</span></label>
+                    <input type="text" id="texto_principal" name="texto_principal" placeholder="Título do imóvel" required>
+                </div>
+                <div class="full-width">
+                    <label for="descricao">Descrição</label>
+                    <textarea id="descricao" name="descricao" placeholder="Descreva o imóvel"></textarea>
+                </div>
+                <div class="full-width">
+                    <label for="descricao_negociacao">Descrição de Negociação</label>
+                    <textarea id="descricao_negociacao" name="descricao_negociacao" placeholder="Detalhes da negociação"></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção Imagens -->
+        <fieldset class="section imagens-section">
+            <legend>Imagens</legend>
+            <div class="field-group">
+                <div class="full-width">
+                    <label for="imagensInput">Carregar Imagens</label>
+                    <input type="file" id="imagensInput" name="imagens" multiple accept="image/*">
+                    <div id="imagensPreview"></div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Botão -->
+        <div class="button-container">
+            <button type="submit" id="btn-submit">Cadastrar Imóvel</button>
+        </div>
+    </form>
+
+    <!-- Elemento de Loading -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+</div>
+
+<style>
+    .imovel-cadastro {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: relative; /* Para o overlay */
+    }
+
+    h2 {
+        color: #1A73E8;
+        font-size: 26px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .section {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .section legend {
+        font-weight: 600;
+        color: #333;
+        padding: 0 10px;
+        font-size: 16px;
+    }
+
+    .field-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .field-group > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .required {
+        color: red;
+        margin-left: 2px;
+    }
+
+    input, select, textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #fff;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #1A73E8;
+        box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+        outline: none;
+    }
+
+    textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    .imagens-section {
+        margin-top: 10px;
+    }
+
+    #imagensPreview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .image-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+        position: relative;
+    }
+
+    .image-container img {
+        max-width: 100px;
+        max-height: 100px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .remove-image:hover {
+        background-color: #cc0000;
+    }
+
+    .toggle-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .toggle-container label {
+        font-size: 12px;
+        color: #666;
+        display: flex;
+        align-items: center;
+    }
+
+    .toggle-container input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    .button-container {
+        text-align: center;
+    }
+
+    button {
+        background-color: #1A73E8;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #1557B0;
+    }
+
+    /* Estilos do Loading */
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #1A73E8;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .imovel-cadastro {
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        .field-group {
+            grid-template-columns: 1fr;
+        }
+
+        .section {
+            padding: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .imovel-cadastro {
+            padding: 10px;
+        }
+
+        input, select, textarea {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        label {
+            font-size: 12px;
+        }
+
+        .image-container img {
+            max-width: 80px;
+            max-height: 80px;
+        }
+    }
+</style>

@@ -185,7 +185,7 @@ function filtrarImoveis() {
     const cidadeSelecionada = document.getElementById("dropdown-cidades")?.value || "";
     const precoSelecionado = document.getElementById("dropdown-precos")?.value || "";
 
-    let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis";
+    let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis";
     const params = new URLSearchParams();
 
     if (cidadeSelecionada) {

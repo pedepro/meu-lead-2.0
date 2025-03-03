@@ -1,0 +1,389 @@
+<div class="property-display">
+    <div class="display-header">
+        <h1>Gerenciamento de Imóveis</h1>
+        <div class="filter-row">
+            <select id="city-filter" class="filter-dropdown">
+                <option value="">Todas as Cidades</option>
+            </select>
+            <select id="price-filter" class="filter-dropdown">
+                <option value="">Todos os Preços</option>
+                <option value="0-500000">Até R$ 500 mil</option>
+                <option value="500000-1000000">R$ 500 mil - R$ 1 milhão</option>
+                <option value="1000000-2000000">R$ 1 milhão - R$ 2 milhões</option>
+                <option value="2000000-5000000">R$ 2 milhões - R$ 5 milhões</option>
+                <option value="5000000-10000000">R$ 5 milhões - R$ 10 milhões</option>
+                <option value="10000000-20000000">R$ 10 milhões - R$ 20 milhões</option>
+                <option value="20000000">+ R$ 20 milhões</option>
+            </select>
+        </div>
+        <div class="header-actions">
+            <button class="action-button unavailable">Imóveis Indisponíveis</button>
+            <a href="?session=cadastroimovel">
+                <button class="action-button new-item">Criar Novo Imóvel</button>
+            </a>
+        </div>
+    </div>
+    <div class="property-cards" id="property-list"></div>
+    <div id="pagination-controls" class="pagination-controls"></div>
+</div>
+
+<style>
+    /* Reset CSS básico */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .property-display {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .display-header {
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        color: #1e3a8a;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+
+    .filter-dropdown {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #f3f4f6;
+        outline: none;
+        min-width: 200px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .filter-dropdown:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .action-button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+    }
+
+    .action-button.unavailable {
+        background-color: #ef4444;
+        color: white;
+    }
+
+    .action-button.unavailable:hover {
+        background-color: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    .action-button.new-item {
+        background-color: #10b981;
+        color: white;
+    }
+
+    .action-button.new-item:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+    }
+
+    .property-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .property-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .property-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .property-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .property-content {
+        padding: 16px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .property-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-bottom: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .property-type, .property-price {
+        font-size: 14px;
+        color: #4b5e9e;
+        margin-bottom: 8px;
+    }
+
+    .property-price {
+        font-weight: 600;
+    }
+
+    .property-toggles {
+        display: flex;
+        justify-content: space-between;
+        margin-top: auto;
+        padding-top: 12px;
+    }
+
+    .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .toggle-label {
+        font-size: 12px;
+        color: #1e3a8a;
+    }
+
+    .toggle-btn {
+        width: 30px;
+        height: 16px;
+        background-color: #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-btn.active {
+        background-color: #10b981;
+    }
+
+    .toggle-btn .toggle-circle {
+        width: 12px;
+        height: 12px;
+        background-color: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+    }
+
+    .toggle-btn.active .toggle-circle {
+        transform: translateX(14px);
+    }
+
+    .property-actions {
+        padding: 12px 16px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .action-btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+        flex: 1;
+    }
+
+    .action-btn.edit {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .action-btn.edit:hover {
+        background-color: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .action-btn.delete {
+        background-color: #ef4444;
+        color: white;
+    }
+
+    .action-btn.delete:hover {
+        background-color: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    .pagination-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+    }
+
+    .pagination-controls button {
+        padding: 8px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        background-color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        color: #1e3a8a;
+        transition: background-color 0.3s, border-color 0.3s, transform 0.1s;
+    }
+
+    .pagination-controls button:hover {
+        background-color: #f9fafb;
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+    }
+
+    .pagination-controls button:disabled {
+        background-color: #f3f4f6;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+        color: #6b7280;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .property-display {
+            padding: 16px;
+        }
+
+        h1 {
+            font-size: 20px;
+        }
+
+        .filter-row {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-dropdown {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .header-actions {
+            justify-content: flex-start;
+        }
+
+        .property-cards {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .property-image {
+            height: 150px;
+        }
+
+        .property-title {
+            font-size: 16px;
+        }
+
+        .property-type, .property-price {
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .property-display {
+            padding: 12px;
+        }
+
+        .display-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        h1 {
+            margin-bottom: 12px;
+        }
+
+        .filter-row {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-dropdown {
+            width: 100%;
+        }
+
+        .header-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 8px 16px;
+        }
+
+        .property-cards {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .property-image {
+            height: 120px;
+        }
+
+        .property-title {
+            font-size: 14px;
+        }
+
+        .property-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+</style>
