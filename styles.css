@@ -182,15 +182,50 @@ header h1 {
     box-sizing: border-box;
 }
 
+/* Estilo do container principal */
+/* Estilo do container principal */
 #meus-leads {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    width: 100%; /* Garante que o contêiner principal use a largura total disponível */
+    box-sizing: border-box; /* Inclui padding na largura */
+}
+
+/* Estilo do contêiner do título */
+.title-container {
+    margin-bottom: 15px;
+    padding-left: 15px;
+}
+
+/* Estilo do grid de leads */
+.leads-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
-    padding: 40px 20px;
     justify-items: center;
-    max-width: 1200px;
-    margin: auto;
+    width: 800px !important;    max-width: 100%; /* Evita que o grid exceda o contêiner pai */
+    box-sizing: border-box; /* Inclui padding/margem na largura */
 }
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .leads-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    #meus-leads {
+        padding: 20px 10px;
+    }
+    .leads-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+    }
+}
+
+
 
 /* Estilo dos cards de imóveis (inalterado) */
 .card {
@@ -416,7 +451,7 @@ header h1 {
 }
 
 @media (max-width: 480px) {
-    #clientes-container, #meus-leads {
+    #clientes-container {
         grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
         padding: 20px 10px;
     }
@@ -782,6 +817,7 @@ header h1 {
     justify-content: center;
     margin: 20px 0;
     gap: 10px;
+    width: calc(100% - 20px);
 }
 
 .paginacao-leads-wrapper {
@@ -893,4 +929,83 @@ header h1 {
 
 .btn-remove-affiliation:hover {
     background-color: #cc0000;
+}
+
+
+
+/* Estilo do banner */
+.banner {
+    width: 100%;
+    height: 300px; /* Altura proporcional, ajustável */
+    overflow: hidden;
+    background-color: #ddd; /* Cor fallback caso a imagem não carregue */
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantém a proporção da imagem */
+}
+
+/* Estilo da seção inicial */
+#home-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.preview-container {
+    margin: 20px 0;
+}
+
+.preview-container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#imoveis-preview, #leads-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+/* Estilo do link "Ver mais" */
+.ver-mais {
+    display: block;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 18px;
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.ver-mais:hover {
+    color: #166fe5;
+    text-decoration: underline;
+}
+
+/* Ajuste para responsividade */
+@media (max-width: 768px) {
+    .banner {
+        height: 200px;
+    }
+
+    #imoveis-preview, #leads-preview {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .banner {
+        height: 150px;
+    }
+
+    #imoveis-preview, #leads-preview {
+        grid-template-columns: 1fr;
+    }
 }
