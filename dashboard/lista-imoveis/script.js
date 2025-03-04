@@ -1,9 +1,38 @@
 // Variáveis globais
 let imoveisOriginais = [];
 let cidades = [];
-let imoveisPorPagina = 6; // Número de imóveis por página
+let imoveisPorPagina = 6;
 let paginaImoveisAtual = 1;
-let totalImoveis = 0; // Variável para armazenar o total retornado pelo servidor
+let totalImoveis = 0;
+let mostrarIndisponiveis = false;
+let cidadeSelecionada = "";
+let precoSelecionado = "";
+
+console.log("Script JS carregado com sucesso");
+
+// Registro do evento do botão no início
+const btnIndisponiveis = document.querySelector(".action-button.unavailable");
+if (btnIndisponiveis) {
+    console.log("Botão 'Imóveis Indisponíveis' encontrado, registrando evento");
+    btnIndisponiveis.addEventListener('click', () => {
+        console.log("Botão clicado!");
+        mostrarIndisponiveis = !mostrarIndisponiveis;
+        paginaImoveisAtual = 1;
+        if (mostrarIndisponiveis) {
+            btnIndisponiveis.textContent = "Ver Todos os Imóveis";
+            btnIndisponiveis.classList.remove('unavailable');
+            btnIndisponiveis.classList.add('all');
+        } else {
+            btnIndisponiveis.textContent = "Imóveis Indisponíveis";
+            btnIndisponiveis.classList.remove('all');
+            btnIndisponiveis.classList.add('unavailable');
+        }
+        console.log("mostrarIndisponiveis atualizado para:", mostrarIndisponiveis);
+        filtrarImoveis();
+    });
+} else {
+    console.error("Botão 'Imóveis Indisponíveis' não encontrado no DOM!");
+}
 
 // Função para carregar as cidades da API
 async function carregarCidades() {
@@ -13,7 +42,7 @@ async function carregarCidades() {
         console.log('Cidades recebidas:', data);
 
         cidades = Array.isArray(data) ? data : [];
-        exibirDropdownCidades();
+        atualizarFiltros();
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
     }
@@ -21,7 +50,7 @@ async function carregarCidades() {
 
 // Função para obter o nome da cidade pelo ID
 function getNomeCidade(cidadeId) {
-    const cidade = cidades.find(c => c.id === cidadeId);
+    const cidade = cidades.find(c => c.id === parseInt(cidadeId));
     return cidade ? cidade.name : "Cidade não encontrada";
 }
 
@@ -31,11 +60,12 @@ async function carregarImoveis() {
         const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis?limite=${imoveisPorPagina}&offset=0`);
         const data = await response.json();
         if (data.success) {
+            console.log('Imóveis carregados com imagens:', data.imoveis);
             imoveisOriginais = data.imoveis;
             totalImoveis = data.total;
             renderizarImoveis(data.imoveis);
         } else {
-            console.error("Erro ao carregar imóveis:", data.error);
+            console.error("Erro ao carregar imóveis:", data.message || data.error);
             imoveisOriginais = [];
             totalImoveis = 0;
             renderizarImoveis([]);
@@ -51,20 +81,26 @@ async function carregarImoveis() {
 // Função para criar o card de cada imóvel
 function criarCardImovel(imovel) {
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : imovel.categoria === 2 ? "Alto Padrão" : "Padrão não especificado";
-    const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : [];
-    const imagem = imagens.length > 0 ? imagens[0] : "assets/icon.ico"; // Imagem padrão
+    const imagemObj = imovel.imagem;
+    console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
+    const imagem = imagemObj && imagemObj.url 
+        ? imagemObj.url 
+        : "assets/icon.ico";
+    console.log(`Imagem selecionada para imóvel ${imovel.id}: ${imagem}`);
     const precoFormatado = parseFloat(imovel.valor).toLocaleString('pt-BR', { 
         style: 'currency', 
         currency: 'BRL', 
         minimumFractionDigits: 2, 
         maximumFractionDigits: 2 
     });
+    const nomeCidade = getNomeCidade(imovel.cidade);
 
     return `
         <div class="property-card">
             <img src="${imagem}" alt="${imovel.texto_principal}" class="property-image">
             <div class="property-content">
-                <div class="property-title">${imovel.texto_principal}</div>
+                <div class="property-title">${imovel.texto_principal} - SKU ${imovel.id}</div>
+                <div class="property-city">${nomeCidade}</div>
                 <div class="property-type">${padrao}</div>
                 <div class="property-price">${precoFormatado}</div>
                 <div class="property-toggles">
@@ -112,6 +148,7 @@ function renderizarImoveis(imoveis) {
     adicionarEventosToggles();
     adicionarEventosAcoes();
     criarPaginacaoImoveis(totalImoveis);
+    atualizarFiltros();
 }
 
 // Função para adicionar eventos aos toggles
@@ -119,7 +156,7 @@ function adicionarEventosToggles() {
     document.querySelectorAll('.toggle-btn').forEach(toggle => {
         toggle.addEventListener('click', async () => {
             const imovelId = toggle.dataset.id;
-            const field = toggle.dataset.field; // 'disponivel' ou 'destaque'
+            const field = toggle.dataset.field;
             const isActive = toggle.classList.toggle('active');
             const novoValor = isActive;
 
@@ -135,10 +172,9 @@ function adicionarEventosToggles() {
                 console.log(`Resposta da atualização de ${field} do imóvel ${imovelId}:`, data);
                 if (!data.success) {
                     console.error(`Erro ao atualizar ${field} do imóvel ${imovelId}:`, data.message);
-                    toggle.classList.toggle('active'); // Reverte se falhar
+                    toggle.classList.toggle('active');
                     alert(`Erro ao atualizar ${field}: ${data.message}`);
                 } else {
-                    // Atualiza o imóvel localmente para refletir a mudança
                     const imovel = imoveisOriginais.find(i => i.id === imovelId);
                     if (imovel) {
                         imovel[field] = novoValor;
@@ -146,45 +182,78 @@ function adicionarEventosToggles() {
                 }
             } catch (error) {
                 console.error(`Erro ao comunicar com o servidor para ${field}:`, error);
-                toggle.classList.toggle('active'); // Reverte se falhar
+                toggle.classList.toggle('active');
                 alert(`Erro ao conectar com o servidor para atualizar ${field}.`);
             }
         });
     });
 }
 
-// Função para adicionar eventos aos botões de ação
+// Função para adicionar eventos aos botões de ação (edit e delete)
 function adicionarEventosAcoes() {
+    const modal = document.getElementById('delete-modal');
+    const modalImovelId = document.getElementById('modal-imovel-id');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalConfirm = document.getElementById('modal-confirm');
+    let imovelIdToDelete = null;
+
     document.querySelectorAll('.action-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const imovelId = btn.dataset.id;
             if (btn.classList.contains('edit')) {
                 window.location.href = `?session=cadastroimovel&editid=${imovelId}`;
             } else if (btn.classList.contains('delete')) {
-                if (confirm(`Deseja excluir o imóvel ${imovelId}?`)) {
-                    fetch(`http://localhost:3000/imoveis/${imovelId}`, {
-                        method: 'DELETE'
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Imóvel excluído com sucesso!');
-                            filtrarImoveis(); // Recarregar a lista
-                        } else {
-                            alert('Erro ao excluir imóvel: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro ao excluir imóvel:', error);
-                        alert('Erro ao conectar com o servidor.');
-                    });
-                }
+                // Abre o modal
+                imovelIdToDelete = imovelId;
+                modalImovelId.textContent = imovelId;
+                modal.style.display = 'flex';
             }
         });
     });
+
+    // Evento para cancelar (fechar o modal)
+    modalCancel.addEventListener('click', () => {
+        modal.style.display = 'none';
+        imovelIdToDelete = null;
+    });
+
+    // Evento para confirmar a exclusão
+    modalConfirm.addEventListener('click', async () => {
+        if (imovelIdToDelete) {
+            try {
+                const response = await fetch(`http://localhost:3000/imoveis/${imovelIdToDelete}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Imóvel excluído com sucesso!');
+                    modal.style.display = 'none';
+                    imovelIdToDelete = null;
+                    filtrarImoveis();
+                } else {
+                    modal.style.display = 'none';
+                    imovelIdToDelete = null;
+                    alert('Erro ao excluir imóvel: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Erro ao excluir imóvel:', error);
+                modal.style.display = 'none';
+                imovelIdToDelete = null;
+                alert('Erro ao conectar com o servidor.');
+            }
+        }
+    });
+
+    // Fechar o modal clicando fora dele
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            imovelIdToDelete = null;
+        }
+    });
 }
 
-// Função para criar paginação específica para imóveis (com scroll ao topo)
+// Função para criar paginação específica para imóveis
 function criarPaginacaoImoveis(totalImoveis) {
     const totalPaginas = Math.ceil(totalImoveis / imoveisPorPagina);
     const paginationControls = document.getElementById("pagination-controls");
@@ -222,17 +291,30 @@ function filtrarImoveis() {
     const cidadeSelecionada = document.getElementById("city-filter")?.value || "";
     const precoSelecionado = document.getElementById("price-filter")?.value || "";
 
+    console.log("Filtro de cidade selecionado:", cidadeSelecionada);
+    console.log("Filtro de preço selecionado:", precoSelecionado);
+
     let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis";
     const params = new URLSearchParams();
 
+    if (mostrarIndisponiveis) {
+        params.append("disponivel", "false");
+        console.log("Aplicando filtro: disponivel=false");
+    }
+
     if (cidadeSelecionada) {
         params.append("cidade", cidadeSelecionada);
+        console.log("Aplicando filtro: cidade=", cidadeSelecionada);
     }
 
     if (precoSelecionado) {
         const [min, max] = precoSelecionado.split('-').map(Number);
         params.append("precoMin", min);
-        if (max) params.append("precoMax", max);
+        console.log("Aplicando filtro: precoMin=", min);
+        if (max) {
+            params.append("precoMax", max);
+            console.log("Aplicando filtro: precoMax=", max);
+        }
     }
 
     params.append("limite", imoveisPorPagina);
@@ -273,58 +355,50 @@ function filtrarImoveis() {
         });
 }
 
-// Função para exibir o dropdown de cidades
-function exibirDropdownCidades() {
+// Função para atualizar os dropdowns e seus eventos
+function atualizarFiltros() {
+    console.log("Atualizando filtros...");
     const filterPanel = document.getElementById("filter-panel") || createFilterPanel();
     const filterWrapper = filterPanel.querySelector(".filter-row") || filterPanel;
 
-    const existing = document.getElementById("city-filter");
-    if (existing) existing.remove();
+    const cidadeAtual = cidadeSelecionada;
+    const precoAtual = precoSelecionado;
+    console.log("Valores atuais salvos - Cidade:", cidadeAtual, "Preço:", precoAtual);
 
-    const select = document.createElement("select");
-    select.id = "city-filter";
-    select.className = "filter-dropdown";
-    select.addEventListener("change", () => {
-        paginaImoveisAtual = 1;
-        filtrarImoveis();
-    });
-
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Todas as Cidades";
-    select.appendChild(defaultOption);
-
+    let cityFilter = document.getElementById("city-filter");
+    if (cityFilter) cityFilter.remove();
+    cityFilter = document.createElement("select");
+    cityFilter.id = "city-filter";
+    cityFilter.className = "filter-dropdown";
+    const cityDefaultOption = document.createElement("option");
+    cityDefaultOption.value = "";
+    cityDefaultOption.textContent = "Todas as Cidades";
+    cityFilter.appendChild(cityDefaultOption);
     cidades.forEach(cidade => {
         const option = document.createElement("option");
         option.value = cidade.id;
         option.textContent = cidade.name;
-        select.appendChild(option);
+        cityFilter.appendChild(option);
     });
-
-    filterWrapper.appendChild(select);
-}
-
-// Função para exibir o dropdown de preços
-function exibirDropdownPrecos() {
-    const filterPanel = document.getElementById("filter-panel") || createFilterPanel();
-    const filterWrapper = filterPanel.querySelector(".filter-row") || filterPanel;
-
-    const existing = document.getElementById("price-filter");
-    if (existing) existing.remove();
-
-    const select = document.createElement("select");
-    select.id = "price-filter";
-    select.className = "filter-dropdown";
-    select.addEventListener("change", () => {
+    filterWrapper.appendChild(cityFilter);
+    cityFilter.value = cidadeAtual;
+    cityFilter.addEventListener("change", () => {
+        console.log("Dropdown de cidades alterado para:", cityFilter.value);
+        cidadeSelecionada = cityFilter.value;
         paginaImoveisAtual = 1;
         filtrarImoveis();
     });
+    console.log("Dropdown de cidades criado e evento registrado, valor restaurado:", cityFilter.value);
 
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Todos os Preços";
-    select.appendChild(defaultOption);
-
+    let priceFilter = document.getElementById("price-filter");
+    if (priceFilter) priceFilter.remove();
+    priceFilter = document.createElement("select");
+    priceFilter.id = "price-filter";
+    priceFilter.className = "filter-dropdown";
+    const priceDefaultOption = document.createElement("option");
+    priceDefaultOption.value = "";
+    priceDefaultOption.textContent = "Todos os Preços";
+    priceFilter.appendChild(priceDefaultOption);
     const faixasPreco = [
         { value: "0-500000", text: "Até R$ 500 mil" },
         { value: "500000-1000000", text: "R$ 500 mil - R$ 1 milhão" },
@@ -334,15 +408,21 @@ function exibirDropdownPrecos() {
         { value: "10000000-20000000", text: "R$ 10 milhões - R$ 20 milhões" },
         { value: "20000000", text: "+ R$ 20 milhões" }
     ];
-
     faixasPreco.forEach(faixa => {
         const option = document.createElement("option");
         option.value = faixa.value;
         option.textContent = faixa.text;
-        select.appendChild(option);
+        priceFilter.appendChild(option);
     });
-
-    filterWrapper.appendChild(select);
+    filterWrapper.appendChild(priceFilter);
+    priceFilter.value = precoAtual;
+    priceFilter.addEventListener("change", () => {
+        console.log("Dropdown de preços alterado para:", priceFilter.value);
+        precoSelecionado = priceFilter.value;
+        paginaImoveisAtual = 1;
+        filtrarImoveis();
+    });
+    console.log("Dropdown de preços criado e evento registrado, valor restaurado:", priceFilter.value);
 }
 
 // Função para criar o panel de filtros, se não existir

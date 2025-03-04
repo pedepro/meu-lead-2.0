@@ -5,6 +5,12 @@ let imoveisPorPagina = 6; // Número de imóveis por página
 let paginaImoveisAtual = 1;
 let totalImoveis = 0; // Variável para armazenar o total retornado pelo servidor
 
+// Variáveis globais para leads
+let leadsOriginais = [];
+let paginaAtual = 1;
+const itensPorPagina = 20;
+let totalLeads = 0;
+
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
@@ -18,7 +24,7 @@ async function carregarCidades() {
 
 // Função para obter o nome da cidade pelo ID
 function getNomeCidade(cidadeId) {
-    const cidade = cidades.find(c => c.id === cidadeId);
+    const cidade = cidades.find(c => c.id === parseInt(cidadeId));
     return cidade ? cidade.name : "Cidade não encontrada";
 }
 
@@ -45,11 +51,13 @@ async function carregarImoveis() {
     }
 }
 
+// Função para criar o card de cada imóvel (ajustada para usar o campo 'imagem')
 function criarCardImovel(imovel) {
-    const imagens = Array.isArray(imovel.imagens) ? imovel.imagens : []; // Garante que seja um array
-    const imagem = imagens.length > 0 
-        ? imagens[0] 
-        : "assets/icon.ico"; // Usando o icon.ico como imagem padrão
+    const imagemObj = imovel.imagem; // Agora é um objeto ou null
+    console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
+    const imagem = imagemObj && imagemObj.url 
+        ? imagemObj.url 
+        : "assets/icon.ico"; // Usa a imagem padrão se não houver imagem ou url
 
     const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
@@ -134,7 +142,7 @@ function criarPaginacaoImoveis(totalImoveis) {
         if (paginaImoveisAtual > 1) {
             paginaImoveisAtual--;
             filtrarImoveis();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
     paginationWrapper.appendChild(setaEsquerda);
@@ -151,7 +159,7 @@ function criarPaginacaoImoveis(totalImoveis) {
         if (paginaImoveisAtual < totalPaginas) {
             paginaImoveisAtual++;
             filtrarImoveis();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
     paginationWrapper.appendChild(setaDireita);
@@ -331,58 +339,40 @@ function exibirDropdownPrecos() {
     dropdownsWrapper.appendChild(select);
 }
 
-// Inicialização
-document.addEventListener("DOMContentLoaded", () => {
-    exibirDropdownCidades();
-    exibirDropdownPrecos();
-    carregarImoveis();
-});
-
-
-
-
-
-
-
-
-
-
-
-
-// Variáveis globais
-let leadsOriginais = [];
-let paginaAtual = 1;
-const itensPorPagina = 20;
-let totalLeads = 0;
-
-// Função para criar o HTML de um card de lead
+// Função para criar o HTML de um card de lead (atualizada)
 function criarCardLead(cliente) {
-    const padrao = cliente.categoria === 1 ? "Médio Padrão" : 
-                   cliente.categoria === 2 ? "Alto Padrão" : 
-                   "Padrão não especificado";
+    const padrao = cliente.categoria === 1 ? "medio-padrao" : 
+                   cliente.categoria === 2 ? "alto-padrao" : 
+                   "medio-padrao"; // Default para médio padrão se não especificado
+    const icon = cliente.categoria === 2 ? "star" : "home"; // Ícone baseado no padrão
 
-    // Formatar valor_lead como moeda brasileira (ex.: 39,90)
-    const valorLeadFormatado = parseFloat(cliente.valor_lead || 0).toLocaleString('pt-BR', { 
+    // Formata o valor_lead como moeda brasileira (R$)
+    const valorLead = cliente.valor_lead || 0; // Usa 0 como fallback se valor_lead não existir
+    const valorFormatado = parseFloat(valorLead).toLocaleString('pt-BR', { 
+        style: 'currency', 
+        currency: 'BRL', 
         minimumFractionDigits: 2, 
         maximumFractionDigits: 2 
     });
 
     return `
-        <div class="card-cliente">
-            <h2>${cliente.nome}</h2>
-            <p><strong>Interesse:</strong> ${cliente.interesse}</p>
-            <p><strong>Tipo:</strong> ${cliente.tipo_imovel}</p>
-            <p><strong>Padrão:</strong> ${padrao}</p>
-            <p><strong>Valor desejado:</strong> R$ ${cliente.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-            <p><strong>WhatsApp:</strong> ${cliente.whatsapp}</p>
-            <button class="btn-detalhes" onclick="window.location.href='cliente.html?id=${cliente.id}'">
-                Comprar por ${valorLeadFormatado}
-            </button>
+        <div class="lead-card ${padrao}">
+            <div class="lead-card-header">
+                <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
+                <div class="lead-sku">SKU ${cliente.id}</div>
+                <div class="lead-interesse">${cliente.interesse || "Interesse não especificado"}</div>
+                <i class="material-icons lead-icon">${icon}</i>
+            </div>
+            <div class="lead-card-footer">
+                <button class="lead-btn-adquirir" onclick="window.location.href='cliente.html?id=${cliente.id}'">
+                    Obter por ${valorFormatado}
+                </button>
+            </div>
         </div>
     `;
 }
 
-// Função para renderizar os leads com paginação (com scroll ao topo)
+// Função para renderizar os leads com paginação (atualizada)
 function renderizarLeads(leadsFiltrados) {
     const clientesContainer = document.getElementById("clientes-container");
     if (!clientesContainer) {
@@ -390,36 +380,34 @@ function renderizarLeads(leadsFiltrados) {
         return;
     }
 
-    // Preservar ou criar o elemento de filtros
     let filtrosDiv = document.querySelector(".filtros-leads");
     if (!filtrosDiv) {
         filtrosDiv = document.createElement("div");
         filtrosDiv.classList.add("filtros-leads");
-        clientesContainer.appendChild(filtrosDiv);
+        clientesContainer.insertBefore(filtrosDiv, clientesContainer.firstChild); // Adiciona no topo
         exibirDropdownPadraoLeads();
         exibirDropdownValoresLeads();
         exibirDropdownOrdenacaoLeads();
     }
 
-    // Remover elementos existentes (exceto filtros)
-    const existingElements = clientesContainer.querySelectorAll(".contagem-leads, .card-cliente, .outros-resultados, .paginacao-leads");
+    // Limpa apenas os elementos antigos relacionados aos cards de leads
+    const existingElements = clientesContainer.querySelectorAll(".contagem-leads, .lead-card, .outros-resultados, .paginacao-leads");
     existingElements.forEach(element => element.remove());
 
-    // Adicionar os cards dos leads filtrados
+    // Adiciona os novos cards
     leadsFiltrados.forEach(cliente => {
         clientesContainer.insertAdjacentHTML('beforeend', criarCardLead(cliente));
     });
 
-    // Adicionar controles de paginação (igual ao layout dos imóveis)
+    // Criação da paginação
     const paginacaoDiv = document.createElement("div");
-    paginacaoDiv.id = "paginacao-leads"; // ID único para leads
+    paginacaoDiv.id = "paginacao-leads";
     paginacaoDiv.className = "paginacao-leads";
     const totalPaginas = Math.ceil(totalLeads / itensPorPagina);
 
     const paginationWrapper = document.createElement("div");
     paginationWrapper.className = "paginacao-leads-wrapper";
 
-    // Botão de seta esquerda (anterior)
     const setaEsquerda = document.createElement("i");
     setaEsquerda.className = "material-icons paginacao-leads-seta paginacao-leads-seta-esquerda";
     setaEsquerda.textContent = "chevron_left";
@@ -427,18 +415,16 @@ function renderizarLeads(leadsFiltrados) {
         if (paginaAtual > 1) {
             paginaAtual--;
             carregarClientesPaginados();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
     paginationWrapper.appendChild(setaEsquerda);
 
-    // Texto "Página X de Y"
     const paginaTexto = document.createElement("span");
     paginaTexto.className = "paginacao-leads-texto";
     paginaTexto.textContent = `Página ${paginaAtual} de ${totalPaginas || 1}`;
     paginationWrapper.appendChild(paginaTexto);
 
-    // Botão de seta direita (próxima)
     const setaDireita = document.createElement("i");
     setaDireita.className = "material-icons paginacao-leads-seta paginacao-leads-seta-direita";
     setaDireita.textContent = "chevron_right";
@@ -446,7 +432,7 @@ function renderizarLeads(leadsFiltrados) {
         if (paginaAtual < totalPaginas) {
             paginaAtual++;
             carregarClientesPaginados();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll suave ao topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
     paginationWrapper.appendChild(setaDireita);
@@ -454,7 +440,6 @@ function renderizarLeads(leadsFiltrados) {
     paginacaoDiv.appendChild(paginationWrapper);
     clientesContainer.insertAdjacentElement('beforeend', paginacaoDiv);
 
-    // Desativa setas se não houver navegação possível
     setaEsquerda.style.opacity = paginaAtual === 1 ? '0.5' : '1';
     setaEsquerda.style.cursor = paginaAtual === 1 ? 'not-allowed' : 'pointer';
     setaDireita.style.opacity = paginaAtual === totalPaginas ? '0.5' : '1';
@@ -492,7 +477,7 @@ function exibirDropdownPadraoLeads() {
     filtrosDiv.appendChild(select);
 }
 
-// Função para exibir o dropdown de valores de interesse
+// Função<|control566|> para exibir o dropdown de valores de interesse
 function exibirDropdownValoresLeads() {
     const filtrosDiv = document.querySelector(".filtros-leads");
     if (!filtrosDiv || document.getElementById("dropdown-valores-leads")) return;
@@ -566,15 +551,12 @@ async function carregarClientesPaginados() {
         const valorInteresseSelecionado = document.getElementById("dropdown-valores-leads")?.value || "";
         const ordenacaoSelecionada = document.getElementById("dropdown-ordenacao-leads")?.value || "";
 
-        // Calcular offset baseado na página atual
         const offset = (paginaAtual - 1) * itensPorPagina;
 
-        // Montar URL com parâmetros de paginação e filtros
         const url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
         url.searchParams.set("limit", itensPorPagina);
         url.searchParams.set("offset", offset);
 
-        // Adicionar filtros à URL
         if (padraoSelecionado) {
             url.searchParams.set("categoria", padraoSelecionado);
         }
@@ -589,7 +571,6 @@ async function carregarClientesPaginados() {
             url.searchParams.set("ordenacao", ordenacaoSelecionada);
         }
 
-        // Requisição à API
         const response = await fetch(url);
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Erro ao carregar clientes");
@@ -597,7 +578,6 @@ async function carregarClientesPaginados() {
         leadsOriginais = data.clientes || [];
         totalLeads = data.total || 0;
 
-        // Os dados já vêm filtrados e ordenados do servidor
         renderizarLeads(leadsOriginais);
     } catch (error) {
         console.error("Erro ao carregar clientes paginados:", error);
@@ -606,24 +586,11 @@ async function carregarClientesPaginados() {
 
 // Função para carregar os clientes (leads) inicialmente
 async function carregarClientes() {
-    paginaAtual = 1; // Resetar para a primeira página
+    paginaAtual = 1;
     await carregarClientesPaginados();
 }
 
-// Inicialização (adicione isso se quiser carregar ao iniciar a página)
-document.addEventListener("DOMContentLoaded", () => {
-    carregarClientes();
-});
-
-
-
-
-
-
-
-
-// Função para carregar imóveis afiliados
-// Função para carregar imóveis afiliados e comprados
+// Função para carregar imóveis afiliados e comprados (ajustada para usar o campo 'imagem')
 async function carregaraImoveis() {
     try {
         const container = document.getElementById("meus-imoveis-container");
@@ -632,8 +599,7 @@ async function carregaraImoveis() {
             return;
         }
 
-        // Não mexemos na visibilidade aqui, pois já foi definida no evento de clique
-        container.innerHTML = ""; // Limpa o conteúdo antes de adicionar os cards
+        container.innerHTML = "";
 
         const titulo = document.createElement("h2");
         titulo.textContent = "Meus Imóveis";
@@ -655,9 +621,11 @@ async function carregaraImoveis() {
             const card = document.createElement("div");
             card.classList.add("card");
 
-            const imagem = imovel.imagens && imovel.imagens.length > 0 
-                ? imovel.imagens[0] 
-                : "https://source.unsplash.com/400x300/?house";
+            const imagemObj = imovel.imagem; // Novo campo 'imagem'
+            console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
+            const imagem = imagemObj && imagemObj.url 
+                ? imagemObj.url 
+                : "https://source.unsplash.com/400x300/?house"; // Imagem padrão ajustada
 
             const phone = imovel.whatsapp ? imovel.whatsapp.replace(/\D/g, '') : '';
             const mensagem = `Olá ${imovel.nome_proprietario || 'Proprietário'}`;
@@ -716,13 +684,13 @@ async function carregaraImoveis() {
 // Função para mostrar o popup de confirmação
 function mostrarPopupRemover(imovelId) {
     const popup = document.createElement("div");
-    popup.classList.add("affiliation-popup"); // Classe renomeada
+    popup.classList.add("affiliation-popup");
     popup.innerHTML = `
-        <div class="affiliation-popup-content"> <!-- Classe renomeada -->
+        <div class="affiliation-popup-content">
             <h3>Confirmar Remoção</h3>
             <p>Deseja realmente remover a afiliação deste imóvel?</p>
-            <button class="affiliation-confirm-btn" onclick="removerAfiliacao(${imovelId})">Confirmar</button> <!-- Classe adicionada -->
-            <button class="affiliation-cancel-btn" onclick="this.parentElement.parentElement.remove()">Cancelar</button> <!-- Classe adicionada -->
+            <button class="affiliation-confirm-btn" onclick="removerAfiliacao(${imovelId})">Confirmar</button>
+            <button class="affiliation-cancel-btn" onclick="this.parentElement.parentElement.remove()">Cancelar</button>
         </div>
     `;
     document.body.appendChild(popup);
@@ -737,8 +705,8 @@ async function removerAfiliacao(imovelId) {
         const data = await response.json();
         if (data.success) {
             alert("Afiliação removida com sucesso!");
-            document.querySelector(".affiliation-popup").remove(); // Classe renomeada
-            carregaraImoveis(); // Recarrega a lista
+            document.querySelector(".affiliation-popup").remove();
+            carregaraImoveis();
         } else {
             alert("Erro ao remover afiliação: " + data.message);
         }
@@ -748,11 +716,7 @@ async function removerAfiliacao(imovelId) {
     }
 }
 
-
-
-
-
-// Função para carregar leads adquiridos
+// Função para carregar leads adquiridos (atualizada)
 async function carregarLeadsAdquiridos(corretorId) {
     try {
         const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes/${corretorId}`);
@@ -763,25 +727,41 @@ async function carregarLeadsAdquiridos(corretorId) {
         meusLeadsContainer.innerHTML = "";
 
         const titulo = document.createElement("h2");
-        titulo.textContent = "Leads adquiridos";
+        titulo.textContent = "Leads Adquiridos";
         titulo.style.marginBottom = "15px";
         titulo.style.marginLeft = "15px";
         titulo.style.color = "#555555";
         meusLeadsContainer.appendChild(titulo);
 
-        leads.forEach(lead => {
-            const card = document.createElement("div");
-            card.classList.add("card-cliente");
+        if (leads.length === 0) {
+            meusLeadsContainer.innerHTML += "<p>Nenhum lead adquirido encontrado.</p>";
+            return;
+        }
 
+        leads.forEach(lead => {
+            const padrao = lead.categoria === 1 ? "medio-padrao" : 
+                           lead.categoria === 2 ? "alto-padrao" : 
+                           "medio-padrao"; // Default para médio padrão
+            const icon = lead.categoria === 2 ? "star" : "home"; // Ícone baseado no padrão
+
+            const card = document.createElement("div");
+            card.classList.add("lead-card", padrao);
             card.innerHTML = `
-                <h2>${lead.nome}</h2>
-                <p><strong>Interesse:</strong> ${lead.interesse}</p>
-                <p><strong>Tipo:</strong> ${lead.tipo_imovel}</p>
-                <p><strong>Valor desejado:</strong> R$ ${lead.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                <p><strong>WhatsApp:</strong> ${lead.whatsapp}</p>
-                <button class="btn-detalhes" onclick="window.location.href='cliente.html?id=${lead.id}'">
-                    Ver Detalhes
-                </button>
+                <div class="lead-card-header">
+                    <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
+                    <div class="lead-sku">SKU ${lead.id}</div>
+                    <div class="lead-interesse">Nome: ${lead.nome || "Não informado"}</div>
+                    <div class="lead-interesse">Interesse: ${lead.interesse || "Não especificado"}</div>
+                    <div class="lead-interesse">Tipo: ${lead.tipo_imovel || "Não informado"}</div>
+                    <div class="lead-interesse">Valor: R$ ${lead.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                    <div class="lead-interesse">WhatsApp: ${lead.whatsapp || "Não informado"}</div>
+                    <i class="material-icons lead-icon">${icon}</i>
+                </div>
+                <div class="lead-card-footer">
+                    <button class="lead-btn-adquirir" onclick="window.location.href='cliente.html?id=${lead.id}'">
+                        Ver Detalhes
+                    </button>
+                </div>
             `;
             meusLeadsContainer.appendChild(card);
         });
@@ -815,9 +795,7 @@ async function carregarCorretor() {
     }
 }
 
-
-// Único evento DOMContentLoaded para inicialização
-// Único evento DOMContentLoaded para inicialização
+// Evento DOMContentLoaded atualizado (apenas a parte relevante)
 document.addEventListener("DOMContentLoaded", async function () {
     const menuToggle = document.querySelector(".menu-toggle");
     const sidebar = document.querySelector(".sidebar");
@@ -837,13 +815,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.querySelector(".main-content")?.appendChild(clientesContainer) || document.body.appendChild(clientesContainer);
     }
 
-    // Garantir que o meus-imoveis-container exista
     let meusImoveisContainer = document.getElementById("meus-imoveis-container");
     if (!meusImoveisContainer) {
         console.warn("Elemento #meus-imoveis-container não encontrado. Criando um novo.");
         meusImoveisContainer = document.createElement("div");
         meusImoveisContainer.id = "meus-imoveis-container";
-        meusImoveisContainer.style.display = "none"; // Inicialmente oculto
+        meusImoveisContainer.style.display = "none";
         document.querySelector(".main-content")?.appendChild(meusImoveisContainer) || document.body.appendChild(meusImoveisContainer);
     }
 
@@ -925,7 +902,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             sidebar.classList.remove("open");
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
-            meusImoveisContainer.style.display = "grid"; // Exibe como grid
+            meusImoveisContainer.style.display = "grid";
             meusLeadsContainer.style.display = "none";
             
             gerenciarFiltros(false);
@@ -941,7 +918,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             imoveisContainer.style.display = "none";
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
-            meusLeadsContainer.style.display = "block";
+            meusLeadsContainer.style.display = "grid"; // Alterado de "block" para "grid"
             
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
@@ -977,4 +954,3 @@ window.addEventListener("load", function () {
         }
     }, 1000);
 });
-

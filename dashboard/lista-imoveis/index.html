@@ -25,10 +25,21 @@
     </div>
     <div class="property-cards" id="property-list"></div>
     <div id="pagination-controls" class="pagination-controls"></div>
+    <!-- Modal de confirmação -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <h2>Excluir Imóvel</h2>
+            <p>Tem certeza que deseja excluir o imóvel <span id="modal-imovel-id"></span>?</p>
+            <p>Essa ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="modal-btn cancel">Cancelar</button>
+                <button id="modal-confirm" class="modal-btn confirm">Excluir</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-    /* Reset CSS básico */
     * {
         margin: 0;
         padding: 0;
@@ -36,278 +47,376 @@
     }
 
     body {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #1c1e21;
     }
 
     .property-display {
-        padding: 20px;
+        padding: 24px;
         background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         max-width: 1200px;
-        margin: 0 auto;
+        margin: 20px auto;
+        position: relative; /* Para o modal ficar dentro do container */
     }
 
     .display-header {
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
 
     h1 {
-        color: #1e3a8a;
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 16px;
+        color: #1877f2;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
     }
 
     .filter-row {
         display: flex;
-        gap: 10px;
-        margin-bottom: 16px;
+        gap: 12px;
+        margin-bottom: 20px;
         flex-wrap: wrap;
     }
 
     .filter-dropdown {
-        padding: 8px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
+        padding: 10px 14px;
+        border: 1px solid #dddfe2;
+        border-radius: 6px;
         font-size: 14px;
-        background-color: #f3f4f6;
+        background-color: #f5f6f7;
         outline: none;
-        min-width: 200px;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        min-width: 220px;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .filter-dropdown:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+        border-color: #1877f2;
+        box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
     }
 
     .header-actions {
         display: flex;
-        gap: 10px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
+        gap: 12px;
         justify-content: flex-end;
+        flex-wrap: wrap;
     }
 
     .action-button {
-        padding: 8px 16px;
+        padding: 10px 20px;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.3s, transform 0.1s;
+        transition: background-color 0.2s, transform 0.1s;
     }
 
     .action-button.unavailable {
-        background-color: #ef4444;
-        color: white;
+        background-color: #e4e6eb;
+        color: #606770;
     }
 
     .action-button.unavailable:hover {
-        background-color: #dc2626;
-        transform: translateY(-2px);
+        background-color: #d8dadf;
+        transform: translateY(-1px);
     }
 
     .action-button.new-item {
-        background-color: #10b981;
-        color: white;
+        background-color: #1877f2;
+        color: #ffffff;
     }
 
     .action-button.new-item:hover {
-        background-color: #059669;
-        transform: translateY(-2px);
+        background-color: #166fe5;
+        transform: translateY(-1px);
+    }
+
+    .action-button.all {
+        background-color: #42b72a;
+        color: #ffffff;
+    }
+
+    .action-button.all:hover {
+        background-color: #38a824;
+        transform: translateY(-1px);
     }
 
     .property-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
         padding: 20px 0;
     }
 
     .property-card {
         background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
         overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
+        transition: transform 0.2s, box-shadow 0.2s;
         display: flex;
         flex-direction: column;
     }
 
     .property-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .property-image {
         width: 100%;
-        height: 200px;
+        height: 220px;
         object-fit: cover;
+        border-bottom: 1px solid #f0f2f5;
     }
 
     .property-content {
         padding: 16px;
         flex-grow: 1;
-        display: flex;
-        flex-direction: column;
     }
 
     .property-title {
         font-size: 18px;
         font-weight: 600;
-        color: #1e3a8a;
+        color: #050505;
         margin-bottom: 8px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
+    .property-city {
+        font-size: 14px;
+        color: #65676b;
+        margin-bottom: 6px;
+    }
+
     .property-type, .property-price {
         font-size: 14px;
-        color: #4b5e9e;
-        margin-bottom: 8px;
+        color: #65676b;
+        margin-bottom: 6px;
     }
 
     .property-price {
         font-weight: 600;
+        color: #050505;
     }
 
     .property-toggles {
         display: flex;
         justify-content: space-between;
-        margin-top: auto;
         padding-top: 12px;
     }
 
     .toggle-container {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 
     .toggle-label {
         font-size: 12px;
-        color: #1e3a8a;
+        color: #65676b;
     }
 
     .toggle-btn {
-        width: 30px;
-        height: 16px;
-        background-color: #d1d5db;
-        border-radius: 8px;
+        width: 34px;
+        height: 18px;
+        background-color: #e4e6eb;
+        border-radius: 9px;
         cursor: pointer;
         position: relative;
-        transition: background-color 0.3s;
+        transition: background-color 0.2s;
     }
 
     .toggle-btn.active {
-        background-color: #10b981;
+        background-color: #1877f2;
     }
 
     .toggle-btn .toggle-circle {
-        width: 12px;
-        height: 12px;
-        background-color: white;
+        width: 14px;
+        height: 14px;
+        background-color: #ffffff;
         border-radius: 50%;
         position: absolute;
         top: 2px;
         left: 2px;
-        transition: transform 0.3s;
+        transition: transform 0.2s;
     }
 
     .toggle-btn.active .toggle-circle {
-        transform: translateX(14px);
+        transform: translateX(16px);
     }
 
     .property-actions {
         padding: 12px 16px;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid #e4e6eb;
         display: flex;
-        justify-content: space-between;
-        gap: 10px;
+        gap: 8px;
     }
 
     .action-btn {
-        padding: 6px 12px;
+        padding: 8px 16px;
         border: none;
-        border-radius: 4px;
-        font-size: 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.3s, transform 0.1s;
+        transition: background-color 0.2s, transform 0.1s;
         flex: 1;
     }
 
     .action-btn.edit {
-        background-color: #3b82f6;
-        color: white;
+        background-color: #e7f3ff;
+        color: #1877f2;
     }
 
     .action-btn.edit:hover {
-        background-color: #2563eb;
-        transform: translateY(-2px);
+        background-color: #d8e8ff;
+        transform: translateY(-1px);
     }
 
     .action-btn.delete {
-        background-color: #ef4444;
-        color: white;
+        background-color: #fce8e6;
+        color: #dc2626;
     }
 
     .action-btn.delete:hover {
-        background-color: #dc2626;
-        transform: translateY(-2px);
+        background-color: #fbd0cc;
+        transform: translateY(-1px);
     }
 
     .pagination-controls {
         display: flex;
         justify-content: center;
-        margin-top: 20px;
-        gap: 10px;
+        margin-top: 24px;
+        gap: 12px;
     }
 
     .pagination-controls button {
-        padding: 8px 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 4px;
-        background-color: #fff;
+        padding: 10px 20px;
+        border: 1px solid #dddfe2;
+        border-radius: 6px;
+        background-color: #ffffff;
         cursor: pointer;
         font-size: 14px;
-        color: #1e3a8a;
-        transition: background-color 0.3s, border-color 0.3s, transform 0.1s;
+        font-weight: 600;
+        color: #1877f2;
+        transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
     }
 
     .pagination-controls button:hover {
-        background-color: #f9fafb;
-        border-color: #3b82f6;
-        transform: translateY(-2px);
+        background-color: #f5f6f7;
+        border-color: #1877f2;
+        transform: translateY(-1px);
     }
 
     .pagination-controls button:disabled {
-        background-color: #f3f4f6;
-        border-color: #e5e7eb;
+        background-color: #f0f2f5;
+        border-color: #dddfe2;
+        color: #b0b3b8;
         cursor: not-allowed;
-        color: #6b7280;
     }
 
-    /* Responsividade */
+    /* Estilização do Modal */
+    .modal {
+        display: none; /* Escondido por padrão */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    .modal-content h2 {
+        color: #1c1e21;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .modal-content p {
+        color: #65676b;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .modal-content #modal-imovel-id {
+        font-weight: 600;
+        color: #050505;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+        flex: 1;
+    }
+
+    .modal-btn.cancel {
+        background-color: #e4e6eb;
+        color: #606770;
+    }
+
+    .modal-btn.cancel:hover {
+        background-color: #d8dadf;
+        transform: translateY(-1px);
+    }
+
+    .modal-btn.confirm {
+        background-color: #dc2626;
+        color: #ffffff;
+    }
+
+    .modal-btn.confirm:hover {
+        background-color: #c22222;
+        transform: translateY(-1px);
+    }
+
     @media (max-width: 768px) {
         .property-display {
             padding: 16px;
+            margin: 10px;
         }
 
         h1 {
-            font-size: 20px;
+            font-size: 24px;
         }
 
         .filter-row {
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .filter-dropdown {
             width: 100%;
-            max-width: 300px;
+            max-width: none;
         }
 
         .header-actions {
@@ -315,75 +424,45 @@
         }
 
         .property-cards {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
         }
 
         .property-image {
-            height: 150px;
-        }
-
-        .property-title {
-            font-size: 16px;
-        }
-
-        .property-type, .property-price {
-            font-size: 12px;
+            height: 180px;
         }
     }
 
     @media (max-width: 480px) {
-        .property-display {
-            padding: 12px;
-        }
-
-        .display-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
         h1 {
-            margin-bottom: 12px;
+            font-size: 20px;
         }
 
-        .filter-row {
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .filter-dropdown {
+        .action-button, .action-btn {
             width: 100%;
-        }
-
-        .header-actions {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .action-button {
-            width: 100%;
-            padding: 8px 16px;
+            padding: 10px;
         }
 
         .property-cards {
             grid-template-columns: 1fr;
-            gap: 10px;
         }
 
         .property-image {
-            height: 120px;
-        }
-
-        .property-title {
-            font-size: 14px;
+            height: 160px;
         }
 
         .property-actions {
             flex-direction: column;
         }
 
-        .action-btn {
-            width: 100%;
+        .modal-content {
+            width: 95%;
+            padding: 16px;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+            gap: 8px;
         }
     }
 </style>

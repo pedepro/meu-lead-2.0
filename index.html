@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet">
-
-
 </head>
 <body>
     <div id="preloader">
@@ -26,31 +24,56 @@
         <ul>
             <li><a href="#" id="imoveis-link">Imóveis</a></li>
             <li><a href="#" id="clientes-link">Leads (Clientes)</a></li>
-            <li><a href="#" id="meusleads-link">leads adquiridos</a></li>
-            <li><a href="#" id="meusimoveis-link">Imóveis afiliados</a></li>
-
+            <li><a href="#" id="meusleads-link">Leads Adquiridos</a></li>
+            <li><a href="#" id="meusimoveis-link">Imóveis Afiliados</a></li>
         </ul>
         <div class="user-info" id="user-info-container">
-            <div id="name">faça login</div>
+            <div id="name">Faça login</div>
             <i class="material-icons" id="logout-icon">logout</i>
         </div>
-        
     </nav>
 
     <main class="main-content">
         <div class="container" id="imoveis-container">
             <div class="container" id="filtros-imoveis"></div>
-                <div id="imoveis-container"></div>
-                <h2>Filtros</h2>
-            </div>
+            <div id="imoveis-container-inner"></div>
+            <h2>Filtros</h2>
         </div>
         <div class="container" id="clientes-container" style="display: none;">
+            <!-- Exemplo de card de lead estático para visualização inicial -->
+            <div class="lead-card alto-padrao">
+                <div class="lead-card-header">
+                    <div class="lead-badge">Alto Padrão</div>
+                    <div class="lead-sku">SKU 001</div>
+                    <div class="lead-interesse">Busca uma mansão de luxo com vista para o mar.</div>
+                    <i class="material-icons lead-icon">star</i>
+                </div>
+                <div class="lead-card-footer">
+                    <button class="lead-btn-adquirir">Adquirir por R$ 39,90</button>
+                </div>
+            </div>
         </div>
-                  <!-- Alterando para garantir que não haja conflito -->
         <div id="meus-imoveis-container" style="display: none;"></div>
-
-        <div class="container" id="meus-leads" style="display: none;"></div>
-
+        <div class="container" id="meus-leads" style="display: none;">
+            <!-- Exemplo de card de lead adquirido estático -->
+            <div class="lead-card medio-padrao">
+                <div class="lead-card-header">
+                    <div class="lead-badge">Médio Padrão</div>
+                    <div class="lead-sku">SKU 002</div>
+                    <div class="lead-interesse">Nome: João Silva</div>
+                    <div class="lead-interesse">Interesse: Apartamento confortável</div>
+                    <div class="lead-interesse">Tipo: Apartamento</div>
+                    <div class="lead-interesse">Valor: R$ 500.000,00</div>
+                    <div class="lead-interesse">WhatsApp: (11) 98765-4321</div>
+                    <i class="material-icons lead-icon">home</i>
+                </div>
+                <div class="lead-card-footer">
+                    <button class="lead-btn-adquirir" onclick="window.location.href='cliente.html?id=002'">
+                        Ver Detalhes
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="script.js"></script>

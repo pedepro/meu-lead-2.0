@@ -1,286 +1,246 @@
-<div class="imovel-cadastro">
-    <h2>Cadastro de Imóvel</h2>
-    <div class="form-container">
-        <div>
-            <label>Nome do Proprietário</label>
-            <input type="text" name="nome_proprietario" placeholder="Digite o nome do proprietário">
-        </div>
-        <div>
-            <label>Valor (R$)</label>
-            <input type="number" name="valor" step="0.01" placeholder="Digite o valor">
-        </div>
-        <div>
-            <label>Banheiros</label>
-            <input type="number" name="banheiros" placeholder="Digite a quantidade de banheiros">
-        </div>
-        <div>
-            <label>Metros Quadrados (m²)</label>
-            <input type="number" name="metros_quadrados" placeholder="Digite a área em m²">
-        </div>
-        <div>
-            <label>Andar</label>
-            <input type="number" name="andar" placeholder="Digite o número do andar">
-        </div>
-        <div>
-            <label>Mobiliado</label>
-            <select name="mobiliado">
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-            </select>
-        </div>
-        <div>
-            <label>Preço de Contato</label>
-            <input type="text" name="price_contato" placeholder="Digite o preço de contato">
-        </div>
-        <div>
-            <label>Vagas de Garagem</label>
-            <input type="number" name="vagas_garagem" placeholder="Digite a quantidade de vagas">
-        </div>
-        <div>
-            <label>Cidade</label>
-            <select name="cidade">
-                <option value="">Selecione uma cidade</option>
-                <option value="São Paulo">São Paulo</option>
-                <option value="Rio de Janeiro">Rio de Janeiro</option>
-                <option value="Belo Horizonte">Belo Horizonte</option>
-                <option value="Porto Alegre">Porto Alegre</option>
-            </select>
-        </div>
-        <div>
-            <label>Categoria</label>
-            <input type="text" name="categoria" placeholder="Ex.: Residencial, Comercial">
-        </div>
-        <div>
-            <label>Quartos</label>
-            <input type="number" name="quartos" placeholder="Digite a quantidade de quartos">
-        </div>
-        <div>
-            <label>Texto Principal</label>
-            <input type="text" name="texto_principal" placeholder="Título principal do imóvel">
-        </div>
-        <div>
-            <label>WhatsApp</label>
-            <input type="text" name="whatsapp" placeholder="Digite o número com DDD">
-        </div>
-        <div>
-            <label>Tipo</label>
-            <select name="tipo" id="tipoSelect">
-                <option value="">Selecione o tipo</option>
-            </select>
-        </div>
-        <div>
-            <label>Endereço</label>
-            <input type="text" name="endereco" placeholder="Digite o endereço completo">
-        </div>
-        <div>
-            <label>Descrição</label>
-            <textarea name="descricao" placeholder="Descreva o imóvel"></textarea>
-        </div>
-        <div>
-            <label>Descrição de Negociação</label>
-            <textarea name="descricao_negociacao" placeholder="Detalhes sobre negociação"></textarea>
-        </div>
-        <div class="imagens-section">
-            <label>Imagens</label>
-            <input type="file" name="imagens" id="imagensInput" multiple accept="image/*">
-            <div id="imagensPreview"></div>
-        </div>
-        <div>
-            <button onclick="enviarCadastroImovel(event)">Cadastrar Imóvel</button>
-        </div>
-    </div>
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Alto e Médio Padrão</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        .imovel-cadastro {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .imovel-cadastro h2 {
-            color: #1A73E8;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .form-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .form-container > div {
-            flex: 1;
-            min-width: 250px;
-        }
-        .form-container label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #333;
-        }
-        .form-container input,
-        .form-container select,
-        .form-container textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        .form-container textarea {
-            min-height: 100px;
-            resize: vertical;
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5, #e5e7eb);
+            color: #1c1e21;
+            padding: 40px 20px;
+            min-height: 100vh;
         }
-        .form-container button {
-            background-color: #1A73E8;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
         }
-        .form-container button:hover {
-            background-color: #1557B0;
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1877f2;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .imagens-section {
-            order: -1;
-            margin-left: auto;
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
         }
-        #imagensPreview {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            padding-bottom: 60px; /* Espaço para o botão */
         }
-        .image-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-        .image-container img {
-            max-width: 120px;
-            max-height: 120px;
-            border-radius: 4px;
-            object-fit: cover;
+
+        /* Diferenciação visual entre Alto e Médio Padrão */
+        .card.alto-padrao {
+            border-top: 6px solid #d4af37; /* Ouro para Alto Padrão */
+            background: linear-gradient(135deg, #fff8e1, #ffffff);
         }
-        .toggle-container {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+
+        .card.medio-padrao {
+            border-top: 6px solid #4682b4; /* Azul aço para Médio Padrão */
+            background: linear-gradient(135deg, #e6f0fa, #ffffff);
         }
-        .toggle-container label {
-            margin: 0;
+
+        .card-header {
+            padding: 16px;
+            position: relative;
+        }
+
+        .card-header .badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 4px 8px;
             font-size: 12px;
-            color: #666;
-            display: flex;
-            align-items: center;
+            font-weight: 600;
+            color: #fff;
+            border-radius: 4px;
+            text-transform: uppercase;
         }
-        .toggle-container input[type="checkbox"] {
-            margin-right: 5px;
+
+        .card.alto-padrao .badge {
+            background-color: #d4af37; /* Ouro */
         }
-    </style>
 
-    <script>
-        // Carregar tipos do JSON
-        fetch('tipos.json')
-            .then(response => response.json())
-            .then(tipos => {
-                const select = document.getElementById('tipoSelect');
-                tipos.forEach(tipo => {
-                    const option = document.createElement('option');
-                    option.value = tipo;
-                    option.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-                    select.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Erro ao carregar tipos.json:', error));
+        .card.medio-padrao .badge {
+            background-color: #4682b4; /* Azul aço */
+        }
 
-        // Pré-visualização de imagens com toggles
-        const imagensInput = document.getElementById('imagensInput');
-        const imagensPreview = document.getElementById('imagensPreview');
+        .card-header .sku {
+            font-size: 14px;
+            font-weight: 600;
+            color: #65676b;
+            margin-top: 24px; /* Espaço para o badge */
+            margin-bottom: 8px;
+        }
 
-        console.log('Script carregado. Elemento imagensInput encontrado:', imagensInput);
-        console.log('Elemento imagensPreview encontrado:', imagensPreview);
+        .card-header .interesse {
+            font-size: 16px;
+            color: #1c1e21;
+            line-height: 1.4;
+            max-height: 48px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
 
-        imagensInput.addEventListener('change', function(e) {
-            console.log('Evento change disparado no input de imagens');
-            imagensPreview.innerHTML = ''; // Limpa a prévia anterior
-            const files = e.target.files;
+        /* Ícone de diferenciação */
+        .card-header .icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            opacity: 0.8;
+        }
 
-            console.log('Arquivos selecionados:', files);
+        .card.alto-padrao .icon {
+            color: #d4af37; /* Ouro */
+        }
 
-            if (!files || files.length === 0) {
-                console.log('Nenhum arquivo selecionado.');
-                return;
+        .card.medio-padrao .icon {
+            color: #4682b4; /* Azul aço */
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+        }
+
+        .btn-adquirir {
+            width: 100%;
+            padding: 12px;
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-adquirir:hover {
+            background-color: #166fe5;
+            transform: translateY(-2px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
             }
 
-            Array.from(files).forEach((file, i) => {
-                console.log(`Processando arquivo ${i + 1}: ${file.name}`);
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        console.log(`Imagem ${i + 1} carregada com sucesso`);
-                        const div = document.createElement('div');
-                        div.className = 'image-container';
-
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = `Prévia da imagem ${i + 1}`;
-                        div.appendChild(img);
-
-                        const toggleDiv = document.createElement('div');
-                        toggleDiv.className = 'toggle-container';
-                        toggleDiv.innerHTML = `
-                            <label><input type="checkbox" name="imagens[${i}][livre]"> Livre</label>
-                            <label><input type="checkbox" name="imagens[${i}][afiliados]"> Afiliados</label>
-                            <label><input type="checkbox" name="imagens[${i}][privado]"> Privado Compradores</label>
-                        `;
-                        div.appendChild(toggleDiv);
-
-                        imagensPreview.appendChild(div);
-                        console.log(`Imagem ${i + 1} adicionada ao preview`);
-                    };
-
-                    reader.onerror = function() {
-                        console.error(`Erro ao ler o arquivo ${file.name}`);
-                    };
-
-                    reader.readAsDataURL(file);
-                } else {
-                    console.warn(`Arquivo ${file.name} não é uma imagem.`);
-                }
-            });
-        });
-
-        function enviarCadastroImovel(event) {
-            event.preventDefault();
-            const formData = new FormData();
-            const elements = document.querySelectorAll('.imovel-cadastro input, .imovel-cadastro select, .imovel-cadastro textarea');
-            elements.forEach(element => {
-                if (element.name === 'imagens') {
-                    for (let file of element.files) {
-                        formData.append('imagens', file);
-                    }
-                } else {
-                    formData.append(element.name, element.value);
-                }
-            });
-
-            const toggles = document.querySelectorAll('.toggle-container input[type="checkbox"]:checked');
-            toggles.forEach(toggle => {
-                const nameParts = toggle.name.match(/imagens\[(\d+)\]\[(livre|afiliados|privado)\]/);
-                if (nameParts) {
-                    const index = nameParts[1];
-                    const status = nameParts[2];
-                    formData.append(`imagens[${index}][${status}]`, toggle.checked);
-                }
-            });
-
-            console.log('Formulário enviado:', Object.fromEntries(formData));
-            alert('Cadastro enviado! Implemente a lógica no seu código existente.');
+            .cards {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 16px;
+            }
         }
-    </script>
-</div>
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding-bottom: 50px;
+            }
+
+            .btn-adquirir {
+                padding: 10px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nossos Clientes</h1>
+        <div class="cards">
+            <!-- Cliente 1 - Alto Padrão -->
+            <div class="card alto-padrao">
+                <div class="card-header">
+                    <div class="badge">Alto Padrão</div>
+                    <div class="sku">SKU 001</div>
+                    <div class="interesse">Busca uma mansão de luxo com vista para o mar e piscina privativa.</div>
+                    <i class="material-icons icon">star</i>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-adquirir">Adquirir por R$ 39,90</button>
+                </div>
+            </div>
+
+            <!-- Cliente 2 - Médio Padrão -->
+            <div class="card medio-padrao">
+                <div class="card-header">
+                    <div class="badge">Médio Padrão</div>
+                    <div class="sku">SKU 002</div>
+                    <div class="interesse">Procura um apartamento confortável perto do centro da cidade.</div>
+                    <i class="material-icons icon">home</i>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-adquirir">Adquirir por R$ 39,90</button>
+                </div>
+            </div>
+
+            <!-- Cliente 3 - Alto Padrão -->
+            <div class="card alto-padrao">
+                <div class="card-header">
+                    <div class="badge">Alto Padrão</div>
+                    <div class="sku">SKU 003</div>
+                    <div class="interesse">Deseja uma casa térrea com acabamento premium e amplo jardim.</div>
+                    <i class="material-icons icon">star</i>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-adquirir">Adquirir por R$ 39,90</button>
+                </div>
+            </div>
+
+            <!-- Cliente 4 - Médio Padrão -->
+            <div class="card medio-padrao">
+                <div class="card-header">
+                    <div class="badge">Médio Padrão</div>
+                    <div class="sku">SKU 004</div>
+                    <div class="interesse">Interessado em uma casa simples com 3 quartos e garagem.</div>
+                    <i class="material-icons icon">home</i>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-adquirir">Adquirir por R$ 39,90</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

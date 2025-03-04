@@ -10,7 +10,7 @@
 body {
     background-color: #f4f7f6;
     transition: margin-left 0.3s ease;
-    padding-top: 70px; /* Ajuste para evitar sobreposição */
+    padding-top: 70px;
 }
 
 /* Estiliza o preloader */
@@ -20,40 +20,37 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: white; /* Fundo branco */
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000; /* Garante que fique sobre tudo */
+    z-index: 2000;
 }
 
-/* Ajusta o tamanho da imagem */
 #preloader-img {
-    max-height: 100px; /* Ajuste conforme necessário */
+    max-height: 100px;
     width: auto;
 }
 
-
 /* Estilo do cabeçalho */
 header {
-    position: fixed; /* Fixa o cabeçalho na tela */
-    top: 0; /* Mantém no topo */
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 100%; /* Ocupa toda a largura */
+    width: 100%;
     display: flex;
     align-items: center;
     background-color: white;
     padding: 15px 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1500;
-    gap: 10px; /* Adiciona espaçamento entre os elementos */
+    gap: 10px;
 }
 
 #logo {
     max-height: 50px;
-    width: auto; /* Mantém a largura proporcional */
+    width: auto;
 }
-
 
 header h1 {
     font-size: 22px;
@@ -82,18 +79,15 @@ header h1 {
     z-index: 1;
     padding-top: 80px;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-
-    /* Corrigindo o alinhamento */
-    display: flex; /* Ativa o Flexbox */
-    flex-direction: column; /* Organiza os itens em coluna */
-    justify-content: space-between; /* Distribui os itens nas extremidades */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-
 
 .user-info {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Distribui os elementos nas extremidades */
+    justify-content: space-between;
     padding: 10px 20px;
     border-bottom: 2px solid #ddd;
     background-color: #ddd;
@@ -103,9 +97,7 @@ header h1 {
     text-decoration: none;
     font-size: 18px;
     color: #333;
-
 }
-
 
 .user-info:hover {
     background-color: #e6e6e6;
@@ -117,13 +109,11 @@ header h1 {
     cursor: pointer;
 }
 
-/* Sidebar aberta */
 .sidebar.open {
     width: 250px;
-    z-index: 10; /* Garante que fique acima de outros elementos */
+    z-index: 10;
 }
 
-/* Estilo do menu lateral */
 .sidebar ul {
     list-style: none;
     padding: 0;
@@ -153,69 +143,56 @@ header h1 {
     transition: margin-left 0.3s ease;
     align-items: center;
     justify-content: center;
-
 }
 
-/* Cards de imóveis */
+/* Containers gerais */
 .container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    max-width: 1200px; /* Limita a largura do container */
+    max-width: 1200px;
     align-items: center;
     margin: auto;
-
-
 }
 
 #meus-imoveis-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px; /* Espaçamento entre os cards */
-    padding: 20px; /* Espaçamento interno do container */
-    max-width: 1200px; /* Limita a largura do container */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
     align-items: center;
     justify-content: center;
     margin: auto;
-
 }
 
-/* Estilo para os cards dentro do container */
 #meus-imoveis-container .card {
-    width: 100%; /* Garante que o card ocupe toda a largura da célula da grade */
-    box-sizing: border-box; /* Inclui padding e borda na largura */
-    margin: 0; /* Remove qualquer margem padrão que possa interferir no gap */
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
 }
 
-/* Estilo para o título "Meus Imóveis" */
 #meus-imoveis-container h2 {
-    grid-column: 1 / -1; /* Faz o título ocupar todas as colunas da grade */
-    width: 100%; /* Garante que o título ocupe toda a largura disponível */
-    margin: 0 0 15px 0; /* Remove margens laterais, mantém a inferior */
-    padding-left: 15px; /* Mantém o alinhamento à esquerda como no JS */
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0 0 15px 0;
+    padding-left: 15px;
     color: #555555;
     box-sizing: border-box;
 }
 
-
-
 #meus-leads {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1200px; /* Limita a largura do container */
-
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 40px 20px;
+    justify-items: center;
+    max-width: 1200px;
+    margin: auto;
 }
 
-
-
-
-
-
+/* Estilo dos cards de imóveis (inalterado) */
 .card {
     position: relative;
     width: 100%;
@@ -227,7 +204,6 @@ header h1 {
     margin-bottom: 20px;
     padding: 0%;
 }
-
 
 .image-container {
     position: relative;
@@ -267,14 +243,6 @@ header h1 {
     font-size: 14px;
 }
 
-
-
-
-
-
-
-
-
 .card {
     background: white;
     border-radius: 8px;
@@ -307,59 +275,166 @@ header h1 {
     color: #555;
 }
 
-/* Responsividade */
-@media (max-width: 420px) {
-    .sidebar.open {
-        width: 100%;
-    }
-
-    .main-content {
-        padding: 10px;
-    }
-
-    .card {
-        width: 95%;
-        margin-bottom: 10px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .card-cliente {
-        width: 90%;
-    }
+/* Estilo dos cards de leads (atualizado com largura fixa e altura mínima) */
+#clientes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 40px 20px;
+    justify-items: center; /* Centraliza os cards no grid */
 }
 
-.card {
-    position: relative;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.lead-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    padding-bottom: 60px; /* Espaço para o botão */
+    width: 280px; /* Largura fixa */
+    min-height: 200px; /* Altura mínima para uniformidade */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
 }
 
-.btn-detalhes {
-    background-color: #0865FE;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+.lead-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.lead-card.alto-padrao {
+    border-top: 6px solid #d4af37;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+}
+
+.lead-card.medio-padrao {
+    border-top: 6px solid #4682b4;
+    background: linear-gradient(135deg, #e6f0fa, #ffffff);
+}
+
+.lead-card-header {
+    padding: 16px;
+    position: relative;
+    flex-grow: 1; /* Permite que o header ocupe o espaço disponível */
+}
+
+.lead-card-header .lead-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.lead-card.alto-padrao .lead-badge {
+    background-color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-badge {
+    background-color: #4682b4;
+}
+
+.lead-card-header .lead-sku {
     font-size: 14px;
-    font-weight: bold;
-    margin-top: auto; /* Faz com que o botão fique sempre no final do card */
+    font-weight: 600;
+    color: #65676b;
+    margin-top: 24px;
+    margin-bottom: 8px;
 }
 
-.btn-detalhes:hover {
-    background-color: #0865FEcc;
+.lead-sku {
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Estilo dos cards de clientes */
+.lead-card-header .lead-interesse {
+    font-size: 16px;
+    color: #1c1e21;
+    line-height: 1.4;
+    margin-bottom: 8px; /* Espaçamento entre linhas */
+}
+
+.lead-card-header .lead-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.lead-card.alto-padrao .lead-icon {
+    color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-icon {
+    color: #4682b4;
+}
+
+.lead-card-footer {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+}
+
+.lead-btn-adquirir {
+    width: 100%;
+    padding: 12px;
+    background-color: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.lead-btn-adquirir:hover {
+    background-color: #166fe5;
+    transform: translateY(-2px);
+}
+
+/* Responsividade para cards de leads */
+@media (max-width: 768px) {
+    #clientes-container, #meus-leads {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+    }
+
+    .lead-card {
+        width: 250px; /* Reduz a largura em telas menores */
+        min-height: 180px; /* Ajusta a altura mínima */
+    }
+}
+
+@media (max-width: 480px) {
+    #clientes-container, #meus-leads {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+        padding: 20px 10px;
+    }
+
+    .lead-card {
+        width: 100%; /* Ocupa toda a largura disponível */
+        max-width: 350px; /* Mantém um limite máximo */
+        min-height: 180px; /* Mantém altura mínima */
+        margin: 0 auto; /* Centraliza o card */
+    }
+
+    .lead-btn-adquirir {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+/* Estilo para cards de clientes antigos (mantido para compatibilidade) */
 .card-cliente {
     background: white;
     padding: 15px;
@@ -372,20 +447,31 @@ header h1 {
 }
 
 .card-cliente .btn-detalhes {
-    margin-top: 5px; /* Aplica a margem superior apenas dentro de card-cliente */
-    align-self: flex-end; /* Alinha o botão à direita do card */
-    width: 100%; /* Ocupa toda a largura */
-
+    margin-top: 5px;
+    align-self: flex-end;
+    width: 100%;
 }
 
+/* Botão de detalhes genérico */
+.btn-detalhes {
+    background-color: #0865FE;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: auto;
+    margin: 10px;
+    width: calc(100% - 20px);
+}
 
+.btn-detalhes:hover {
+    background-color: #0865FEcc;
+}
 
-
-
-
-
-
-
+/* Filtros de leads */
 .filtros-leads {
     display: flex;
     flex-direction: column;
@@ -400,85 +486,73 @@ header h1 {
 }
 
 #dropdown-padrao-leads, #dropdown-valores-leads, #dropdown-ordenacao-leads {
-    padding: 12px 16px; /* Igual a #dropdown-cidades e #dropdown-precos */
-    font-size: 15px; /* Igual a #dropdown-cidades e #dropdown-precos */
-    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif; /* Mesma fonte */
-    color: #333; /* Mesma cor de texto */
-    border: 1px solid #e0e0e0; /* Mesma borda inicial */
-    border-radius: 8px; /* Mesma borda arredondada */
-    background-color: #fff; /* Fundo branco */
-    max-width: 1200px;
-    max-width: 100%; /* Mantido para responsividade */
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 100%;
     box-sizing: border-box;
     cursor: pointer;
-    transition: all 0.3s ease; /* Transição mais longa e completa */
+    transition: all 0.3s ease;
     appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Ícone de seta igual */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 12px center; /* Posicionamento igual */
+    background-position: right 12px center;
 }
 
 #dropdown-padrao-leads:hover, #dropdown-valores-leads:hover, #dropdown-ordenacao-leads:hover,
 #dropdown-padrao-leads:focus, #dropdown-valores-leads:focus, #dropdown-ordenacao-leads:focus {
-    border-color: #007bff; /* Azul igual a #dropdown-cidades e #dropdown-precos */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); /* Sombra azul suave igual */
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     outline: none;
 }
 
-/* Responsividade */
+/* Responsividade para filtros de leads */
 @media (max-width: 768px) {
     .filtros-leads {
-        flex-direction: column; /* Alinhado com .dropdowns-wrapper */
-        gap: 12px; /* Ajustado para telas menores */
+        flex-direction: column;
+        gap: 12px;
         width: calc(100% - 20px);
-
     }
 
     #dropdown-padrao-leads, #dropdown-valores-leads, #dropdown-ordenacao-leads {
-        width: 100%; /* Ocupa toda a largura como #dropdown-cidades */
+        width: 100%;
         max-width: none;
     }
 }
 
 @media (max-width: 420px) {
     .filtros-leads {
-        margin: 10px; /* Igual a #filtros-imoveis */
-        padding: 12px; /* Igual a #filtros-imoveis */
+        margin: 10px;
+        padding: 12px;
     }
 
     #dropdown-padrao-leads, #dropdown-valores-leads, #dropdown-ordenacao-leads {
-        font-size: 14px; /* Igual a #dropdown-cidades e #dropdown-precos */
-        padding: 10px 14px; /* Igual a #dropdown-cidades e #dropdown-precos */
+        font-size: 14px;
+        padding: 10px 14px;
     }
 }
 
-
-
-
-
-
-
-
-
-
-
+/* Outros estilos (imóveis, paginação, etc.) mantidos intactos */
 .image-container {
-    position: relative; /* Necessário para posicionar o label */
+    position: relative;
 }
 
 .padrao-label {
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: rgba(0, 0, 0, 0.6); /* Fundo preto com 60% de opacidade */
+    background-color: rgba(0, 0, 0, 0.6);
     color: white;
     padding: 5px 10px;
-    border-radius: 12px; /* Bordas arredondadas */
+    border-radius: 12px;
     font-size: 12px;
     font-weight: bold;
-    z-index: 1; /* Garante que fique acima da imagem */
+    z-index: 1;
 }
-
 
 #filtros-imoveis {
     display: flex;
@@ -534,8 +608,28 @@ header h1 {
     margin-top: 8px;
 }
 
+/* Responsividade geral */
+@media (max-width: 420px) {
+    .sidebar.open {
+        width: 100%;
+    }
 
-/* Responsividade */
+    .main-content {
+        padding: 10px;
+    }
+
+    .card {
+        width: 95%;
+        margin-bottom: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .card-cliente {
+        width: 90%;
+    }
+}
+
 @media (max-width: 768px) {
     .dropdowns-wrapper {
         flex-direction: column;
@@ -574,9 +668,7 @@ header h1 {
     }
 }
 
-
-
-/* Estilização da paginação específica para imóveis */
+/* Paginação de imóveis */
 .paginacao-imoveis {
     display: flex;
     justify-content: center;
@@ -614,7 +706,7 @@ header h1 {
     padding: 8px;
 }
 
-/* Mensagem de nenhum resultado (mantida) */
+/* Mensagem de nenhum resultado */
 .nenhum-resultado {
     text-align: center;
     color: #666;
@@ -626,9 +718,7 @@ header h1 {
     margin: 20px 0;
 }
 
-
-
-
+/* Outros elementos mantidos */
 .contagem-leads {
     margin: 15px 0;
     padding: 10px;
@@ -654,7 +744,6 @@ header h1 {
     border-top: 1px solid #CCD0D5;
     margin-bottom: 15px;
 }
-
 
 .paginacao {
     margin-top: 20px;
@@ -687,13 +776,7 @@ header h1 {
     color: #555555;
 }
 
-
-
-
-
-
-
-/* Estilização da paginação específica para leads */
+/* Paginação de leads */
 .paginacao-leads {
     display: flex;
     justify-content: center;
@@ -731,21 +814,18 @@ header h1 {
     padding: 8px;
 }
 
-
-
-
-/* Estilo para o popup de afiliação */
+/* Popup de afiliação */
 .affiliation-popup {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Garante que fique acima de outros elementos */
+    z-index: 1000;
 }
 
 .affiliation-popup-content {
@@ -780,29 +860,26 @@ header h1 {
     transition: background-color 0.3s ease;
 }
 
-/* Botão "Confirmar" no popup */
 .affiliation-confirm-btn {
-    background-color: #4CAF50; /* Verde */
+    background-color: #4CAF50;
     color: white;
 }
 
 .affiliation-confirm-btn:hover {
-    background-color: #45a049; /* Verde mais escuro no hover */
+    background-color: #45a049;
 }
 
-/* Botão "Cancelar" no popup */
 .affiliation-cancel-btn {
-    background-color: #f44336; /* Vermelho */
+    background-color: #f44336;
     color: white;
 }
 
 .affiliation-cancel-btn:hover {
-    background-color: #d32f2f; /* Vermelho mais escuro no hover */
+    background-color: #d32f2f;
 }
 
-/* Botão "Remover Afiliação" no card */
 .btn-remove-affiliation {
-    background-color: #ff4d4d; /* Vermelho suave */
+    background-color: #ff4d4d;
     color: white;
     border: none;
     border-radius: 5px;
@@ -815,5 +892,5 @@ header h1 {
 }
 
 .btn-remove-affiliation:hover {
-    background-color: #cc0000; /* Vermelho mais escuro no hover */
+    background-color: #cc0000;
 }
