@@ -28,36 +28,133 @@ function getNomeCidade(cidadeId) {
     return cidade ? cidade.name : "Cidade não encontrada";
 }
 
-// Função para carregar os imóveis iniciais
-async function carregarImoveis() {
+async function mostrarCheckout(leadId, padrao, valorFormatado) {
+    console.log("mostrarCheckout chamado com:", leadId, padrao, valorFormatado);
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=${imoveisPorPagina}&offset=0`);
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=1&offset=0&id=${leadId}`);
         const data = await response.json();
-        if (data.success) {
-            imoveisOriginais = data.imoveis;
-            totalImoveis = data.total;
-            renderizarImoveis(data.imoveis);
-        } else {
-            console.error("Erro ao carregar imóveis:", data.error);
-            imoveisOriginais = [];
-            totalImoveis = 0;
-            renderizarImoveis([]);
-        }
+        console.log("Resposta da API:", data);
+        const lead = data.clientes && data.clientes[0] ? data.clientes[0] : {};
+
+        const overlay = document.createElement("div");
+        overlay.className = "checkout-overlay";
+        // Estilo inline como fallback
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.background = "rgba(0, 0, 0, 0.6)";
+        overlay.style.display = "flex";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.zIndex = "2000";
+
+        const modal = document.createElement("div");
+        modal.className = "checkout-modal";
+        // Estilo inline como fallback
+        modal.style.background = "#fff";
+        modal.style.width = "100%";
+        modal.style.maxWidth = "800px";
+        modal.style.height = "80vh";
+        modal.style.borderRadius = "12px";
+        modal.style.padding = "20px";
+        modal.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.2)";
+        modal.style.display = "flex";
+        modal.style.flexDirection = "column";
+        modal.style.overflowY = "auto";
+
+        modal.innerHTML = `
+            <div class="checkout-header">
+                <h2>Confirmar Compra de Lead</h2>
+            </div>
+            <div class="lead-info">
+                <div class="lead-interesse">SKU: ${lead.id || "N/A"}</div>
+                <div class="lead-interesse">Interesse: ${lead.interesse || "Não especificado"}</div>
+                <div class="lead-interesse">Valor do Lead: ${valorFormatado}</div>
+            </div>
+            <div class="similar-leads">
+                <h3>Leads Semelhantes</h3>
+                <div class="similar-leads-container" id="similar-leads-container"></div>
+            </div>
+            <div class="checkout-footer">
+                <div class="total-price">Total: ${valorFormatado}</div>
+                <div class="checkout-buttons">
+                    <button class="confirm-btn" onclick="confirmarCompra(${leadId})">Confirmar</button>
+                    <button class="cancel-btn" onclick="this.closest('.checkout-overlay').remove()">Cancelar</button>
+                </div>
+            </div>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        await carregarLeadsSemelhantes(leadId, padrao, valorFormatado);
     } catch (error) {
-        console.error("Erro ao carregar imóveis:", error);
-        imoveisOriginais = [];
-        totalImoveis = 0;
-        renderizarImoveis([]);
+        console.error("Erro em mostrarCheckout:", error);
     }
 }
 
-// Função para criar o card de cada imóvel (ajustada para usar o campo 'imagem')
+// Função para carregar leads semelhantes
+async function carregarLeadsSemelhantes(leadId, padrao, valorFormatado) {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=10&categoria=${padrao === "alto-padrao" ? 2 : 1}`);
+        const data = await response.json();
+        const similarLeadsContainer = document.getElementById("similar-leads-container");
+        const selectedLeads = [leadId];
+        let totalPrice = parseFloat(valorFormatado.replace("R$", "").replace(".", "").replace(",", "."));
+
+        if (data.clientes && Array.isArray(data.clientes)) {
+            const filteredLeads = data.clientes.filter(lead => lead.id !== leadId);
+            filteredLeads.forEach(lead => {
+                const valorLead = parseFloat(lead.valor_lead || 0).toLocaleString('pt-BR', { 
+                    style: 'currency', 
+                    currency: 'BRL' 
+                });
+                const miniCard = document.createElement("div");
+                miniCard.className = `mini-lead-card ${padrao}`;
+                miniCard.innerHTML = `
+                    <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
+                    <div class="lead-sku">SKU ${lead.id}</div>
+                    <div class="lead-interesse">${lead.interesse || "N/A"}</div>
+                    <div class="lead-interesse">${valorLead}</div>
+                `;
+                miniCard.onclick = () => {
+                    miniCard.classList.toggle("selected");
+                    const leadValue = parseFloat(lead.valor_lead || 0);
+                    if (miniCard.classList.contains("selected")) {
+                        selectedLeads.push(lead.id);
+                        totalPrice += leadValue;
+                    } else {
+                        selectedLeads.splice(selectedLeads.indexOf(lead.id), 1);
+                        totalPrice -= leadValue;
+                    }
+                    document.querySelector(".total-price").textContent = `Total: ${totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                    window.selectedLeads = selectedLeads;
+                };
+                similarLeadsContainer.appendChild(miniCard);
+            });
+        }
+    } catch (error) {
+        console.error("Erro ao carregar leads semelhantes:", error);
+    }
+}
+
+// Função para confirmar a compra
+function confirmarCompra(leadId) {
+    const selectedLeads = window.selectedLeads || [leadId];
+    console.log("Leads a comprar:", selectedLeads);
+    alert(`Compra confirmada para os leads: ${selectedLeads.join(", ")}. Redirecionando para o checkout...`);
+    document.querySelector(".checkout-overlay").remove();
+}
+
+// Função para criar o card de cada imóvel
 function criarCardImovel(imovel) {
-    const imagemObj = imovel.imagem; // Agora é um objeto ou null
+    const imagemObj = imovel.imagem;
     console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
     const imagem = imagemObj && imagemObj.url 
         ? imagemObj.url 
-        : "assets/icon.ico"; // Usa a imagem padrão se não houver imagem ou url
+        : "assets/icon.ico";
 
     const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
@@ -104,6 +201,67 @@ function criarCardImovel(imovel) {
     `;
 }
 
+// Função para criar o card de lead
+function criarCardLead(cliente) {
+    console.log("Criando card para cliente:", cliente.id);
+    const padrao = cliente.categoria === 1 ? "medio-padrao" : 
+                   cliente.categoria === 2 ? "alto-padrao" : 
+                   "medio-padrao";
+    const icon = cliente.categoria === 2 ? "star" : "home";
+    const valorLead = cliente.valor_lead || 0;
+    const valorFormatado = parseFloat(valorLead).toLocaleString('pt-BR', { 
+        style: 'currency', 
+        currency: 'BRL', 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
+
+    const card = document.createElement("div");
+    card.className = `lead-card ${padrao}`;
+    card.innerHTML = `
+        <div class="lead-card-header">
+            <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
+            <div class="lead-sku">SKU ${cliente.id}</div>
+            <div class="lead-interesse">${cliente.interesse || "Interesse não especificado"}</div>
+            <i class="material-icons lead-icon">${icon}</i>
+        </div>
+        <div class="lead-card-footer">
+            <button class="lead-btn-adquirir">Obter por ${valorFormatado}</button>
+        </div>
+    `;
+
+    const button = card.querySelector(".lead-btn-adquirir");
+    button.addEventListener("click", () => {
+        console.log("Botão clicado para lead ID:", cliente.id);
+        mostrarCheckout(cliente.id, padrao, valorFormatado);
+    });
+
+    return card;
+}
+
+// Função para carregar os imóveis iniciais
+async function carregarImoveis() {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=${imoveisPorPagina}&offset=0`);
+        const data = await response.json();
+        if (data.success) {
+            imoveisOriginais = data.imoveis;
+            totalImoveis = data.total;
+            renderizarImoveis(data.imoveis);
+        } else {
+            console.error("Erro ao carregar imóveis:", data.error);
+            imoveisOriginais = [];
+            totalImoveis = 0;
+            renderizarImoveis([]);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar imóveis:", error);
+        imoveisOriginais = [];
+        totalImoveis = 0;
+        renderizarImoveis([]);
+    }
+}
+
 // Função para renderizar os imóveis
 function renderizarImoveis(imoveis) {
     const imoveisContainer = document.getElementById("imoveis-container");
@@ -126,7 +284,7 @@ function renderizarImoveis(imoveis) {
     criarPaginacaoImoveis(totalImoveis);
 }
 
-// Função para criar paginação específica para imóveis (com scroll ao topo)
+// Função para criar paginação específica para imóveis
 function criarPaginacaoImoveis(totalImoveis) {
     const totalPaginas = Math.ceil(totalImoveis / imoveisPorPagina);
     const paginacaoContainer = document.getElementById("paginacao-imoveis") || createPaginationImoveisContainer();
@@ -277,7 +435,7 @@ async function exibirDropdownCidades() {
         const select = document.createElement("select");
         select.id = "dropdown-cidades";
         select.onchange = () => {
-            paginaImoveisAtual = 1; // Reseta para a primeira página ao mudar o filtro
+            paginaImoveisAtual = 1;
             filtrarImoveis();
         };
 
@@ -310,7 +468,7 @@ function exibirDropdownPrecos() {
     const select = document.createElement("select");
     select.id = "dropdown-precos";
     select.onchange = () => {
-        paginaImoveisAtual = 1; // Reseta para a primeira página ao mudar o filtro
+        paginaImoveisAtual = 1;
         filtrarImoveis();
     };
 
@@ -339,41 +497,9 @@ function exibirDropdownPrecos() {
     dropdownsWrapper.appendChild(select);
 }
 
-// Função para criar o HTML de um card de lead (atualizada)
-function criarCardLead(cliente) {
-    const padrao = cliente.categoria === 1 ? "medio-padrao" : 
-                   cliente.categoria === 2 ? "alto-padrao" : 
-                   "medio-padrao"; // Default para médio padrão se não especificado
-    const icon = cliente.categoria === 2 ? "star" : "home"; // Ícone baseado no padrão
-
-    // Formata o valor_lead como moeda brasileira (R$)
-    const valorLead = cliente.valor_lead || 0; // Usa 0 como fallback se valor_lead não existir
-    const valorFormatado = parseFloat(valorLead).toLocaleString('pt-BR', { 
-        style: 'currency', 
-        currency: 'BRL', 
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2 
-    });
-
-    return `
-        <div class="lead-card ${padrao}">
-            <div class="lead-card-header">
-                <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
-                <div class="lead-sku">SKU ${cliente.id}</div>
-                <div class="lead-interesse">${cliente.interesse || "Interesse não especificado"}</div>
-                <i class="material-icons lead-icon">${icon}</i>
-            </div>
-            <div class="lead-card-footer">
-                <button class="lead-btn-adquirir" onclick="window.location.href='cliente.html?id=${cliente.id}'">
-                    Obter por ${valorFormatado}
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-// Função para renderizar os leads com paginação (atualizada)
+// Função para renderizar os leads
 function renderizarLeads(leadsFiltrados) {
+    console.log("Renderizando leads:", leadsFiltrados.length);
     const clientesContainer = document.getElementById("clientes-container");
     if (!clientesContainer) {
         console.error("Erro: Elemento #clientes-container não encontrado.");
@@ -384,22 +510,20 @@ function renderizarLeads(leadsFiltrados) {
     if (!filtrosDiv) {
         filtrosDiv = document.createElement("div");
         filtrosDiv.classList.add("filtros-leads");
-        clientesContainer.insertBefore(filtrosDiv, clientesContainer.firstChild); // Adiciona no topo
+        clientesContainer.insertBefore(filtrosDiv, clientesContainer.firstChild);
         exibirDropdownPadraoLeads();
         exibirDropdownValoresLeads();
         exibirDropdownOrdenacaoLeads();
     }
 
-    // Limpa apenas os elementos antigos relacionados aos cards de leads
     const existingElements = clientesContainer.querySelectorAll(".contagem-leads, .lead-card, .outros-resultados, .paginacao-leads");
     existingElements.forEach(element => element.remove());
 
-    // Adiciona os novos cards
     leadsFiltrados.forEach(cliente => {
-        clientesContainer.insertAdjacentHTML('beforeend', criarCardLead(cliente));
+        const card = criarCardLead(cliente);
+        clientesContainer.appendChild(card);
     });
 
-    // Criação da paginação
     const paginacaoDiv = document.createElement("div");
     paginacaoDiv.id = "paginacao-leads";
     paginacaoDiv.className = "paginacao-leads";
@@ -438,7 +562,7 @@ function renderizarLeads(leadsFiltrados) {
     paginationWrapper.appendChild(setaDireita);
 
     paginacaoDiv.appendChild(paginationWrapper);
-    clientesContainer.insertAdjacentElement('beforeend', paginacaoDiv);
+    clientesContainer.appendChild(paginacaoDiv);
 
     setaEsquerda.style.opacity = paginaAtual === 1 ? '0.5' : '1';
     setaEsquerda.style.cursor = paginaAtual === 1 ? 'not-allowed' : 'pointer';
@@ -477,7 +601,7 @@ function exibirDropdownPadraoLeads() {
     filtrosDiv.appendChild(select);
 }
 
-// Função<|control566|> para exibir o dropdown de valores de interesse
+// Função para exibir o dropdown de valores de interesse
 function exibirDropdownValoresLeads() {
     const filtrosDiv = document.querySelector(".filtros-leads");
     if (!filtrosDiv || document.getElementById("dropdown-valores-leads")) return;
@@ -590,7 +714,7 @@ async function carregarClientes() {
     await carregarClientesPaginados();
 }
 
-// Função para carregar imóveis afiliados e comprados (ajustada para usar o campo 'imagem')
+// Função para carregar imóveis afiliados e comprados
 async function carregaraImoveis() {
     try {
         const container = document.getElementById("meus-imoveis-container");
@@ -621,11 +745,11 @@ async function carregaraImoveis() {
             const card = document.createElement("div");
             card.classList.add("card");
 
-            const imagemObj = imovel.imagem; // Novo campo 'imagem'
+            const imagemObj = imovel.imagem;
             console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
             const imagem = imagemObj && imagemObj.url 
                 ? imagemObj.url 
-                : "https://source.unsplash.com/400x300/?house"; // Imagem padrão ajustada
+                : "https://source.unsplash.com/400x300/?house";
 
             const phone = imovel.whatsapp ? imovel.whatsapp.replace(/\D/g, '') : '';
             const mensagem = `Olá ${imovel.nome_proprietario || 'Proprietário'}`;
@@ -716,6 +840,7 @@ async function removerAfiliacao(imovelId) {
     }
 }
 
+// Função para carregar leads adquiridos
 async function carregarLeadsAdquiridos(corretorId) {
     try {
         const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes/${corretorId}`);
@@ -723,21 +848,18 @@ async function carregarLeadsAdquiridos(corretorId) {
         const leads = Array.isArray(data.clientes) ? data.clientes : [];
 
         const meusLeadsContainer = document.getElementById("meus-leads");
-        meusLeadsContainer.innerHTML = ""; // Limpa o conteúdo anterior
+        meusLeadsContainer.innerHTML = "";
 
-        // Cria um contêiner para o título
         const titleContainer = document.createElement("div");
         titleContainer.className = "title-container";
         
         const titulo = document.createElement("h2");
         titulo.textContent = "Leads Adquiridos";
-        titulo.style.color = "#555555"; // Mantém a cor original
+        titulo.style.color = "#555555";
         titleContainer.appendChild(titulo);
         
-        // Adiciona o contêiner do título ao #meus-leads
         meusLeadsContainer.appendChild(titleContainer);
 
-        // Cria um contêiner para o grid de leads
         const gridContainer = document.createElement("div");
         gridContainer.className = "leads-grid";
 
@@ -773,7 +895,6 @@ async function carregarLeadsAdquiridos(corretorId) {
             });
         }
 
-        // Adiciona o grid ao #meus-leads
         meusLeadsContainer.appendChild(gridContainer);
     } catch (error) {
         console.error("Erro ao carregar leads adquiridos:", error);
@@ -805,7 +926,52 @@ async function carregarCorretor() {
     }
 }
 
-// Atualizar o evento DOMContentLoaded
+// Função para carregar preview de imóveis
+async function carregarImoveisPreview() {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=10&offset=0&destaque=true`);
+        const data = await response.json();
+        const imoveisPreview = document.getElementById("imoveis-preview");
+        imoveisPreview.innerHTML = "";
+        if (data.success && data.imoveis && Array.isArray(data.imoveis)) {
+            data.imoveis.forEach(imovel => {
+                imoveisPreview.innerHTML += criarCardImovel(imovel);
+            });
+        } else {
+            console.warn("Nenhum imóvel em destaque encontrado:", data);
+            imoveisPreview.innerHTML = "<p>Nenhum imóvel em destaque disponível no momento.</p>";
+        }
+    } catch (error) {
+        console.error("Erro ao carregar preview de imóveis:", error);
+        const imoveisPreview = document.getElementById("imoveis-preview");
+        imoveisPreview.innerHTML = "<p>Erro ao carregar imóveis.</p>";
+    }
+}
+
+// Função para carregar preview de leads
+async function carregarLeadsPreview() {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=4&offset=0`);
+        const data = await response.json();
+        const leadsPreview = document.getElementById("leads-preview");
+        leadsPreview.innerHTML = "";
+        if (data.clientes && Array.isArray(data.clientes)) {
+            data.clientes.forEach(cliente => {
+                const card = criarCardLead(cliente);
+                leadsPreview.appendChild(card);
+            });
+        } else {
+            console.warn("Nenhum lead encontrado no preview:", data);
+            leadsPreview.innerHTML = "<p>Nenhum lead disponível no momento.</p>";
+        }
+    } catch (error) {
+        console.error("Erro ao carregar preview de leads:", error);
+        const leadsPreview = document.getElementById("leads-preview");
+        leadsPreview.innerHTML = "<p>Erro ao carregar leads.</p>";
+    }
+}
+
+// Evento DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function () {
     const menuToggle = document.querySelector(".menu-toggle");
     const sidebar = document.querySelector(".sidebar");
@@ -822,7 +988,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const verMaisImoveis = document.getElementById("ver-mais-imoveis");
     const verMaisLeads = document.getElementById("ver-mais-leads");
 
-    // Função auxiliar para mostrar/esconder filtros
     function gerenciarFiltros(visivel) {
         const filtrosContainer = document.getElementById("filtros-imoveis");
         if (filtrosContainer) {
@@ -830,7 +995,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Função auxiliar para gerenciar a visibilidade da paginação de imóveis
     function gerenciarPaginacaoImoveis(visivel) {
         const paginacaoImoveis = document.getElementById("paginacao-imoveis");
         if (paginacaoImoveis) {
@@ -843,7 +1007,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Função para centralizar a paginação
     function centralizarPaginacaoImoveis() {
         const paginacaoImoveis = document.getElementById("paginacao-imoveis");
         if (paginacaoImoveis) {
@@ -948,7 +1111,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // Inicialização padrão - Mostrar a seção inicial
     homeSection.style.display = "block";
     imoveisContainer.style.display = "none";
     clientesContainer.style.display = "none";
@@ -972,48 +1134,3 @@ window.addEventListener("load", function () {
         }
     }, 1000);
 });
-
-
-
-async function carregarImoveisPreview() {
-    try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=10&offset=0&destaque=true`);
-        const data = await response.json();
-        const imoveisPreview = document.getElementById("imoveis-preview");
-        imoveisPreview.innerHTML = ""; // Limpa o conteúdo anterior
-        if (data.success && data.imoveis && Array.isArray(data.imoveis)) {
-            data.imoveis.forEach(imovel => {
-                imoveisPreview.innerHTML += criarCardImovel(imovel);
-            });
-        } else {
-            console.warn("Nenhum imóvel em destaque encontrado:", data);
-            imoveisPreview.innerHTML = "<p>Nenhum imóvel em destaque disponível no momento.</p>";
-        }
-    } catch (error) {
-        console.error("Erro ao carregar preview de imóveis:", error);
-        const imoveisPreview = document.getElementById("imoveis-preview");
-        imoveisPreview.innerHTML = "<p>Erro ao carregar imóveis.</p>";
-    }
-}
-
-// Função para carregar preview de leads (máximo 4, por exemplo)
-async function carregarLeadsPreview() {
-    try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=4&offset=0`);
-        const data = await response.json();
-        const leadsPreview = document.getElementById("leads-preview");
-        leadsPreview.innerHTML = ""; // Limpa o conteúdo anterior
-        if (data.clientes && Array.isArray(data.clientes)) {
-            data.clientes.forEach(cliente => {
-                leadsPreview.innerHTML += criarCardLead(cliente);
-            });
-        } else {
-            console.warn("Nenhum lead encontrado no preview:", data);
-            leadsPreview.innerHTML = "<p>Nenhum lead disponível no momento.</p>";
-        }
-    } catch (error) {
-        console.error("Erro ao carregar preview de leads:", error);
-        const leadsPreview = document.getElementById("leads-preview");
-        leadsPreview.innerHTML = "<p>Erro ao carregar leads.</p>";
-    }
-}
