@@ -38,7 +38,6 @@ async function mostrarCheckout(leadId, padrao, valorFormatado) {
 
         const overlay = document.createElement("div");
         overlay.className = "checkout-overlay";
-        // Estilo inline como fallback
         overlay.style.position = "fixed";
         overlay.style.top = "0";
         overlay.style.left = "0";
@@ -52,7 +51,6 @@ async function mostrarCheckout(leadId, padrao, valorFormatado) {
 
         const modal = document.createElement("div");
         modal.className = "checkout-modal";
-        // Estilo inline como fallback
         modal.style.background = "#fff";
         modal.style.width = "100%";
         modal.style.maxWidth = "800px";
@@ -67,6 +65,7 @@ async function mostrarCheckout(leadId, padrao, valorFormatado) {
         modal.innerHTML = `
             <div class="checkout-header">
                 <h2>Confirmar Compra de Lead</h2>
+                <i class="material-icons close-icon" onclick="this.closest('.checkout-overlay').remove()">close</i>
             </div>
             <div class="lead-info">
                 <div class="lead-interesse">SKU: ${lead.id || "N/A"}</div>
@@ -81,7 +80,6 @@ async function mostrarCheckout(leadId, padrao, valorFormatado) {
                 <div class="total-price">Total: ${valorFormatado}</div>
                 <div class="checkout-buttons">
                     <button class="confirm-btn" onclick="confirmarCompra(${leadId})">Confirmar</button>
-                    <button class="cancel-btn" onclick="this.closest('.checkout-overlay').remove()">Cancelar</button>
                 </div>
             </div>
         `;

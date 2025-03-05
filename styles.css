@@ -1011,6 +1011,11 @@ header h1 {
 }
 
 
+
+
+
+
+
 /* Overlay da tela de confirmação */
 .checkout-overlay {
     position: fixed;
@@ -1041,12 +1046,29 @@ header h1 {
 
 /* Cabeçalho do modal */
 .checkout-header {
+    position: relative;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .checkout-header h2 {
     font-size: 24px;
     color: #333;
+    margin: 0;
+}
+
+/* Ícone de fechar */
+.close-icon {
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-icon:hover {
+    color: #f44336;
 }
 
 /* Informações do lead principal */
@@ -1064,6 +1086,8 @@ header h1 {
 /* Seção de leads semelhantes */
 .similar-leads {
     margin-top: 20px;
+    flex-grow: 1; /* Permite que esta seção cresça para ocupar espaço disponível */
+    overflow-y: auto; /* Rolagem vertical apenas para leads semelhantes, se necessário */
 }
 
 .similar-leads h3 {
@@ -1156,42 +1180,55 @@ header h1 {
     background-color: #166fe5;
 }
 
-.checkout-buttons .cancel-btn {
-    background-color: #f44336;
-    color: #fff;
-    margin-left: 10px;
-}
+/* Responsividade para dispositivos móveis (telas menores que 500px) */
+@media (max-width: 500px) {
+    .checkout-overlay {
+        align-items: flex-start; /* Alinha o modal no topo */
+        background: rgba(0, 0, 0, 0.8); /* Fundo mais escuro para destaque */
+    }
 
-.checkout-buttons .cancel-btn:hover {
-    background-color: #d32f2f;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
     .checkout-modal {
-        width: 90%;
-        height: 90vh;
+        width: 100%;
+        height: 90vh; /* 90% da altura da tela */
+        max-width: none; /* Remove limite de largura */
+        border-radius: 12px 12px 0 0; /* Arredondamento apenas no topo */
+        box-shadow: none; /* Remove sombra */
+        padding: 15px; /* Reduz padding para mais espaço */
+        position: absolute; /* Posiciona fixo em relação ao overlay */
+        top: 10%; /* Começa a 10% do topo */
+        bottom: 0; /* Fixa no fundo */
+        overflow-y: hidden; /* Remove rolagem vertical do modal */
+    }
+
+    .checkout-header {
+        padding-right: 10px; /* Espaço para o ícone X */
+    }
+
+    /* Informações do lead principal */
+    .lead-info {
+       padding: 10px;
+       border-bottom: 1px solid #ddd;
+}
+
+    .checkout-header h2 {
+        font-size: 18px;
+    }
+
+    .similar-leads {
+        overflow-y: auto; /* Rolagem apenas nos leads semelhantes */
+        max-height: calc(100% - 200px); /* Limita altura para evitar overflow */
     }
 
     .mini-lead-card {
-        flex: 0 0 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .checkout-modal {
-        width: 100%;
-        height: 100vh;
-        border-radius: 0;
+        flex: 0 0 160px; /* Reduz tamanho dos cards para caber mais na tela */
     }
 
     .checkout-footer {
-        flex-direction: column;
         gap: 10px;
+        padding-bottom: 15px;
     }
 
     .checkout-buttons button {
         width: 100%;
-        margin-left: 0;
     }
 }
