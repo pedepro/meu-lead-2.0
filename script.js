@@ -154,7 +154,8 @@ function criarCardImovel(imovel) {
         ? imagemObj.url 
         : "assets/icon.ico";
 
-    const detalhesUrl = `http://meuleaditapema.com.br/imovel/index.html?id=${imovel.id}`;
+    // Nova URL direta para o subdomínio
+    const detalhesUrl = `https://imovel.meuleaditapema.com.br/${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
                   imovel.categoria === 2 ? "Alto Padrão" : 
                   "Padrão não especificado";
