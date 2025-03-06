@@ -6,7 +6,7 @@
   <title>Detalhes do Imóvel</title>
   <link rel="icon" type="image/x-icon" href="../assets/icon.ico">
 
-  <!-- Metatags Open Graph Padrão (Fallback, mas serão sobrescritas pelo backend) -->
+  <!-- Metatags Open Graph Padrão (Fallback) -->
   <meta property="og:title" content="Meu Lead Imóveis">
   <meta property="og:description" content="Encontre os melhores imóveis e leads para corretores em um só lugar!">
   <meta property="og:image" content="https://meuleaditapema.com.br/assets/icon.ico">
@@ -314,48 +314,38 @@
       .slider-container {
         max-height: 50vh;
       }
-
       .slider img {
         height: 50vh;
       }
-
       .container {
         margin: 16px auto;
         padding: 0 16px;
       }
-
       .detalhes-imovel {
         padding: 16px;
       }
-
       .titulo-imovel {
         font-size: 28px;
       }
-
       .preco-imovel {
         font-size: 20px;
       }
-
       .tipo-imovel, .localizacao-imovel, .descricao-imovel, .negociacao-imovel {
         font-size: 14px;
       }
-
       .detalhes-grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 12px;
       }
-
       .btn {
         padding: 10px 20px;
         font-size: 14px;
         max-width: 100%;
       }
-
       .notificacao {
         padding: 16px;
         max-width: 350px;
       }
-
       .notificacao p {
         font-size: 14px;
       }
@@ -365,49 +355,38 @@
       .slider-container {
         max-height: 40vh;
       }
-
       .slider img {
         height: 40vh;
       }
-
       .titulo-imovel {
         font-size: 24px;
       }
-
       .preco-imovel {
         font-size: 18px;
       }
-
       .tipo-imovel, .localizacao-imovel, .descricao-imovel, .negociacao-imovel {
         font-size: 12px;
       }
-
       .detalhes-grid {
         grid-template-columns: 1fr 1fr;
         gap: 8px;
       }
-
       .detalhe-item {
         padding: 10px;
       }
-
       .material-icons {
         font-size: 20px;
       }
-
       .detalhe-descricao {
         font-size: 10px;
       }
-
       .detalhe-valor {
         font-size: 14px;
       }
-
       .btn {
         padding: 8px 16px;
         font-size: 12px;
       }
-
       .info-conectar, .info-afiliar {
         font-size: 12px;
       }
@@ -415,125 +394,20 @@
   </style>
 </head>
 <body>
-  <!-- O conteúdo será preenchido pelo backend -->
-  <div id="content"></div>
-
   <script>
+    // Redireciona para a rota correta do backend
     document.addEventListener("DOMContentLoaded", () => {
-      console.log("DOM carregado, iniciando script de interação");
+      const params = new URLSearchParams(window.location.search);
+      const imovelId = params.get("id");
+      console.log("ID do imóvel obtido da URL:", imovelId);
 
-      const slider = document.getElementById("slider-imagens");
-      const prevArrow = document.getElementById("prev-arrow");
-      const nextArrow = document.getElementById("next-arrow");
-      const dotsContainer = document.getElementById("slider-dots");
-      const totalSlides = slider ? slider.children.length : 1;
-      let currentSlide = 0;
-
-      function updateSlider() {
-        if (slider) {
-          slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-          document.querySelectorAll(".dot").forEach((dot, index) => {
-            dot.classList.toggle("active", index === currentSlide);
-          });
-          prevArrow.style.display = currentSlide === 0 ? "none" : "block";
-          nextArrow.style.display = currentSlide === totalSlides - 1 ? "none" : "block";
-          console.log("Slider atualizado, currentSlide:", currentSlide);
-        }
+      if (imovelId) {
+        console.log("Redirecionando para a rota do backend:", `/get-imovel/${imovelId}`);
+        window.location.href = `/get-imovel/${imovelId}`;
+      } else {
+        console.log("Nenhum ID fornecido, exibindo mensagem de erro");
+        document.body.innerHTML = "<p>Imóvel não encontrado. Por favor, forneça um ID válido.</p>";
       }
-
-      function goToSlide(index) {
-        currentSlide = Math.max(0, Math.min(index, totalSlides - 1));
-        updateSlider();
-      }
-
-      if (prevArrow) {
-        prevArrow.addEventListener("click", () => {
-          if (currentSlide > 0) {
-            currentSlide--;
-            updateSlider();
-          }
-        });
-      }
-
-      if (nextArrow) {
-        nextArrow.addEventListener("click", () => {
-          if (currentSlide < totalSlides - 1) {
-            currentSlide++;
-            updateSlider();
-          }
-        });
-      }
-
-      if (dotsContainer) {
-        dotsContainer.addEventListener("click", (e) => {
-          const dot = e.target.closest(".dot");
-          if (dot) {
-            const index = Array.from(dotsContainer.children).indexOf(dot);
-            goToSlide(index);
-          }
-        });
-      }
-
-      updateSlider();
-
-      function verificarLogin(acao) {
-        const token = localStorage.getItem("token");
-        console.log(`Verificando login para ação ${acao}, token:`, token ? "presente" : "ausente");
-        
-        if (!token) {
-          exibirNotificacao(acao);
-          return false;
-        }
-        return true;
-      }
-
-      function exibirNotificacao(acao) {
-        const mensagem = acao === "afiliar-se"
-          ? "Efetue Login ou crie uma conta para afiliar-se."
-          : "Efetue Login ou crie uma conta para conectar-se com o proprietário.";
-
-        console.log(`Exibindo notificação para ação: ${acao}`);
-
-        const overlay = document.createElement("div");
-        overlay.id = "notificacao-overlay";
-        overlay.innerHTML = `
-          <div class="notificacao">
-            <p>${mensagem}</p>
-            <div class="botoes">
-              <button id="notificacao-btn-login" class="notificacao-btn-azul">Fazer Login</button>
-              <button id="notificacao-btn-cancelar" class="notificacao-btn-cinza">Cancelar</button>
-            </div>
-          </div>
-        `;
-
-        document.body.appendChild(overlay);
-
-        document.getElementById("notificacao-btn-login").addEventListener("click", () => {
-          const urlParams = new URLSearchParams(window.location.search);
-          const id = urlParams.get("id");
-          let loginUrl = "/login";
-          if (id) loginUrl += `?id=${id}`;
-          console.log("Redirecionando para login:", loginUrl);
-          window.location.href = loginUrl;
-        });
-
-        document.getElementById("notificacao-btn-cancelar").addEventListener("click", () => {
-          console.log("Fechando notificação");
-          document.body.removeChild(overlay);
-        });
-      }
-
-      document.getElementById("btn-afiliar")?.addEventListener("click", () => {
-        if (verificarLogin("afiliar-se")) {
-          console.log("Usuário afiliado com sucesso!");
-        }
-      });
-
-      document.getElementById("btn-conectar")?.addEventListener("click", () => {
-        if (verificarLogin("conectar")) {
-          console.log("Usuário se conectou com sucesso!");
-        }
-      });
     });
   </script>
 </body>
