@@ -14,7 +14,7 @@ let totalLeads = 0;
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/cidades");
+        const response = await fetch("https://backand.meuleaditapema.com.br/cidades");
         const data = await response.json();
         cidades = Array.isArray(data) ? data : [];
     } catch (error) {
@@ -31,7 +31,7 @@ function getNomeCidade(cidadeId) {
 async function mostrarCheckout(leadId, padrao, valorFormatado) {
     console.log("mostrarCheckout chamado com:", leadId, padrao, valorFormatado);
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=1&offset=0&id=${leadId}`);
+        const response = await fetch(`https://backand.meuleaditapema.com.br/list-clientes?limit=1&offset=0&id=${leadId}`);
         const data = await response.json();
         console.log("Resposta da API:", data);
         const lead = data.clientes && data.clientes[0] ? data.clientes[0] : {};
@@ -96,7 +96,7 @@ async function mostrarCheckout(leadId, padrao, valorFormatado) {
 // Função para carregar leads semelhantes
 async function carregarLeadsSemelhantes(leadId, padrao, valorFormatado) {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=10&categoria=${padrao === "alto-padrao" ? 2 : 1}`);
+        const response = await fetch(`https://backand.meuleaditapema.com.br/list-clientes?limit=10&categoria=${padrao === "alto-padrao" ? 2 : 1}`);
         const data = await response.json();
         const similarLeadsContainer = document.getElementById("similar-leads-container");
         const selectedLeads = [leadId];
@@ -240,7 +240,7 @@ function criarCardLead(cliente) {
 // Função para carregar os imóveis iniciais
 async function carregarImoveis() {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=${imoveisPorPagina}&offset=0`);
+        const response = await fetch(`https://backand.meuleaditapema.com.br/list-imoveis/disponiveis?limite=${imoveisPorPagina}&offset=0`);
         const data = await response.json();
         if (data.success) {
             imoveisOriginais = data.imoveis;

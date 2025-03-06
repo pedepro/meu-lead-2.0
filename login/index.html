@@ -27,6 +27,14 @@
             <form id="cadastro-form">
                 <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
                 <input type="email" id="cadastro-email" placeholder="E-mail" required>
+                <div class="cpf-cnpj-group">
+                    <label>Tipo de Documento:</label>
+                    <div class="radio-buttons">
+                        <label><input type="radio" name="document-type" value="cpf" checked> CPF</label>
+                        <label><input type="radio" name="document-type" value="cnpj"> CNPJ</label>
+                    </div>
+                    <input type="text" id="cadastro-cpf-cnpj" placeholder="Digite seu CPF ou CNPJ" required>
+                </div>
                 <input type="text" id="cadastro-creci" placeholder="CRECI (Opcional)">
                 <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp">
                 <input type="password" id="cadastro-senha" placeholder="Senha" required>
@@ -38,7 +46,7 @@
     </div>
 
     <script>
-        const API_URL = "https://pedepro-meulead.6a7cul.easypanel.host";
+        const API_URL = "https://backand.meuleaditapema.com.br";
 
         function toggleForms() {
             document.querySelector('.login-box').classList.toggle('hidden');
@@ -67,14 +75,12 @@
                     return;
                 }
 
-                // Salvar token e ID no localStorage
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userId", data.id);
 
                 mensagem.textContent = "Login realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redirecionar para a raiz do projeto
                 setTimeout(() => window.location.href = "/", 1000);
 
             } catch (error) {
@@ -89,6 +95,7 @@
             e.preventDefault();
             const name = document.getElementById("cadastro-nome").value;
             const email = document.getElementById("cadastro-email").value;
+            const cpfCnpj = document.getElementById("cadastro-cpf-cnpj").value.replace(/\D/g, ""); // Remove não numéricos
             const creci = document.getElementById("cadastro-creci").value || null;
             const phone = document.getElementById("cadastro-whatsapp").value || null;
             const password = document.getElementById("cadastro-senha").value;
@@ -98,7 +105,7 @@
                 const response = await fetch(`${API_URL}/corretores`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, creci, phone, password })
+                    body: JSON.stringify({ name, email, cpfCnpj, creci, phone, password })
                 });
 
                 const data = await response.json();
@@ -109,16 +116,13 @@
                     return;
                 }
 
-                // Salvar token e ID no localStorage
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userId", data.id);
 
                 mensagem.textContent = "Cadastro realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redirecionar para a raiz do projeto
                 setTimeout(() => window.location.href = "/", 1000);
-
 
             } catch (error) {
                 mensagem.textContent = "Erro de conexão.";
@@ -129,11 +133,28 @@
 
         // 📌 Formatação automática do WhatsApp para +55 (Brasil)
         document.getElementById("cadastro-whatsapp").addEventListener("input", function(e) {
-            let value = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
+            let value = e.target.value.replace(/\D/g, "");
             if (!value.startsWith("55")) {
                 value = "55" + value;
             }
             e.target.value = "+" + value;
+        });
+
+        // 📌 Formatação dinâmica de CPF/CNPJ
+        document.getElementById("cadastro-cpf-cnpj").addEventListener("input", function(e) {
+            let value = e.target.value.replace(/\D/g, "");
+            const type = document.querySelector('input[name="document-type"]:checked').value;
+
+            if (type === "cpf" && value.length <= 11) {
+                value = value
+                    .padEnd(11, "0")
+                    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            } else if (type === "cnpj" && value.length <= 14) {
+                value = value
+                    .padEnd(14, "0")
+                    .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+            }
+            e.target.value = value;
         });
     </script>
 
