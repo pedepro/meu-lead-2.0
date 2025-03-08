@@ -20,6 +20,7 @@
             align-items: center;
             padding: 20px;
             overflow-x: hidden;
+            position: relative;
         }
 
         .container {
@@ -28,6 +29,10 @@
             padding: 40px;
             position: relative;
             animation: slideIn 0.8s ease-out;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
         }
 
         @keyframes slideIn {
@@ -36,21 +41,26 @@
         }
 
         .logo {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             display: block;
-            margin: 0 auto 30px;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+            margin: 0 auto 25px;
+            filter: drop-shadow(0 0 8px rgba(52, 152, 219, 0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         h1 {
-            color: #1a2d3f;
+            color: #2c3e50;
             text-align: center;
             margin-bottom: 15px;
-            font-size: 36px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 34px;
+            letter-spacing: 1.5px;
             position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         h1::after {
@@ -58,71 +68,91 @@
             position: absolute;
             width: 60px;
             height: 3px;
-            background: linear-gradient(to right, #ffd700, #b8860b);
+            background: linear-gradient(to right, #3498db, #2980b9);
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
         }
 
         .subtitle {
-            color: #666;
+            color: #7f8c8d;
             text-align: center;
-            margin-bottom: 40px;
-            font-size: 18px;
+            margin-bottom: 35px;
+            font-size: 17px;
             font-style: italic;
         }
 
         .info-box {
             padding: 25px 0;
-            border-top: 1px solid rgba(255, 215, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-            margin-bottom: 40px;
+            border-top: 1px solid rgba(52, 152, 219, 0.3);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+            margin-bottom: 35px;
         }
 
         .info-box p {
-            color: #1a2d3f;
+            color: #2c3e50;
             line-height: 2;
-            font-size: 18px;
+            font-size: 17px;
             position: relative;
             padding-left: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .info-box p:hover {
+            transform: translateX(5px);
         }
 
         .info-box p::before {
             content: '✦';
-            color: #ffd700;
+            color: #3498db;
             position: absolute;
             left: 0;
             font-size: 14px;
         }
 
-        .price {
+        .value-section {
             text-align: center;
-            color: #1a2d3f;
-            font-size: 40px;
-            font-weight: bold;
-            margin-bottom: 40px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 35px;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
 
-        .price span {
-            color: #b8860b;
-            font-size: 24px;
+        .value-section:hover {
+            background: rgba(52, 152, 219, 0.2);
+            transform: scale(1.02);
+        }
+
+        .value-label {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .value {
+            color: #2c3e50;
+            font-size: 38px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .buy-button {
             display: block;
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(45deg, #ffd700, #b8860b);
-            color: #1a2d3f;
+            padding: 16px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
             border: none;
             border-radius: 50px;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
         .buy-button::before {
@@ -142,24 +172,11 @@
 
         .buy-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
         }
 
         .buy-button:active {
             transform: scale(1);
-        }
-
-        .premium-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ffd700;
-            color: #1a2d3f;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
         }
     </style>
 </head>
@@ -167,7 +184,7 @@
     <div class="container">
         <img src="http://cloud.meuleaditapema.com.br/uploads/bc8e96dd-0f77-4955-ba77-21ed098ad2fa.ico" alt="Meu Lead Itapema" class="logo">
         <h1>Lead 01</h1>
-        <p class="subtitle">Cliente Premium</p>
+        <p class="subtitle">Cliente em Potencial</p>
         
         <div class="info-box">
             <p>Interessado em comprar um apartamento beira-mar</p>
@@ -176,10 +193,12 @@
             <p>2 banheiros</p>
         </div>
 
-        <div class="price">R$ 500.000,00 <span>(aproximado)</span></div>
+        <div class="value-section">
+            <div class="value-label">Valor Estimado de Interesse</div>
+            <div class="value">R$ 500.000,00</div>
+        </div>
 
         <button class="buy-button" onclick="handleBuy()">Comprar por R$ 39,90</button>
-        <div class="premium-badge">Alto Padrão</div>
     </div>
 
     <script>
