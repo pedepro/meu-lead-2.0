@@ -67,6 +67,26 @@
             return null;
         }
 
+        // Função para obter parâmetros da URL
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Determina o redirecionamento com base nos parâmetros
+        function getRedirectUrl() {
+            const leadId = getUrlParameter("lead");
+            const imovelId = getUrlParameter("imovel");
+
+            if (leadId) {
+                return `https://lead.meuleaditapema.com.br/${leadId}`;
+            } else if (imovelId) {
+                return `https://imovel.meuleaditapema.com.br/${imovelId}`;
+            } else {
+                return "/";
+            }
+        }
+
         // Sincroniza localStorage com cookies ao carregar a página
         (function syncAuth() {
             const token = getCookie("token");
@@ -116,7 +136,8 @@
                 mensagem.textContent = "Login realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                setTimeout(() => window.location.href = "/", 1000);
+                // Redireciona com base nos parâmetros
+                setTimeout(() => window.location.href = getRedirectUrl(), 1000);
 
             } catch (error) {
                 mensagem.textContent = "Erro de conexão.";
@@ -160,7 +181,8 @@
                 mensagem.textContent = "Cadastro realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                setTimeout(() => window.location.href = "/", 1000);
+                // Redireciona com base nos parâmetros
+                setTimeout(() => window.location.href = getRedirectUrl(), 1000);
 
             } catch (error) {
                 mensagem.textContent = "Erro de conexão.";
