@@ -1,211 +1,249 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead 01 - Meu Lead Itapema</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            background: #e6f0fa;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .container {
-            max-width: 650px;
-            width: 100%;
-            padding: 40px;
-            position: relative;
-            animation: slideIn 0.8s ease-out;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .logo {
-            width: 90px;
-            height: 90px;
-            display: block;
-            margin: 0 auto 25px;
-            filter: drop-shadow(0 0 8px rgba(52, 152, 219, 0.2));
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 34px;
-            letter-spacing: 1.5px;
-            position: relative;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(to right, #3498db, #2980b9);
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            text-align: center;
-            margin-bottom: 35px;
-            font-size: 17px;
-            font-style: italic;
-        }
-
-        .info-box {
-            padding: 25px 0;
-            border-top: 1px solid rgba(52, 152, 219, 0.3);
-            border-bottom: 1px solid rgba(52, 152, 219, 0.3);
-            margin-bottom: 35px;
-        }
-
-        .info-box p {
-            color: #2c3e50;
-            line-height: 2;
-            font-size: 17px;
-            position: relative;
-            padding-left: 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .info-box p:hover {
-            transform: translateX(5px);
-        }
-
-        .info-box p::before {
-            content: '✦';
-            color: #3498db;
-            position: absolute;
-            left: 0;
-            font-size: 14px;
-        }
-
-        .value-section {
-            text-align: center;
-            margin-bottom: 35px;
-            padding: 15px;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .value-section:hover {
-            background: rgba(52, 152, 219, 0.2);
-            transform: scale(1.02);
-        }
-
-        .value-label {
-            color: #7f8c8d;
-            font-size: 16px;
-            margin-bottom: 5px;
-            font-style: italic;
-        }
-
-        .value {
-            color: #2c3e50;
-            font-size: 38px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .buy-button {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 19px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        .buy-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.4s ease;
-        }
-
-        .buy-button:hover::before {
-            left: 100%;
-        }
-
-        .buy-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        .buy-button:active {
-            transform: scale(1);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Email Builder Avançado</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+    aside, .editor-panel {
+      width: 250px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .editor-panel {
+      border-left: 1px solid #ddd;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .draggable {
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #eee;
+      border-radius: 6px;
+      cursor: grab;
+      text-align: center;
+    }
+    #canvas {
+      flex: 1;
+      background: #fff;
+      border: 2px dashed #bbb;
+      padding: 20px;
+      border-radius: 12px;
+      overflow: auto;
+    }
+    .element {
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .element.active {
+      outline: 2px solid #1877f2;
+    }
+    .element p, .element h1 {
+      margin: 0;
+    }
+    label {
+      font-size: 13px;
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"], input[type="color"], input[type="range"], select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      margin-top: 20px;
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-top: 15px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="http://cloud.meuleaditapema.com.br/uploads/bc8e96dd-0f77-4955-ba77-21ed098ad2fa.ico" alt="Meu Lead Itapema" class="logo">
-        <h1>Lead 01</h1>
-        <p class="subtitle">Cliente em Potencial</p>
-        
-        <div class="info-box">
-            <p>Interessado em comprar um apartamento beira-mar</p>
-            <p>Vista para o mar</p>
-            <p>3 quartos</p>
-            <p>2 banheiros</p>
-        </div>
+  <aside>
+    <h2>Elementos</h2>
+    <div class="draggable" draggable="true" data-type="title">Título</div>
+    <div class="draggable" draggable="true" data-type="text">Texto</div>
+    <div class="draggable" draggable="true" data-type="button">Botão</div>
+    <div class="draggable" draggable="true" data-type="image">Imagem</div>
+    <div class="draggable" draggable="true" data-type="div">Caixa</div>
+    <button onclick="exportHTML()">Exportar HTML</button>
+  </aside>
 
-        <div class="value-section">
-            <div class="value-label">Valor Estimado de Interesse</div>
-            <div class="value">R$ 500.000,00</div>
-        </div>
-
-        <button class="buy-button" onclick="handleBuy()">Comprar por R$ 39,90</button>
+  <main>
+    <h2>Template</h2>
+    <div id="canvas" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+      <!-- Conteúdo gerado -->
     </div>
+    <textarea id="output" placeholder="HTML exportado aparecerá aqui..."></textarea>
+  </main>
 
-    <script>
-        function handleBuy() {
-            alert('Obrigado pelo interesse! Você será redirecionado para finalizar a compra de R$ 39,90.');
-            // window.location.href = 'URL_DO_PAGAMENTO';
-        }
-    </script>
+  <div class="editor-panel" id="editor">
+    <h2>Editor de Estilo</h2>
+    <div id="style-controls" style="display: none;">
+      <label>Texto</label>
+      <input type="text" id="elText" oninput="updateStyle('text')" />
+
+      <label>Cor do Texto</label>
+      <input type="color" id="textColor" oninput="updateStyle('color')" />
+
+      <label>Cor de Fundo</label>
+      <input type="color" id="bgColor" oninput="updateStyle('backgroundColor')" />
+
+      <label>Borda (px)</label>
+      <input type="range" min="0" max="10" id="border" oninput="updateStyle('border')" />
+
+      <label>Radius</label>
+      <input type="range" min="0" max="30" id="radius" oninput="updateStyle('borderRadius')" />
+
+      <label>Opacidade</label>
+      <input type="range" min="0.1" max="1" step="0.1" id="opacity" oninput="updateStyle('opacity')" />
+
+      <label>Fonte</label>
+      <select id="fontFamily" onchange="updateStyle('fontFamily')">
+        <option value="Arial">Arial</option>
+        <option value="Segoe UI">Segoe UI</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Poppins">Poppins</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const editorPanel = document.getElementById('editor');
+    const controls = document.getElementById('style-controls');
+
+    let selectedElement = null;
+
+    document.querySelectorAll('.draggable').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('type', el.dataset.type);
+      });
+    });
+
+    function handleDrop(e) {
+      const type = e.dataTransfer.getData('type');
+      const el = createElement(type);
+      canvas.appendChild(el);
+    }
+
+    function createElement(type) {
+      const el = document.createElement('div');
+      el.classList.add('element');
+
+      if (type === 'title') {
+        el.innerHTML = '<h1 contenteditable="true">Seu Título Aqui</h1>';
+      } else if (type === 'text') {
+        el.innerHTML = '<p contenteditable="true">Seu texto aqui...</p>';
+      } else if (type === 'button') {
+        el.innerHTML = '<a href="#" style="background:#FF8C00;color:#fff;padding:10px 20px;border-radius:5px;text-decoration:none;">Clique aqui</a>';
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const link = prompt("Insira a URL do botão:");
+          if (link) el.querySelector('a').href = link;
+        };
+      } else if (type === 'image') {
+        el.innerHTML = '<img src="https://via.placeholder.com/600x200" style="max-width:100%; border-radius:6px;" />';
+        el.onclick = () => {
+          const url = prompt("URL da imagem:");
+          if (url) el.querySelector('img').src = url;
+        };
+      } else if (type === 'div') {
+        el.innerHTML = '<div style="padding:10px;" contenteditable="true">Caixa personalizada...</div>';
+      }
+
+      el.onclick = () => selectElement(el);
+
+      return el;
+    }
+
+    function selectElement(el) {
+      if (selectedElement) selectedElement.classList.remove('active');
+      selectedElement = el;
+      el.classList.add('active');
+      controls.style.display = 'block';
+      updateControlInputs();
+    }
+
+    function updateControlInputs() {
+      if (!selectedElement) return;
+      const style = getComputedStyle(selectedElement);
+
+      document.getElementById('elText').value = selectedElement.innerText;
+      document.getElementById('textColor').value = rgbToHex(style.color);
+      document.getElementById('bgColor').value = rgbToHex(style.backgroundColor);
+      document.getElementById('border').value = parseInt(style.borderWidth);
+      document.getElementById('radius').value = parseInt(style.borderRadius);
+      document.getElementById('opacity').value = parseFloat(style.opacity);
+      document.getElementById('fontFamily').value = style.fontFamily.replace(/['"]/g, '').split(',')[0];
+    }
+
+    function updateStyle(prop) {
+      if (!selectedElement) return;
+
+      if (prop === 'text') {
+        selectedElement.innerText = document.getElementById('elText').value;
+      } else if (prop === 'color') {
+        selectedElement.style.color = document.getElementById('textColor').value;
+      } else if (prop === 'backgroundColor') {
+        selectedElement.style.backgroundColor = document.getElementById('bgColor').value;
+      } else if (prop === 'border') {
+        selectedElement.style.border = `${document.getElementById('border').value}px solid #aaa`;
+      } else if (prop === 'borderRadius') {
+        selectedElement.style.borderRadius = document.getElementById('radius').value + 'px';
+      } else if (prop === 'opacity') {
+        selectedElement.style.opacity = document.getElementById('opacity').value;
+      } else if (prop === 'fontFamily') {
+        selectedElement.style.fontFamily = document.getElementById('fontFamily').value;
+      }
+    }
+
+    function rgbToHex(rgb) {
+      if (!rgb || rgb.indexOf("rgb") === -1) return '#ffffff';
+      const rgbValues = rgb.match(/\d+/g);
+      return '#' + rgbValues.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+    }
+
+    function exportHTML() {
+      const output = document.getElementById('output');
+      output.value = '<div>' + canvas.innerHTML + '</div>';
+    }
+  </script>
 </body>
 </html>

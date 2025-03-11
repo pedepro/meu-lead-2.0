@@ -1,15 +1,16 @@
-// Variáveis globais
+// Variáveis globais existentes
 let imoveisOriginais = [];
 let cidades = [];
-let imoveisPorPagina = 6; // Número de imóveis por página
+let imoveisPorPagina = 6;
 let paginaImoveisAtual = 1;
-let totalImoveis = 0; // Variável para armazenar o total retornado pelo servidor
-
-// Variáveis globais para leads
+let totalImoveis = 0;
 let leadsOriginais = [];
 let paginaAtual = 1;
 const itensPorPagina = 20;
 let totalLeads = 0;
+
+// Adicionar sidebar ao escopo global
+let sidebar; // Definida globalmente
 
 // Função para carregar as cidades da API
 async function carregarCidades() {
@@ -970,14 +971,15 @@ async function carregarLeadsPreview() {
     }
 }
 
-// Evento DOMContentLoaded
+// Atualizar o evento DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function () {
     const menuToggle = document.querySelector(".menu-toggle");
-    const sidebar = document.querySelector(".sidebar");
+    sidebar = document.querySelector(".sidebar"); // Atribuir ao escopo global
     const imoveisLink = document.getElementById("imoveis-link");
     const clientesLink = document.getElementById("clientes-link");
     const meusImoveisLink = document.getElementById("meusimoveis-link");
     const meusLeadsLink = document.getElementById("meusleads-link");
+    const editarPerfilLink = document.getElementById("editar-perfil-link"); // Novo link
     const userInfoContainer = document.getElementById("user-info-container");
     const imoveisContainer = document.getElementById("imoveis-container");
     const clientesContainer = document.getElementById("clientes-container");
@@ -1030,7 +1032,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
-            
             gerenciarFiltros(true);
             gerenciarPaginacaoImoveis(true);
             await carregarImoveis();
@@ -1049,7 +1050,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             imoveisContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "none";
-            
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregarClientes();
@@ -1065,7 +1065,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "grid";
             meusLeadsContainer.style.display = "none";
-            
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregaraImoveis();
@@ -1081,10 +1080,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             clientesContainer.style.display = "none";
             meusImoveisContainer.style.display = "none";
             meusLeadsContainer.style.display = "grid";
-            
             gerenciarFiltros(false);
             gerenciarPaginacaoImoveis(false);
             carregarLeadsAdquiridos(1);
+        });
+    }
+
+    if (editarPerfilLink) { // Novo evento
+        editarPerfilLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            sidebar.classList.remove("open");
+            mostrarModalEditarPerfil();
         });
     }
 
@@ -1133,3 +1139,130 @@ window.addEventListener("load", function () {
         }
     }, 1000);
 });
+
+
+// Função para mostrar o modal de edição de perfil
+function mostrarModalEditarPerfil() {
+    const id = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!id || !token) {
+        mostrarNotificacao("Você precisa estar logado para editar seu perfil.", "error");
+        return;
+    }
+
+    fetch(`https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${id}&token=${token}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.email) {
+                throw new Error("Erro ao carregar dados do corretor.");
+            }
+
+            const overlay = document.createElement("div");
+            overlay.className = "edit-profile-overlay";
+            overlay.innerHTML = `
+                <div class="edit-profile-modal">
+                    <i class="material-icons close-icon" onclick="this.closest('.edit-profile-overlay').remove()">close</i>
+                    <h2>Editar Perfil</h2>
+                    <form id="edit-profile-form">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" name="name" value="${data.name || ''}" required>
+                        <label for="phone">Telefone</label>
+                        <input type="text" id="phone" name="phone" value="${data.phone || ''}" required>
+                        <label for="creci">CRECI</label>
+                        <input type="text" id="creci" name="creci" value="${data.creci || ''}" required>
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" value="${data.email || ''}" required>
+                        <button type="button" id="toggle-password-btn">Alterar Senha</button>
+                        <div id="password-fields" style="display: none;">
+                            <label for="current-password">Senha Atual</label>
+                            <input type="password" id="current-password" name="current_password">
+                            <label for="new-password">Nova Senha</label>
+                            <input type="password" id="new-password" name="new_password">
+                        </div>
+                        <button type="submit">Salvar Alterações</button>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Alternar visibilidade dos campos de senha
+            const togglePasswordBtn = document.getElementById("toggle-password-btn");
+            const passwordFields = document.getElementById("password-fields");
+            togglePasswordBtn.addEventListener("click", () => {
+                if (passwordFields.style.display === "none") {
+                    passwordFields.style.display = "block";
+                    togglePasswordBtn.textContent = "Cancelar Alteração de Senha";
+                } else {
+                    passwordFields.style.display = "none";
+                    togglePasswordBtn.textContent = "Alterar Senha";
+                    document.getElementById("current-password").value = "";
+                    document.getElementById("new-password").value = "";
+                }
+            });
+
+            // Evento de envio do formulário
+            document.getElementById("edit-profile-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const updatedData = {
+                    name: formData.get("name"),
+                    phone: formData.get("phone"),
+                    creci: formData.get("creci"),
+                    email: formData.get("email"),
+                    current_password: formData.get("current_password") || null,
+                    new_password: formData.get("new_password") || null,
+                    id,
+                    token
+                };
+
+                try {
+                    const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/corretor/dados", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        mostrarNotificacao("Perfil atualizado com sucesso!", "success");
+                        overlay.remove();
+                        carregarCorretor();
+                    } else {
+                        mostrarNotificacao(`Erro: ${result.error}`, "error");
+                    }
+                } catch (error) {
+                    console.error("Erro ao atualizar perfil:", error);
+                    mostrarNotificacao("Erro ao atualizar perfil. Tente novamente.", "error");
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao carregar dados do corretor:", error);
+            mostrarNotificacao("Erro ao carregar seus dados. Tente novamente.", "error");
+        });
+}
+
+
+// Função para exibir notificação personalizada
+function mostrarNotificacao(mensagem, tipo = "success") {
+    const notification = document.createElement("div");
+    notification.className = `notification ${tipo}`;
+    notification.innerHTML = `
+        <i class="material-icons">${tipo === "success" ? "check_circle" : "error"}</i>
+        <span>${mensagem}</span>
+    `;
+    document.body.appendChild(notification);
+
+    // Mostrar a notificação
+    setTimeout(() => notification.classList.add("show"), 100);
+
+    // Esconder após 3 segundos
+    setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => notification.remove(), 300); // Remove após a transição
+    }, 3000);
+}
+

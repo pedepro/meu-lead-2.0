@@ -1,42 +1,51 @@
 // Variáveis globais
-const limite = 5; // Número de itens por página
+const limite = 6; // Número de itens por página
 let paginaAtual = 1; // Página inicial
+let currentLeadId = null; // Armazena o ID do lead em edição
 
-// Código específico para a seção Pedidos
-console.log('Código da seção clientes executado.');
-
-// Chama a função carregarLeads para carregar os leads automaticamente
-carregarLeads(paginaAtual);
-
-// Escuta o clique do botão de filtros para carregar os leads
-document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
-    paginaAtual = 1;  // Resetando a página para 1 quando aplicar o filtro
-    carregarLeads(paginaAtual);  // Recarregando os leads com a página 1
+// Carrega os leads ao iniciar
+document.addEventListener("DOMContentLoaded", () => {
+    carregarLeads(paginaAtual);
+    document.getElementById("btnAplicarFiltros").addEventListener("click", () => {
+        paginaAtual = 1;
+        carregarLeads(paginaAtual);
+    });
 });
 
 async function carregarLeads(pagina = 1) {
     try {
-        const nome = document.getElementById("searchNome").value.trim();
         const tipoImovel = document.getElementById("tipoImovel").value;
-        const valorMax = document.getElementById("valorMax").value;
+        const precoInteresse = document.getElementById("precoInteresse").value;
+        const buscaGeral = document.getElementById("buscaGeral").value.trim();
 
         let url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
 
-        if (nome) url.searchParams.append("nome", nome);
+        // Filtro por tipo de imóvel
         if (tipoImovel) url.searchParams.append("tipo_imovel", tipoImovel);
-        if (valorMax) url.searchParams.append("valor_max", valorMax);
 
-        // Adicionando paginação
+        // Filtro por intervalo de preço de interesse
+        if (precoInteresse) {
+            if (precoInteresse.includes("-")) {
+                const [min, max] = precoInteresse.split("-").map(Number);
+                url.searchParams.append("valor_min", min);
+                url.searchParams.append("valor_max", max);
+            } else {
+                // Caso seja "+ R$ 10.000.000", só define o mínimo
+                url.searchParams.append("valor_min", precoInteresse);
+            }
+        }
+
+        // Filtro de busca geral (nome, id ou valor_lead)
+        if (buscaGeral) {
+            url.searchParams.append("busca", buscaGeral);
+        }
+
         const offset = (pagina - 1) * limite;
         url.searchParams.append("limit", limite);
         url.searchParams.append("offset", offset);
 
-        console.log("🔍 Buscando leads na URL:", url.toString());
-
         const response = await fetch(url);
         const data = await response.json();
-
-        console.log("🔍 Resposta da API:", data);
 
         if (!data.clientes) {
             console.error("❌ Erro: Nenhum cliente retornado da API!");
@@ -45,59 +54,69 @@ async function carregarLeads(pagina = 1) {
 
         const leads = Array.isArray(data.clientes) ? data.clientes : [];
         const totalRegistros = data.total || 0;
-
-        console.log("📊 Total de registros:", totalRegistros); // Verifica o valor retornado pela API
         const totalPaginas = Math.ceil(totalRegistros / limite);
-        console.log("📊 Total de páginas calculado:", totalPaginas);
 
-        // Verifica se a página atual é maior que o total de páginas e reseta se necessário
         if (pagina > totalPaginas && totalPaginas > 0) {
-            paginaAtual = 1; // Resetando para a primeira página se não houver suficientes resultados
-            console.log("🔄 Página atual ajustada para a primeira página (página 1)");
+            paginaAtual = 1;
         }
 
-        const leadsContainer = document.querySelector(".leads-list");
-        if (!leadsContainer) return console.error("❌ Elemento .leads-list não encontrado!");
-
-        leadsContainer.innerHTML = ""; // Limpa a lista antes de adicionar os novos itens
+        const leadsContainer = document.querySelector(".leads-grid");
+        leadsContainer.innerHTML = "";
 
         if (leads.length === 0) {
-            leadsContainer.innerHTML = `<p>Nenhum resultado encontrado.</p>`;
+            leadsContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #666;">Nenhum resultado encontrado.</p>`;
             return;
         }
 
         leads.forEach(lead => {
             const card = document.createElement("div");
             card.classList.add("card-lead");
+            if (lead.categoria === 1 || lead.categoria === "1") {
+                card.classList.add("medio-padrao");
+            } else if (lead.categoria === 2 || lead.categoria === "2") {
+                card.classList.add("alto-padrao");
+            }
+
+            const precoInteresseFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lead.valor);
+            const precoLeadFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lead.valor_lead);
 
             card.innerHTML = `
-                <div class="lead-status"></div>
                 <div class="lead-info">
-                    <h3>${lead.nome} - </strong> ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lead.valor_lead)}</h3>
+                    <h3>${lead.nome} - ${precoInteresseFormatado}</h3>
                     <p><strong>Interesse:</strong> ${lead.interesse}</p>
                     <p><strong>Tipo:</strong> ${lead.tipo_imovel}</p>
-                    <p><strong>Limite valor:</strong> ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lead.valor)}</p>
-
+                    <p><strong>Preço de Interesse:</strong> ${precoInteresseFormatado}</p>
+                    <p><strong>Preço do Lead:</strong> ${precoLeadFormatado}</p>
+                    <p><strong>SKU:</strong> ${lead.id}</p>
+                    <p><strong>Cotas Compradas:</strong> ${lead.cotas_compradas || 0}</p>
                 </div>
-                <button class="btn-editar" onclick="openUniqueEditPopup(${lead.id})">Editar</button>
+                <span class="btn-excluir material-icons" onclick="excluirLead(${lead.id})">delete</span>
+                <div class="card-actions">
+                    <label class="toggle-disponivel">
+                        <input type="checkbox" ${lead.disponivel ? "checked" : ""} 
+                            ${lead.cotas_compradas >= 5 ? "disabled" : ""} 
+                            onchange="toggleDisponivel(${lead.id}, this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                    <button class="btn-editar" onclick="openUniqueEditPopup(${lead.id})">Editar</button>
+                </div>
             `;
             leadsContainer.appendChild(card);
         });
 
-        // Atualiza a paginação
         atualizarPaginacao(pagina, totalPaginas);
     } catch (error) {
         console.error("Erro ao carregar os leads:", error);
     }
 }
 
-// Função para atualizar os ícones de paginação
+// Função para atualizar a paginação
 function atualizarPaginacao(pagina, totalPaginas) {
     const paginacaoContainer = document.getElementById("pagination");
-    paginacaoContainer.innerHTML = ""; 
+    paginacaoContainer.innerHTML = "";
 
     const btnAnterior = document.createElement("span");
-    btnAnterior.innerHTML = "<i class='material-icons'>arrow_back_ios</i>"; // Ícone de seta para a esquerda
+    btnAnterior.innerHTML = "<i class='material-icons'>arrow_back_ios</i>";
     btnAnterior.style.cursor = pagina === 1 ? "default" : "pointer";
     btnAnterior.style.opacity = pagina === 1 ? "0.5" : "1";
     if (pagina > 1) btnAnterior.onclick = () => carregarLeads(pagina - 1);
@@ -108,30 +127,156 @@ function atualizarPaginacao(pagina, totalPaginas) {
     paginacaoContainer.appendChild(contadorPaginas);
 
     const btnProximo = document.createElement("span");
-    btnProximo.innerHTML = "<i class='material-icons'>arrow_forward_ios</i>"; // Ícone de seta para a direita
+    btnProximo.innerHTML = "<i class='material-icons'>arrow_forward_ios</i>";
     btnProximo.style.cursor = pagina === totalPaginas ? "default" : "pointer";
     btnProximo.style.opacity = pagina === totalPaginas ? "0.5" : "1";
     if (pagina < totalPaginas) btnProximo.onclick = () => carregarLeads(pagina + 1);
     paginacaoContainer.appendChild(btnProximo);
-
-    console.log("📊 Atualizando paginação: Página atual:", pagina);
-    console.log("📊 Total de páginas:", totalPaginas);
 }
 
+// Função para excluir lead
+async function excluirLead(id) {
+    if (!confirm("Tem certeza que deseja excluir este lead?")) return;
 
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`, {
+            method: "DELETE",
+        });
 
-
-
-// Função para abrir o popup de edição
-function openUniqueEditPopup() {
-    document.getElementById("uniqueEditPopup").style.display = "flex";
+        if (response.ok) {
+            alert("Lead excluído com sucesso!");
+            carregarLeads(paginaAtual);
+        } else {
+            // Lê o corpo da resposta de erro
+            const errorData = await response.json();
+            console.error("Erro retornado pelo servidor:", errorData);
+            alert(`Erro ao excluir o lead: ${errorData.error || "Motivo desconhecido"}`);
+        }
+    } catch (error) {
+        console.error("Erro ao excluir lead:", error);
+        alert("Erro ao excluir o lead: Falha na comunicação com o servidor.");
+    }
 }
 
-// Função para fechar o popup de edição
+// Função para alterar o status "disponível"
+async function toggleDisponivel(id, disponivel) {
+    try {
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ disponivel }),
+        });
+
+        if (response.ok) {
+            alert("Status atualizado com sucesso!");
+            carregarLeads(paginaAtual);
+        } else {
+            alert("Erro ao atualizar o status.");
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar status:", error);
+        alert("Erro ao atualizar o status.");
+    }
+}
+
+// Função para abrir o popup (criação ou edição)
+function openUniqueEditPopup(id = null) {
+    const popup = document.getElementById("uniqueEditPopup");
+    const form = document.getElementById("uniqueEditForm");
+    const title = document.getElementById("popupTitle");
+
+    currentLeadId = id;
+
+    if (id) {
+        title.textContent = "Editar Lead";
+        fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Lead não encontrado");
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("leadNome").value = data.nome || "";
+                document.getElementById("leadCategoria").value = data.categoria || "";
+                document.getElementById("leadEndereco").value = data.endereco || "";
+                document.getElementById("leadTipoImovel").value = data.tipo_imovel || "";
+                document.getElementById("leadInteresse").value = data.interesse || "";
+                document.getElementById("leadValor").value = data.valor || ""; // Preço de Interesse
+                document.getElementById("leadValorLead").value = data.valor_lead || ""; // Preço do Lead
+                document.getElementById("leadWhatsapp").value = data.whatsapp || "";
+            })
+            .catch(error => {
+                console.error("Erro ao carregar lead:", error);
+                alert("Erro ao carregar os dados do lead.");
+            });
+    } else {
+        title.textContent = "Criar Novo Lead";
+        form.reset();
+    }
+
+    popup.style.display = "flex";
+    setTimeout(() => popup.classList.add("active"), 10);
+}
+
+// Função para fechar o popup
 function closeUniquePopup() {
-    document.getElementById("uniqueEditPopup").style.display = "none";
+    const popup = document.getElementById("uniqueEditPopup");
+    popup.classList.remove("active");
+    setTimeout(() => {
+        popup.style.display = "none";
+        currentLeadId = null;
+    }, 300);
 }
 
+// Formatação do WhatsApp
+document.getElementById("leadWhatsapp").addEventListener("input", function (e) {
+    let value = e.target.value.replace(/\D/g, "");
+    if (!value.startsWith("55")) value = "55" + value;
+    value = value.slice(0, 13);
+    e.target.value = `+${value.slice(0, 2)}${value.slice(2, 4)}${value.slice(4, 9)}-${value.slice(9)}`;
+});
 
-// Código específico para a seção Pedidos
-console.log('Código da seção clientes executado.');
+// Enviar formulário (criação ou edição)
+document.getElementById("uniqueEditForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const leadData = {
+        nome: document.getElementById("leadNome").value,
+        categoria: document.getElementById("leadCategoria").value,
+        endereco: document.getElementById("leadEndereco").value,
+        tipo_imovel: document.getElementById("leadTipoImovel").value,
+        interesse: document.getElementById("leadInteresse").value,
+        valor: parseFloat(document.getElementById("leadValor").value), // Preço de Interesse
+        valor_lead: parseFloat(document.getElementById("leadValorLead").value), // Preço do Lead
+        whatsapp: document.getElementById("leadWhatsapp").value,
+    };
+
+    const isEditing = currentLeadId !== null;
+    const url = isEditing
+        ? `https://pedepro-meulead.6a7cul.easypanel.host/clientes/${currentLeadId}`
+        : "https://pedepro-meulead.6a7cul.easypanel.host/clientes";
+    const method = isEditing ? "PUT" : "POST";
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(leadData),
+        });
+
+        if (response.ok) {
+            closeUniquePopup();
+            carregarLeads(paginaAtual);
+            alert(`Lead ${isEditing ? "atualizado" : "criado"} com sucesso!`);
+        } else {
+            const errorData = await response.json();
+            console.error("Erro na requisição:", errorData);
+            alert(`Erro ao ${isEditing ? "atualizar" : "criar"} o lead: ${errorData.error || "Erro desconhecido"}`);
+        }
+    } catch (error) {
+        console.error("Erro ao salvar:", error);
+        alert(`Erro ao ${isEditing ? "atualizar" : "criar"} o lead: ${error.message}`);
+    }
+});
+
+
+carregarLeads(paginaAtual);

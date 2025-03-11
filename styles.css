@@ -1232,3 +1232,186 @@ header h1 {
         width: 100%;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Modal de Edição de Perfil */
+.edit-profile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.edit-profile-modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.edit-profile-modal h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.edit-profile-modal .close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.edit-profile-modal .close-icon:hover {
+    color: #f44336;
+}
+
+.edit-profile-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.edit-profile-modal label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.edit-profile-modal input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.edit-profile-modal button {
+    padding: 12px;
+    background-color: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-profile-modal button:hover {
+    background-color: #166fe5;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .edit-profile-modal {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .edit-profile-modal h2 {
+        font-size: 20px;
+    }
+
+    .edit-profile-modal input {
+        font-size: 13px;
+    }
+
+    .edit-profile-modal button {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+.edit-profile-modal #toggle-password-btn {
+    background-color: #f0f2f5;
+    color: #333;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.edit-profile-modal #toggle-password-btn:hover {
+    background-color: #e4e6eb;
+}
+
+.edit-profile-modal #password-fields {
+    margin-top: 15px;
+}
+
+
+/* Notificação personalizada no estilo Facebook */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1877f2; /* Azul do Facebook */
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 3000;
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.notification.success {
+    background-color: #28a745; /* Verde para sucesso */
+}
+
+.notification.error {
+    background-color: #dc3545; /* Vermelho para erro */
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+.notification i {
+    font-size: 20px;
+}
