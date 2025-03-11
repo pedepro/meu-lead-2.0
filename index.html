@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Lead itapema - imóveis e leads para conectar corretores com os melhores negócios.</title>
-      <!-- Metatags Open Graph -->
+    <!-- Metatags Open Graph -->
     <meta property="og:title" content="Meu Lead Itapema">
     <meta property="og:description" content="Encontre os melhores imóveis e leads para corretores em um só lugar!">
     <meta property="og:image" content="https://meuleaditapema.com.br/assets/icon.ico">
     <meta property="og:url" content="https://meuleaditapema.com.br">
     <meta property="og:type" content="website">
+
+    <!-- Adicionar link para o manifest.json -->
+    <link rel="manifest" href="/manifest.json">
+    <!-- Definir a cor da barra de status -->
+    <meta name="theme-color" content="#1877f2">
 
     <link rel="icon" type="image/x-icon" href="assets/icon.ico">
     <link rel="stylesheet" href="styles.css">
@@ -33,7 +38,7 @@
             <li><a href="#" id="clientes-link">Leads (Clientes)</a></li>
             <li><a href="#" id="meusleads-link">Leads Adquiridos</a></li>
             <li><a href="#" id="meusimoveis-link">Imóveis Afiliados</a></li>
-            <li><a href="#" id="editar-perfil-link">Editar Perfil</a></li> <!-- Novo link -->
+            <li><a href="#" id="editar-perfil-link">Editar Perfil</a></li>
         </ul>
         <div class="user-info" id="user-info-container">
             <div id="name">Faça login</div>
@@ -71,5 +76,19 @@
     </main>
 
     <script src="script.js"></script>
+    <!-- Registrar o Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
