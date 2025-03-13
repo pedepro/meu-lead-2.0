@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Digital - Nome do Estabelecimento</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav-tabs .nav-link {
+            font-weight: bold;
+            color: #495057;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            color: #343a40;
+        }
+        .card-text {
+            color: #6c757d;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .modal-body .form-check {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="bg-light py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <img src="logo.png" alt="Logo do Estabelecimento" class="img-fluid" style="max-height: 80px;">
+                </div>
+                <div class="col-9">
+                    <h1 class="mb-0" style="font-size: 1.8rem; color: #343a40;">Nome do Estabelecimento</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Seção Principal com Categorias e Produtos -->
+    <main class="container my-5">
+        <ul class="nav nav-tabs" id="categoriasTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="lanches-tab" data-toggle="tab" href="#lanches" role="tab" aria-controls="lanches" aria-selected="true">Lanches</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="bebidas-tab" data-toggle="tab" href="#bebidas" role="tab" aria-controls="bebidas" aria-selected="false">Bebidas</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="categoriasTabContent">
+            <!-- Categoria: Lanches -->
+            <div class="tab-pane fade show active" id="lanches" role="tabpanel" aria-labelledby="lanches-tab">
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="lanche1.jpg" class="card-img-top" alt="Lanche 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Hambúrguer Clássico</h5>
+                                <p class="card-text">Pão artesanal, carne 180g, queijo cheddar, alface e tomate.</p>
+                                <p class="card-text"><strong>Preço: R$ 25,00</strong></p>
+                                <p class="card-text">Tempo de preparo: 15 minutos</p>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#adicionaisModal" data-produto="Hambúrguer Clássico">Escolher Adicionais</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="lanche2.jpg" class="card-img-top" alt="Lanche 2">
+                            <div class="card-body">
+                                <h5 class="card-title">Sanduíche de Frango</h5>
+                                <p class="card-text">Frango grelhado, maionese temperada, rúcula e pão integral.</p>
+                                <p class="card-text"><strong>Preço: R$ 20,00</strong></p>
+                                <p class="card-text">Tempo de preparo: 12 minutos</p>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#adicionaisModal" data-produto="Sanduíche de Frango">Escolher Adicionais</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Categoria: Bebidas -->
+            <div class="tab-pane fade" id="bebidas" role="tabpanel" aria-labelledby="bebidas-tab">
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="bebida1.jpg" class="card-img-top" alt="Bebida 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Suco Natural</h5>
+                                <p class="card-text">Suco de laranja fresco, sem açúcar adicionado.</p>
+                                <p class="card-text"><strong>Preço: R$ 8,00</strong></p>
+                                <p class="card-text">Tempo de preparo: 5 minutos</p>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#adicionaisModal" data-produto="Suco Natural">Escolher Adicionais</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Adicionais -->
+    <div class="modal fade" id="adicionaisModal" tabindex="-1" role="dialog" aria-labelledby="adicionaisModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionaisModalLabel">Escolher Adicionais para <span id="produtoNome"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="adicional1">
+                        <label class="form-check-label" for="adicional1">Bacon Extra - R$ 5,00</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="adicional2">
+                        <label class="form-check-label" for="adicional2">Queijo Extra - R$ 3,00</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="adicional3">
+                        <label class="form-check-label" for="adicional3">Gelo (bebidas) - R$ 0,00</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Atualizar o nome do produto no modal
+        $('#adicionaisModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var produto = button.data('produto');
+            var modal = $(this);
+            modal.find('#produtoNome').text(produto);
+        });
+    </script>
+</body>
+</html>

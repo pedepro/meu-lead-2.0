@@ -259,14 +259,14 @@
 /* Modal (Popup) */
 .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 60px; /* Altura do header - ajuste conforme o seu header */
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 60px); /* Desconta a altura do header */
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Centraliza verticalmente na área útil */
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -302,7 +302,7 @@
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 10px;
 }
 
 .form-item {

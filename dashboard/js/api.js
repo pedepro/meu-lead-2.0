@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
       pedidos: pedidos,
       clientes: clientes,
       cadastroimovel: cadastroImovel,
-      listaimoveis: listaImovel
+      listaimoveis: listaImovel,
+      estatisticas: estatisticas
   };
 
   // Chama a função associada à sessão, caso exista
@@ -138,4 +139,27 @@ function listaImovel() {
       document.body.appendChild(script);
     })
     .catch(error => console.error("Erro ao carregar o HTML de cadastro-imovel:", error));
+}
+
+// Funções para carregar os arquivos
+function estatisticas() {
+  // Carrega o HTML
+  fetch('estatisticas/estatisticas.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('dashboard-container').innerHTML = html;
+
+      // Carrega o JS
+      const script = document.createElement('script');
+      script.src = 'estatisticas/estatisticas.js';
+      script.onload = function() {
+        console.log('Script JS carregado com sucesso');
+        // Após o script carregar, carrega os tipos.json
+      };
+      script.onerror = function() {
+        console.error('Erro ao carregar o script JS');
+      };
+      document.body.appendChild(script);
+    })
+    .catch(error => console.error("Erro ao carregar o HTML de estatisticas:", error));
 }

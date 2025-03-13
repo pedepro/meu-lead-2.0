@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria De Mônaco - Peça Online</title>
+    <link rel="icon" type="image/png" href="https://d2nagnwby8accc.cloudfront.net/companies/logos/c601f9cc-47d7-4d5d-92c5-c71ef3fefd4b.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --olaclick-color: #006EFF;
+            --background-color: #000000;
+            --primary-color: #1C4028;
+            --font-color: #FFFFFF;
+            --font-color-80: #FFFFFFCC;
+            --product-button-font-color: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--font-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1152px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .header {
+            position: relative;
+            width: 100%;
+            padding-bottom: 25%;
+            background: url('https://olaclick-assets-prod.s3.amazonaws.com/companies/backgrounds/3fc9b4dd-b1f6-498a-9f26-d18f71f542f3.webp') no-repeat center center/cover;
+            height: 90px;
+        }
+
+        .header .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.84);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
+            display: flex;
+            align-items: center;
+        }
+
+        .header .status .icon {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        .company {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-left: -15px;
+            margin-right: -15px;
+            padding: 10px;
+            display: inline;
+            gap: 10px;
+        }
+
+        .company__detail {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .company__logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 10%;
+            border: 1px solid var(--font-color);
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .company__name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--font-color);
+            margin-bottom: 5px;
+        }
+
+        .delivery-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--font-color-80);
+            border-radius: 5px;
+            border: 1px solid #FFFFFF;
+            width: 100%;
+            padding: 5px 10px;
+            align-items: center;
+        }
+
+        .status__time-freefrom {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            display: inline;
+        }
+
+        .status__time, .status__free-from {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status__see-map a {
+            color: var(--font-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .status__see-map a:hover {
+            text-decoration: underline;
+        }
+
+        .material-icons {
+            font-size: 16px;
+            margin-right: 5px;
+        }
+
+        .category-slider {
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        .category-slider__wrapper {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-slider__item {
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--font-color-80);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .category-slider__item--active {
+            color: var(--font-color);
+            position: relative;
+        }
+
+        .category-slider__item--active .border-active {
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            right: 15px;
+            height: 3px;
+            background-color: var(--olaclick-color);
+        }
+
+        .category-slider__item:hover {
+            color: var(--font-color);
+        }
+
+        .product-section {
+            padding: 20px 0;
+        }
+
+        .category-view-handler {
+            margin-bottom: 20px;
+        }
+
+        .category {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--font-color);
+            margin-bottom: 10px;
+        }
+
+        .product-card {
+            display: flex;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            max-height: 120px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-card__head {
+            position: relative;
+            width: 120px;
+            flex-shrink: 0;
+            height: 100%;
+        }
+
+        .product-card__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card__discount {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ffffffbd;
+            color: #000;
+            padding: 3px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .product-card__body {
+            flex: 1;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card__title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--font-color);
+            margin-bottom: 5px;
+            max-height: 2.8em;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-card__description {
+            font-size: 12px;
+            color: var(--font-color-80);
+            line-height: 1.4;
+            margin-bottom: 10px;
+            max-height: 3.6em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-card__footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product__prices {
+            display: flex;
+            align-items: center;
+        }
+
+        .product__price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--font-color);
+        }
+
+        .product__original-price {
+            font-size: 12px;
+            color: #888;
+            margin-left: 5px;
+            text-decoration: line-through;
+        }
+
+        .button-add-product {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .button-add-product img {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="status">
+            <span class="icon">✔</span> Aberto
+        </div>
+    </div>
+    <div class="container">
+        <div class="company">
+            <div class="company__detail">
+                <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/logos/c601f9cc-47d7-4d5d-92c5-c71ef3fefd4b.webp" alt="Logo" class="company__logo">
+                <div class="header-title">
+                    <h1 class="company__name">Pizzaria De Mônaco</h1>
+                </div>
+            </div>
+            <div class="delivery-status">
+                <div class="status__time-freefrom">
+                    <div class="status__time">20 - 45min.</div>
+                    <div class="status__free-from">
+                        <span class="material-icons">motorcycle</span>
+                        Gratuito a partir de R$ 200,00
+                    </div>
+                </div>
+                <div class="status__see-map">
+                    <a href="https://www.google.com/maps/search/?api=1&query=-27.17148611,-53.71203599" target="_blank">
+                        <span class="material-icons">place</span>
+                        Ver mapa
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-slider">
+            <ul class="category-slider__wrapper">
+                <li class="category-slider__item category-slider__item--active">
+                    <div>Promoções</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item"><div>Pizzas</div></li>
+                <li class="category-slider__item"><div>Xis prensado</div></li>
+                <li class="category-slider__item"><div>Hamburguers</div></li>
+                <li class="category-slider__item"><div>Bebidas</div></li>
+                <li class="category-slider__item"><div>Pastéis</div></li>
+                <li class="category-slider__item"><div>Porções</div></li>
+            </ul>
+        </div>
+
+        <div class="product-section">
+            <div class="category-view-handler">
+                <h2 class="category">Promoções</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/1588eb4b-5f7b-46fb-9882-da755045c4b0.webp" alt="Pizza Gigante" class="product-card__image">
+                            <span class="product-card__discount">-18%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Pizza Gigante + refri 2l grátis</div>
+                                <div class="product-card__description">Pizza gigante até 3 sabores 16 fatias, serve até 4 pessoas</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 70,00</span>
+                                    <span class="product__original-price"><del>R$ 85,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/fb298921-c173-4c0a-9af9-c14dc06757c7.webp" alt="Pizza Grande" class="product-card__image">
+                            <span class="product-card__discount">-20%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Pizza Grande + refri 2l grátis</div>
+                                <div class="product-card__description">Escolha até 2 sabores, 12 fatias, serve até 3 pessoas</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 60,00</span>
+                                    <span class="product__original-price"><del>R$ 75,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/132516bf-b738-489a-b64a-c928f3beaa08.webp" alt="Combo Gigante" class="product-card__image">
+                            <span class="product-card__discount">-25%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Combo Gigante com Broto doce</div>
+                                <div class="product-card__description">1 Pizza Gigante 16 fatias até 3 sabores + 1 Pizza broto doce 6 fatias</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 83,00</span>
+                                    <span class="product__original-price"><del>R$ 110,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/aade9536-31e6-4c25-a0bf-040750c052fd.webp" alt="Combo Grande" class="product-card__image">
+                            <span class="product-card__discount">-25%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Combo Grande com broto doce</div>
+                                <div class="product-card__description">1 pizza Grande 12 fatias até 2 sabores + 1 Pizza Broto 6 fatias doce</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 75,00</span>
+                                    <span class="product__original-price"><del>R$ 100,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

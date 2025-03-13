@@ -1,0 +1,187 @@
+<section class="stats-container">
+    <style>
+        .stats-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .stats-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1c1e21;
+            margin-bottom: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .stats-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s ease;
+        }
+        .stats-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .stats-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1e21;
+            margin: 0 0 12px 0;
+        }
+        .stats-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1877f2;
+            margin: 0 0 12px 0;
+        }
+        .stats-list {
+            list-style: none;
+            padding: 0;
+            max-height: 180px;
+            overflow-y: auto;
+            margin: 0;
+            font-size: 14px;
+            color: #65676b;
+        }
+        .stats-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ebedf0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stats-list li:last-child {
+            border-bottom: none;
+        }
+        .stats-list .value {
+            font-weight: 500;
+            color: #1c1e21;
+        }
+        .stats-timestamp {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #65676b;
+            text-align: right;
+        }
+        .stats-list-pedidos {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .stats-list-pedidos li {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px 0;
+        }
+        .stats-list-pedidos .sku {
+            font-weight: 600;
+            color: #1877f2;
+        }
+        .stats-list-pedidos .details {
+            color: #65676b;
+        }
+        .chart-container {
+            margin-top: 24px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .chart-header select {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccd0d5;
+            background-color: #fff;
+            color: #1c1e21;
+        }
+    </style>
+
+    <h2 class="stats-header">Estatísticas e Relatórios</h2>
+    <div class="stats-grid">
+        <!-- Corretores sem pedidos -->
+        <div class="stats-card">
+            <h3>Corretores sem Pedidos</h3>
+            <p class="stats-number" id="corretores-sem-pedidos-count">0</p>
+            <ul class="stats-list" id="corretores-sem-pedidos-list"></ul>
+        </div>
+
+        <!-- Corretores com pedidos -->
+        <div class="stats-card">
+            <h3>Corretores com Pedidos</h3>
+            <p class="stats-number" id="corretores-com-pedidos-count">0</p>
+            <ul class="stats-list" id="corretores-com-pedidos-list"></ul>
+        </div>
+
+        <!-- Corretores com pedidos pendentes -->
+        <div class="stats-card">
+            <h3>Pedidos Pendentes</h3>
+            <p class="stats-number" id="corretores-pendentes-count">0</p>
+            <ul class="stats-list" id="corretores-pendentes-list"></ul>
+        </div>
+
+        <!-- Corretores com mais de 1 pedido -->
+        <div class="stats-card">
+            <h3>Corretores com +1 Pedido</h3>
+            <p class="stats-number" id="corretores-mais-um-pedido-count">0</p>
+            <ul class="stats-list" id="corretores-mais-um-pedido-list"></ul>
+        </div>
+
+        <!-- Pedidos finalizados -->
+        <div class="stats-card">
+            <h3>Pedidos Finalizados</h3>
+            <p class="stats-number" id="pedidos-finalizados">0</p>
+        </div>
+
+        <!-- Melhores corretores -->
+        <div class="stats-card">
+            <h3>Melhores Corretores</h3>
+            <ul class="stats-list" id="melhores-corretores-list"></ul>
+        </div>
+
+        <!-- Pedidos últimos 30 dias -->
+        <div class="stats-card">
+            <h3>Pedidos Últimos 30 Dias</h3>
+            <p class="stats-number" id="pedidos-30-dias">0</p>
+            <ul class="stats-list stats-list-pedidos" id="pedidos-30-dias-list"></ul>
+        </div>
+
+        <!-- Novos corretores últimos 30 dias -->
+        <div class="stats-card">
+            <h3>Novos Corretores (30 Dias)</h3>
+            <p class="stats-number" id="novos-corretores-count">0</p>
+            <ul class="stats-list" id="novos-corretores-list"></ul>
+        </div>
+
+        <!-- Clientes cadastrados por IA últimos 30 dias -->
+        <div class="stats-card">
+            <h3>Clientes por IA (30 Dias)</h3>
+            <p class="stats-number" id="clientes-ia-30-dias">0</p>
+        </div>
+    </div>
+
+    <!-- Gráfico de faturamento -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <h3>Faturamento</h3>
+            <select id="chart-group-by">
+                <option value="day">Por Dia</option>
+                <option value="week">Por Semana</option>
+                <option value="month">Por Mês</option>
+            </select>
+        </div>
+        <canvas id="faturamento-chart"></canvas>
+    </div>
+
+    <p class="stats-timestamp">Última atualização: <span id="timestamp"></span></p>
+</section>

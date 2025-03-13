@@ -427,21 +427,24 @@ function atualizarFiltros() {
 
 // Função para criar o panel de filtros, se não existir
 function createFilterPanel() {
-    const filterPanel = document.createElement("div");
-    filterPanel.id = "filter-panel";
-    const filterWrapper = document.createElement("div");
-    filterWrapper.className = "filter-row";
-    filterPanel.appendChild(filterWrapper);
-    const displayHeader = document.querySelector(".display-header");
-    if (displayHeader) {
-        const headerActions = displayHeader.querySelector(".header-actions");
-        if (headerActions) {
-            displayHeader.insertBefore(filterPanel, headerActions);
+    let filterPanel = document.getElementById("filter-panel");
+    if (!filterPanel) {
+        filterPanel = document.createElement("div");
+        filterPanel.id = "filter-panel";
+        const filterWrapper = document.createElement("div");
+        filterWrapper.className = "filter-row";
+        filterPanel.appendChild(filterWrapper);
+        const displayHeader = document.querySelector(".display-header");
+        if (displayHeader) {
+            const headerActions = displayHeader.querySelector(".header-actions");
+            if (headerActions) {
+                displayHeader.insertBefore(filterPanel, headerActions);
+            } else {
+                displayHeader.appendChild(filterPanel);
+            }
         } else {
-            displayHeader.appendChild(filterPanel);
+            document.body.appendChild(filterPanel);
         }
-    } else {
-        document.body.appendChild(filterPanel);
     }
     return filterPanel;
 }
