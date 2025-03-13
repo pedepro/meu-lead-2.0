@@ -37,7 +37,7 @@ if (btnIndisponiveis) {
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/cidades");
+        const response = await fetch("https://backand.meuleaditapema.com.br/cidades");
         const data = await response.json();
         console.log('Cidades recebidas:', data);
 
@@ -57,7 +57,7 @@ function getNomeCidade(cidadeId) {
 // Função para carregar os imóveis iniciais
 async function carregarImoveis() {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis?limite=${imoveisPorPagina}&offset=0`);
+        const response = await fetch(`https://backand.meuleaditapema.com.br/list-imoveis?limite=${imoveisPorPagina}&offset=0`);
         const data = await response.json();
         if (data.success) {
             console.log('Imóveis carregados com imagens:', data.imoveis);
@@ -163,7 +163,7 @@ function adicionarEventosToggles() {
             console.log(`Atualizando ${field} do imóvel ${imovelId} para ${novoValor}`);
 
             try {
-                const response = await fetch(`http://localhost:3000/imoveis/toggles/${imovelId}`, {
+                const response = await fetch(`https://backand.meuleaditapema.com.br/imoveis/toggles/${imovelId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ [field]: novoValor })
@@ -221,7 +221,7 @@ function adicionarEventosAcoes() {
     modalConfirm.addEventListener('click', async () => {
         if (imovelIdToDelete) {
             try {
-                const response = await fetch(`http://localhost:3000/imoveis/${imovelIdToDelete}`, {
+                const response = await fetch(`https://backand.meuleaditapema.com.br/imoveis/${imovelIdToDelete}`, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
@@ -294,7 +294,7 @@ function filtrarImoveis() {
     console.log("Filtro de cidade selecionado:", cidadeSelecionada);
     console.log("Filtro de preço selecionado:", precoSelecionado);
 
-    let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis";
+    let url = "https://backand.meuleaditapema.com.br/list-imoveis";
     const params = new URLSearchParams();
 
     if (mostrarIndisponiveis) {

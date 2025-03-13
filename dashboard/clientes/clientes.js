@@ -18,7 +18,7 @@ async function carregarLeads(pagina = 1) {
         const precoInteresse = document.getElementById("precoInteresse").value;
         const buscaGeral = document.getElementById("buscaGeral").value.trim();
 
-        let url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
+        let url = new URL("https://backand.meuleaditapema.com.br/list-clientes");
 
         // Filtro por tipo de imóvel
         if (tipoImovel) url.searchParams.append("tipo_imovel", tipoImovel);
@@ -139,7 +139,7 @@ async function excluirLead(id) {
     if (!confirm("Tem certeza que deseja excluir este lead?")) return;
 
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`, {
+        const response = await fetch(`https://backand.meuleaditapema.com.br/clientes/${id}`, {
             method: "DELETE",
         });
 
@@ -161,7 +161,7 @@ async function excluirLead(id) {
 // Função para alterar o status "disponível"
 async function toggleDisponivel(id, disponivel) {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`, {
+        const response = await fetch(`https://backand.meuleaditapema.com.br/clientes/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ disponivel }),
@@ -189,7 +189,7 @@ function openUniqueEditPopup(id = null) {
 
     if (id) {
         title.textContent = "Editar Lead";
-        fetch(`https://pedepro-meulead.6a7cul.easypanel.host/clientes/${id}`)
+        fetch(`https://backand.meuleaditapema.com.br/clientes/${id}`)
             .then(response => {
                 if (!response.ok) throw new Error("Lead não encontrado");
                 return response.json();
@@ -252,8 +252,8 @@ document.getElementById("uniqueEditForm").addEventListener("submit", async (e) =
 
     const isEditing = currentLeadId !== null;
     const url = isEditing
-        ? `https://pedepro-meulead.6a7cul.easypanel.host/clientes/${currentLeadId}`
-        : "https://pedepro-meulead.6a7cul.easypanel.host/clientes";
+        ? `https://backand.meuleaditapema.com.br/clientes/${currentLeadId}`
+        : "https://backand.meuleaditapema.com.br/clientes";
     const method = isEditing ? "PUT" : "POST";
 
     try {

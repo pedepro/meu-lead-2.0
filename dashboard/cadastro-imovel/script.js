@@ -105,7 +105,7 @@ function atualizarIndices() {
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/cidades");
+        const response = await fetch("https://backand.meuleaditapema.com.br/cidades");
         const data = await response.json();
         console.log('Cidades recebidas:', data);
 
@@ -134,7 +134,7 @@ async function carregarCidades() {
 async function carregarDadosImovel(editId) {
     try {
         console.log(`Buscando dados do imóvel ${editId}`);
-        const response = await fetch(`http://localhost:3000/get-imovel/${editId}`);
+        const response = await fetch(`https://backand.meuleaditapema.com.br/get-imovel/${editId}`);
         const imovel = await response.json();
         console.log('Dados do imóvel recebidos:', imovel);
 
@@ -262,7 +262,7 @@ if (formImovel) {
         console.log('Estados dos toggles coletados:', imagensToggles);
 
         // Enviar ou atualizar imóvel
-        const baseUrl = editId ? `http://localhost:3000/imoveis/${editId}` : 'http://localhost:3000/imoveis/novo';
+        const baseUrl = editId ? `https://backand.meuleaditapema.com.br/imoveis/${editId}` : 'https://backand.meuleaditapema.com.br/imoveis/novo';
         const method = editId ? 'PUT' : 'POST';
 
         try {
@@ -284,7 +284,7 @@ if (formImovel) {
             if (editId && imagensParaExcluir.length > 0) {
                 for (const imagemId of imagensParaExcluir) {
                     console.log(`Tentando excluir imagem ${imagemId} do imóvel ${imovelId}`);
-                    const response = await fetch(`http://localhost:3000/imoveis/${imovelId}/imagens/${imagemId}`, {
+                    const response = await fetch(`https://backand.meuleaditapema.com.br/imoveis/${imovelId}/imagens/${imagemId}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -316,7 +316,7 @@ if (formImovel) {
                                 compradores: toggleData.privado || false
                             };
                             console.log(`Atualizando toggles da imagem ID ${img.id}:`, imageData);
-                            const response = await fetch(`http://localhost:3000/imoveis/${imovelId}/imagens/${img.id}`, {
+                            const response = await fetch(`https://backand.meuleaditapema.com.br/imoveis/${imovelId}/imagens/${img.id}`, {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(imageData)
@@ -364,7 +364,7 @@ if (formImovel) {
                     };
                     console.log(`URL ajustada para cadastro: ${imageData.url}`);
 
-                    const imageResponse = await fetch(`http://localhost:3000/imoveis/${imovelId}/imagens`, {
+                    const imageResponse = await fetch(`https://backand.meuleaditapema.com.br/imoveis/${imovelId}/imagens`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(imageData)
