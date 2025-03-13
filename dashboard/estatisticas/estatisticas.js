@@ -1,6 +1,6 @@
 async function renderStats() {
     try {
-        const response = await fetch('http://localhost:3000/estatisticas-relatorios');
+        const response = await fetch('https://backand.meuleaditapema.com.br/estatisticas-relatorios');
         const { success, data, timestamp } = await response.json();
 
         if (!success) throw new Error('Erro ao carregar estatísticas');
@@ -71,7 +71,7 @@ async function renderStats() {
             const startDate = new Date();
             startDate.setMonth(endDate.getMonth() - 3); // Últimos 3 meses por padrão
 
-            const chartResponse = await fetch(`http://localhost:3000/pedidos-por-intervalo?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}&groupBy=${groupBy}`);
+            const chartResponse = await fetch(`https://backand.meuleaditapema.com.br/pedidos-por-intervalo?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}&groupBy=${groupBy}`);
             const chartData = await chartResponse.json();
 
             if (!chartData.success) throw new Error('Erro ao carregar dados do gráfico');
