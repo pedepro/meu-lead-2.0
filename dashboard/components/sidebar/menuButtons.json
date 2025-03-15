@@ -30,7 +30,7 @@
                 "submenu": [
                     { "id": "cupons-de-desconto", "label": "Cupons de desconto", "link": "/marketing/cupons" },
                     { "id": "banners", "label": "Banners", "link": "/marketing/banners" },
-                    { "id": "facebook-pixel", "label": "Facebook Pixel", "link": "/marketing/facebook-pixel" }
+                    { "id": "Rastreamento", "label": "Rastreamento", "link": "/marketing/Rastreamento" }
                 ]
             },
             { 

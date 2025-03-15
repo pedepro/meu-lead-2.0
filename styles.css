@@ -1415,3 +1415,14 @@ header h1 {
 .notification i {
     font-size: 20px;
 }
+
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Proporção do vídeo */
+    overflow: hidden;
+    background-color: #0865FE;
+    display: flex;
+    width: calc(100% - 20px);
+    max-width: 800px;
+}

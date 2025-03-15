@@ -377,4 +377,41 @@
             max-height: 80px;
         }
     }
+
+/* Notificação personalizada no estilo Facebook */
+.notification {
+    position: fixed;
+    top: 70px; /* Margem superior de 70px */
+    right: 20px; /* Alinhado à direita com uma margem */
+    transform: none; /* Removido o translateX para alinhar à direita */
+    background-color: #1877f2; /* Azul do Facebook */
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 4000; /* z-index maior que o header (assumindo que o header tenha z-index menor que 4000) */
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.notification.success {
+    background-color: #28a745; /* Verde para sucesso */
+}
+
+.notification.error {
+    background-color: #dc3545; /* Vermelho para erro */
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+.notification i {
+    font-size: 20px;
+}
 </style>

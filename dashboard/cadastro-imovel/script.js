@@ -16,6 +16,26 @@ let imagensParaExcluir = [];
 // Array para armazenar IDs das imagens existentes que foram editadas
 let imagensEditadas = [];
 
+// Função para exibir notificação personalizada
+function mostrarNotificacao(mensagem, tipo = "success") {
+    const notification = document.createElement("div");
+    notification.className = `notification ${tipo}`;
+    notification.innerHTML = `
+        <i class="material-icons">${tipo === "success" ? "check_circle" : "error"}</i>
+        <span>${mensagem}</span>
+    `;
+    document.body.appendChild(notification);
+
+    // Mostrar a notificação
+    setTimeout(() => notification.classList.add("show"), 100);
+
+    // Esconder após 3 segundos
+    setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => notification.remove(), 300); // Remove após a transição
+    }, 3000);
+}
+
 // Função para adicionar imagem à pré-visualização
 function adicionarImagemPreview(fileOuUrl, index, toggleData = {}, imagemId = null) {
     const div = document.createElement('div');
@@ -53,7 +73,6 @@ function adicionarImagemPreview(fileOuUrl, index, toggleData = {}, imagemId = nu
         <label><input type="checkbox" name="imagens[${index}][privado]" ${toggleData.compradores ? 'checked' : ''}> Privado Compradores</label>
     `;
 
-    // Adicionar evento de mudança aos checkboxes
     if (imagemId) {
         const checkboxes = toggleDiv.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
@@ -126,7 +145,7 @@ async function carregarCidades() {
         });
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
-        alert('Erro ao carregar lista de cidades.');
+        mostrarNotificacao('Erro ao carregar lista de cidades.', 'error');
     }
 }
 
@@ -142,7 +161,6 @@ async function carregarDadosImovel(editId) {
             throw new Error(imovel.error);
         }
 
-        // Preencher os campos do formulário
         document.getElementById('nome_proprietario').value = imovel.nome_proprietario || '';
         document.getElementById('valor').value = imovel.valor || '';
         document.getElementById('categoria').value = imovel.categoria || '';
@@ -161,7 +179,6 @@ async function carregarDadosImovel(editId) {
         document.getElementById('descricao').value = imovel.descricao || '';
         document.getElementById('descricao_negociacao').value = imovel.descricao_negociacao || '';
 
-        // Preencher imagens existentes
         imagensPreview.innerHTML = '';
         imagensAtuais = imovel.imagens.map(img => ({ url: img.url, id: img.id }));
         console.log('Imagens atuais mapeadas:', imagensAtuais);
@@ -174,12 +191,11 @@ async function carregarDadosImovel(editId) {
             }, imagem.id);
         });
 
-        // Alterar título e botão para modo de edição
         document.getElementById('titulo-form').textContent = 'Editar Imóvel';
         document.getElementById('btn-submit').textContent = 'Salvar Alterações';
     } catch (error) {
         console.error('Erro ao carregar dados do imóvel:', error);
-        alert('Erro ao carregar dados do imóvel: ' + error.message);
+        mostrarNotificacao('Erro ao carregar dados do imóvel: ' + error.message, 'error');
     }
 }
 
@@ -215,7 +231,7 @@ if (imagensInput) {
                 adicionarImagemPreview(file, proximoIndice + i);
             }
         });
-        imagensInput.value = ''; // Limpa o input para permitir mais uploads
+        imagensInput.value = '';
     });
 }
 
@@ -224,7 +240,6 @@ if (formImovel) {
     formImovel.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Mostrar o loading
         loadingOverlay.style.display = 'flex';
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -234,7 +249,6 @@ if (formImovel) {
         const elements = document.querySelectorAll('.imovel-cadastro input, .imovel-cadastro select, .imovel-cadastro textarea');
         const imagensToggles = [];
 
-        // Coletar dados do imóvel
         elements.forEach(element => {
             if (element.name === 'imagens') {
                 // Ignorar imagens por enquanto
@@ -243,7 +257,6 @@ if (formImovel) {
             }
         });
 
-        // Coletar toggles das imagens
         const toggles = document.querySelectorAll('.toggle-container input[type="checkbox"]');
         toggles.forEach(toggle => {
             const nameParts = toggle.name.match(/imagens\[(\d+)\]\[(livre|afiliados|privado)\]/);
@@ -261,7 +274,6 @@ if (formImovel) {
         console.log('Imagens marcadas como editadas:', imagensEditadas);
         console.log('Estados dos toggles coletados:', imagensToggles);
 
-        // Enviar ou atualizar imóvel
         const baseUrl = editId ? `https://backand.meuleaditapema.com.br/imoveis/${editId}` : 'https://backand.meuleaditapema.com.br/imoveis/novo';
         const method = editId ? 'PUT' : 'POST';
 
@@ -280,7 +292,6 @@ if (formImovel) {
 
             const imovelId = editId || imovelResult.imovelId;
 
-            // Processar imagens removidas (apenas em modo de edição)
             if (editId && imagensParaExcluir.length > 0) {
                 for (const imagemId of imagensParaExcluir) {
                     console.log(`Tentando excluir imagem ${imagemId} do imóvel ${imovelId}`);
@@ -301,7 +312,6 @@ if (formImovel) {
                 console.log('Lista de imagens para exclusão limpa:', imagensParaExcluir);
             }
 
-            // Atualizar toggles das imagens editadas (apenas em modo de edição)
             if (editId && imagensEditadas.length > 0) {
                 const imagensExistentes = imagensAtuais.filter(img => img && img.id && !imagensParaExcluir.includes(img.id));
                 for (const img of imagensExistentes) {
@@ -331,15 +341,14 @@ if (formImovel) {
                         }
                     }
                 }
-                imagensEditadas = []; // Limpa a lista após atualização
+                imagensEditadas = [];
                 console.log('Lista de imagens editadas limpa:', imagensEditadas);
             }
 
-            // Upload e cadastro de novas imagens
             for (let i = 0; i < imagensAtuais.length; i++) {
-                if (!imagensAtuais[i]) continue; // Pula imagens removidas
+                if (!imagensAtuais[i]) continue;
 
-                if (imagensAtuais[i].file) { // Nova imagem
+                if (imagensAtuais[i].file) {
                     const file = imagensAtuais[i].file;
                     const uploadFormData = new FormData();
                     uploadFormData.append('file', file);
@@ -378,18 +387,23 @@ if (formImovel) {
                 }
             }
 
-            alert(editId ? 'Imóvel atualizado com sucesso!' : 'Imóvel cadastrado com sucesso!');
-            console.log('Processamento concluído. Verifique o banco de dados para confirmar exclusões.');
+            // Exibir notificação, limpar parâmetros da URL, adicionar session=listaimoveis e recarregar a página
+            mostrarNotificacao(editId ? 'Imóvel atualizado com sucesso!' : 'Imóvel cadastrado com sucesso!', 'success');
+            setTimeout(() => {
+                // Define a URL com o parâmetro session=listaimoveis
+                window.history.pushState({}, document.title, `${window.location.pathname}?session=listaimoveis`);
+                // Recarrega a página
+                window.location.reload();
+            }, 1000); // Aguarda 3 segundos para mostrar a notificação antes de recarregar
         } catch (error) {
             console.error('Erro ao processar o imóvel:', error);
-            alert(`Erro ao ${editId ? 'atualizar' : 'cadastrar'} imóvel: ${error.message}`);
+            mostrarNotificacao(`Erro ao ${editId ? 'atualizar' : 'cadastrar'} imóvel: ${error.message}`, 'error');
         } finally {
             loadingOverlay.style.display = 'none';
         }
     });
 }
 
-// Expor a função para ser chamada externamente após o carregamento dinâmico
 window.inicializarTelaCadastroImovel = inicializarTelaCadastroImovel;
 
 inicializarTelaCadastroImovel();

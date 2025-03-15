@@ -37,31 +37,38 @@
         }
 
         .header {
-            position: relative;
-            width: 100%;
-            padding-bottom: 25%;
-            background: url('https://olaclick-assets-prod.s3.amazonaws.com/companies/backgrounds/3fc9b4dd-b1f6-498a-9f26-d18f71f542f3.webp') no-repeat center center/cover;
-            height: 90px;
-        }
+    position: relative;
+    width: 100%;
+    height: 90px; /* Altura fixa de 90px */
+    background: url('https://olaclick-assets-prod.s3.amazonaws.com/companies/backgrounds/3fc9b4dd-b1f6-498a-9f26-d18f71f542f3.webp') no-repeat center center;
+    background-size: cover; /* Garante que a imagem cubra a área, cortando excessos */
+    overflow: hidden; /* Corta qualquer conteúdo que ultrapasse os 90px de altura */
+}
 
-        .header .status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.84);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #000;
-            display: flex;
-            align-items: center;
-        }
+.header .status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.84);
+    padding: 2px 4px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espaçamento entre os elementos */
+}
 
-        .header .status .icon {
-            margin-right: 5px;
-            color: var(--primary-color);
-        }
+.header .status .material-icons {
+    font-size: 16px; /* Tamanho consistente para os ícones */
+    color: var(--primary-color); /* Cor do ícone */
+}
+
+.header .status .extra-info {
+    font-size: 12px;
+    color: #666;
+}
 
         .company {
             display: flex;
@@ -102,13 +109,19 @@
             margin-bottom: 5px;
         }
 
+        .company__social {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .delivery-status {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
             color: var(--font-color-80);
-            border-radius: 5px;
-            border: 1px solid #FFFFFF;
+            border: 1px dashed #FFFFFF; /* 1px de espessura, traçada, cor branca */
+            border-radius: 5px; /* Raio de 5px para cantos arredondados */
             width: 100%;
             padding: 5px 10px;
             align-items: center;
@@ -119,6 +132,12 @@
             gap: 10px;
             align-items: center;
             display: inline;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 10px;
+            font-weight: 600;
+            font-family: poppins;
+            text-color: #ffffff;
         }
 
         .status__time, .status__free-from {
@@ -141,8 +160,141 @@
         .material-icons {
             font-size: 16px;
             margin-right: 5px;
+            cursor: pointer;
+            background-color: #ffffff00;
         }
 
+        /* Popup Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup {
+            background-color: #fff;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            color: #000;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header {
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .popup-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .popup-header .material-icons {
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .popup-content {
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .popup-section {
+            margin-bottom: 15px;
+        }
+
+        .popup-section.delivery, .popup-section.pickup {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .popup-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .popup-section h3 .material-icons {
+            margin-right: 8px;
+            color: #006EFF;
+        }
+
+        .popup-section p, .popup-section ul {
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+        }
+
+        .popup-section ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .popup-section ul li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .popup-section ul li .material-icons {
+            font-size: 14px;
+            margin-right: 5px;
+            color: #666;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .popup {
+                width: 95%;
+                max-width: none;
+            }
+
+            .popup-header h2 {
+                font-size: 14px;
+            }
+
+            .popup-content {
+                font-size: 13px;
+            }
+
+            .popup-section h3 {
+                font-size: 13px;
+            }
+
+            .popup-section p, .popup-section ul {
+                font-size: 12px;
+            }
+        }
+
+        /* Existing Styles (unchanged) */
         .category-slider {
             padding: 10px 0;
             border-bottom: 1px solid #333;
@@ -150,6 +302,14 @@
             white-space: nowrap;
             margin-left: -15px;
             margin-right: -15px;
+            position: relative;
+            z-index: 2;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .category-slider::-webkit-scrollbar {
+            display: none;
         }
 
         .category-slider__wrapper {
@@ -316,12 +476,104 @@
             width: 20px;
             height: 20px;
         }
+
+        /* Novo Cabeçalho Fixo */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 92px;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fixed-header__banner {
+            height: 52px;
+            background: url('https://olaclick-assets-prod.s3.amazonaws.com/companies/backgrounds/3fc9b4dd-b1f6-498a-9f26-d18f71f542f3.webp') no-repeat center center/cover;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .fixed-header__banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .fixed-header__title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--font-color);
+            position: relative;
+            z-index: 2;
+        }
+
+        .fixed-header__categories {
+            height: 40px;
+            background-color: #000;
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid #333;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fixed-header__categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fixed-header__category {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--font-color-80);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .fixed-header__category--active {
+            color: var(--font-color);
+            position: relative;
+        }
+
+        .fixed-header__category--active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            right: 15px;
+            height: 2px;
+            background-color: var(--olaclick-color);
+        }
+
+        .fixed-header__category:hover {
+            color: var(--font-color);
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="status">
-            <span class="icon">✔</span> Aberto
+            <span class="material-icons">check_circle</span> <!-- Substituindo por ícone compatível -->
+            <span>Aberto</span>
+            <span class="material-icons">access_time</span>
         </div>
     </div>
     <div class="container">
@@ -330,6 +582,10 @@
                 <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/logos/c601f9cc-47d7-4d5d-92c5-c71ef3fefd4b.webp" alt="Logo" class="company__logo">
                 <div class="header-title">
                     <h1 class="company__name">Pizzaria De Mônaco</h1>
+                    <div class="company__social">
+                        <span class="material-icons" id="infoBtn">info</span>
+                        <span class="material-icons" id="shareBtn" style="cursor: pointer;">share</span>
+                    </div>
                 </div>
             </div>
             <div class="delivery-status">
@@ -349,24 +605,86 @@
             </div>
         </div>
 
+        <!-- Popup Container -->
+        <div class="popup-overlay" id="popupOverlay">
+            <div class="popup">
+                <div class="popup-header">
+                    <h2>Informação</h2>
+                    <span class="material-icons" id="closePopup">close</span>
+                </div>
+                <div class="popup-content">
+                    <div class="popup-section">
+                        <h3><span class="material-icons">store</span> Pizzaria De Mônaco</h3>
+                        <p><span class="material-icons">place</span> <strong>Endereço:</strong> R. da Matriz, 958-1056, Itapiranga - SC, 89896-000, Brasil</p>
+                    </div>
+                    <div class="popup-section delivery">
+                        <h3><span class="material-icons">room_service</span> Tipos de Serviço</h3>
+                        <ul>
+                            <li><span class="material-icons">delivery_dining</span> Delivery</li>
+                            <li><span class="material-icons">schedule</span> Tempo de entrega em casa: 20 - 45min</li>
+                            <li><span class="material-icons">local_shipping</span> Entrega gratuita a partir de R$ 200,00</li>
+                        </ul>
+                    </div>
+                    <div class="popup-section">
+                        <h3><span class="material-icons">map</span> Abrangência da Entrega</h3>
+                        <p>Santa Teresa alta, Linha baú, Portal do sol, Centro, Bairro do parque, São Cristóvão, Santa Fe baixa, Santa Teresa baixa, Laranjeira baixa (até o macaco), São João do oeste (somente br e centro), Morada feliz, Área industrial, Santa Fé Alta, Laranjeira Alta, Cordilheira, Rainha Da Paz, Floresta, Linha Chácara, Linha Becker, Vila União, Linha Dourado, Santa Isabel, Linha Popi, Porto Novo, Vila São Pedro São Paulo, Sede Capela, Iria Reichert, Bela Vista, Universitario/UCEFF, Bairro das Flores</p>
+                    </div>
+                    <div class="popup-section pickup">
+                        <h3><span class="material-icons">storefront</span> Retirada</h3>
+                        <p>Disponível no local</p>
+                    </div>
+                    <div class="popup-section">
+                        <h3><span class="material-icons">access_time</span> Horário de Funcionamento</h3>
+                        <ul>
+                            <li style="display: flex; justify-content: space-between;"><span>Domingo</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Segunda-feira</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Terça-feira</span><span><span class="material-icons">access_time</span> Fechado</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Quarta-feira</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Quinta-feira</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Sexta-feira</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                            <li style="display: flex; justify-content: space-between;"><span>Sábado</span><span><span class="material-icons">access_time</span> 17:30 - 23:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="category-slider">
             <ul class="category-slider__wrapper">
-                <li class="category-slider__item category-slider__item--active">
+                <li class="category-slider__item" data-category="promocoes">
                     <div>Promoções</div>
                     <span class="border-active"></span>
                 </li>
-                <li class="category-slider__item"><div>Pizzas</div></li>
-                <li class="category-slider__item"><div>Xis prensado</div></li>
-                <li class="category-slider__item"><div>Hamburguers</div></li>
-                <li class="category-slider__item"><div>Bebidas</div></li>
-                <li class="category-slider__item"><div>Pastéis</div></li>
-                <li class="category-slider__item"><div>Porções</div></li>
+                <li class="category-slider__item" data-category="pizzas">
+                    <div>Pizzas</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item" data-category="xis-prensado">
+                    <div>Xis prensado</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item" data-category="hamburguers">
+                    <div>Hamburguers</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item" data-category="bebidas">
+                    <div>Bebidas</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item" data-category="pasteis">
+                    <div>Pastéis</div>
+                    <span class="border-active"></span>
+                </li>
+                <li class="category-slider__item" data-category="porcoes">
+                    <div>Porções</div>
+                    <span class="border-active"></span>
+                </li>
             </ul>
         </div>
 
         <div class="product-section">
             <div class="category-view-handler">
-                <h2 class="category">Promoções</h2>
+                <h2 class="category" id="promocoes">Promoções</h2>
                 <div class="products">
                     <div class="product-card">
                         <div class="product-card__head">
@@ -453,8 +771,278 @@
                         </div>
                     </div>
                 </div>
+                <h2 class="category" id="pizzas">Pizzas</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/1588eb4b-5f7b-46fb-9882-da755045c4b0.webp" alt="Pizza Gigante" class="product-card__image">
+                            <span class="product-card__discount">-18%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Pizza Gigante + refri 2l grátis</div>
+                                <div class="product-card__description">Pizza gigante até 3 sabores 16 fatias, serve até 4 pessoas</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 70,00</span>
+                                    <span class="product__original-price"><del>R$ 85,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="category" id="xis-prensado">Xis prensado</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/fb298921-c173-4c0a-9af9-c14dc06757c7.webp" alt="Pizza Grande" class="product-card__image">
+                            <span class="product-card__discount">-20%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Xis Prensado Especial</div>
+                                <div class="product-card__description">Xis prensado com carne especial, queijo e molho</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 25,00</span>
+                                    <span class="product__original-price"><del>R$ 30,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="category" id="hamburguers">Hamburguers</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/132516bf-b738-489a-b64a-c928f3beaa08.webp" alt="Combo Gigante" class="product-card__image">
+                            <span class="product-card__discount">-25%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Hamburguer Duplo</div>
+                                <div class="product-card__description">Hamburguer com duas carnes e queijo extra</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 30,00</span>
+                                    <span class="product__original-price"><del>R$ 40,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="category" id="bebidas">Bebidas</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/aade9536-31e6-4c25-a0bf-040750c052fd.webp" alt="Combo Grande" class="product-card__image">
+                            <span class="product-card__discount">-25%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Refrigerante 2L</div>
+                                <div class="product-card__description">Refrigerante gelado 2 litros</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 8,00</span>
+                                    <span class="product__original-price"><del>R$ 10,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="category" id="porcoes">Porções</h2>
+                <div class="products">
+                    <div class="product-card">
+                        <div class="product-card__head">
+                            <img src="https://olaclick-assets-prod.s3.amazonaws.com/companies/products/images/150/1588eb4b-5f7b-46fb-9882-da755045c4b0.webp" alt="Pizza Gigante" class="product-card__image">
+                            <span class="product-card__discount">-18%</span>
+                        </div>
+                        <div class="product-card__body">
+                            <div class="product-top-group">
+                                <div class="product-card__title">Porção de Batata Frita</div>
+                                <div class="product-card__description">Batata frita crocante com molho</div>
+                            </div>
+                            <div class="product-card__footer">
+                                <div class="product__prices">
+                                    <span class="product__price">R$ 15,00</span>
+                                    <span class="product__original-price"><del>R$ 18,00</del></span>
+                                </div>
+                                <button class="button-add-product">
+                                    <img src="https://img.icons8.com/ios-filled/50/ffffff/plus-math.png" alt="Add">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Novo Cabeçalho Fixo -->
+    <div class="fixed-header">
+        <div class="fixed-header__banner">
+            <div class="fixed-header__title">Pizzaria De Mônaco</div>
+        </div>
+        <ul class="fixed-header__categories">
+            <li class="fixed-header__category" data-category="promocoes">Promoções</li>
+            <li class="fixed-header__category" data-category="pizzas">Pizzas</li>
+            <li class="fixed-header__category" data-category="xis-prensado">Xis prensado</li>
+            <li class="fixed-header__category" data-category="hamburguers">Hamburguers</li>
+            <li class="fixed-header__category" data-category="bebidas">Bebidas</li>
+            <li class="fixed-header__category" data-category="porcoes">Porções</li>
+        </ul>
+    </div>
+
+    <script>
+        // Share Button Functionality
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: document.title,
+                        url: window.location.href,
+                    });
+                    console.log('URL compartilhada com sucesso!');
+                } catch (err) {
+                    console.error('Erro ao compartilhar:', err);
+                }
+            } else {
+                alert('Compartilhamento não suportado neste navegador.');
+            }
+        });
+
+        // Popup Functionality
+        const infoBtn = document.getElementById('infoBtn');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const closePopup = document.getElementById('closePopup');
+
+        infoBtn.addEventListener('click', () => {
+            popupOverlay.style.display = 'flex';
+        });
+
+        closePopup.addEventListener('click', () => {
+            popupOverlay.style.display = 'none';
+        });
+
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) {
+                popupOverlay.style.display = 'none';
+            }
+        });
+
+        // Fixed Header Functionality
+        const fixedHeader = document.querySelector('.fixed-header');
+        const categorySlider = document.querySelector('.category-slider');
+        const categorySliderHeight = categorySlider.offsetHeight;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > categorySliderHeight) {
+                fixedHeader.style.display = 'flex';
+                categorySlider.style.display = 'none';
+            } else {
+                fixedHeader.style.display = 'none';
+                categorySlider.style.display = 'block';
+            }
+            updateActiveCategory();
+        });
+
+        // Função para atualizar a categoria ativa
+        function updateActiveCategory() {
+            const categories = document.querySelectorAll('.category');
+            const categoryItemsSlider = document.querySelectorAll('.category-slider__item');
+            const categoryItemsFixed = document.querySelectorAll('.fixed-header__category');
+
+            categories.forEach(category => {
+                const rect = category.getBoundingClientRect();
+                const categoryName = category.id;
+                const isVisible = rect.top >= 0 && rect.top < window.innerHeight / 2;
+
+                if (isVisible) {
+                    categoryItemsSlider.forEach(item => item.classList.remove('category-slider__item--active'));
+                    categoryItemsFixed.forEach(item => item.classList.remove('fixed-header__category--active'));
+
+                    const sliderItem = document.querySelector(`.category-slider__item[data-category="${categoryName}"]`);
+                    const fixedItem = document.querySelector(`.fixed-header__category[data-category="${categoryName}"]`);
+                    if (sliderItem) sliderItem.classList.add('category-slider__item--active');
+                    if (fixedItem) fixedItem.classList.add('fixed-header__category--active');
+
+                    if (sliderItem) {
+                        const sliderWrapper = document.querySelector('.category-slider__wrapper');
+                        const itemOffset = sliderItem.offsetLeft;
+                        const itemWidth = sliderItem.offsetWidth;
+                        const wrapperWidth = sliderWrapper.offsetWidth;
+                        sliderWrapper.scrollTo({
+                            left: itemOffset - (wrapperWidth / 2) + (itemWidth / 2),
+                            behavior: 'smooth'
+                        });
+                    }
+                    if (fixedItem) {
+                        const categoriesWrapper = document.querySelector('.fixed-header__categories');
+                        const itemOffset = fixedItem.offsetLeft;
+                        const itemWidth = fixedItem.offsetWidth;
+                        const wrapperWidth = categoriesWrapper.offsetWidth;
+                        categoriesWrapper.scrollTo({
+                            left: itemOffset - (wrapperWidth / 2) + (itemWidth / 2),
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        }
+
+        // Função para rolar até a categoria correspondente com ajuste de posição
+function scrollToCategory(categoryId) {
+    const categoryElement = document.getElementById(categoryId);
+    if (categoryElement) {
+        const elementPosition = categoryElement.getBoundingClientRect().top + window.scrollY; // Posição absoluta do elemento
+        const windowHeight = window.innerHeight; // Altura da janela
+        const offset = windowHeight / 4; // Ajuste para ficar um pouco acima do centro (25% da altura da tela)
+
+        window.scrollTo({
+            top: elementPosition - offset, // Rola até o elemento com um deslocamento
+            behavior: 'smooth'
+        });
+    }
+}
+
+        // Adicionar eventos de clique às categorias do slider móvel
+        const categoryItemsSlider = document.querySelectorAll('.category-slider__item');
+        categoryItemsSlider.forEach(item => {
+            item.addEventListener('click', () => {
+                const categoryId = item.getAttribute('data-category');
+                scrollToCategory(categoryId);
+            });
+        });
+
+        // Adicionar eventos de clique às categorias do header fixo
+        const categoryItemsFixed = document.querySelectorAll('.fixed-header__category');
+        categoryItemsFixed.forEach(item => {
+            item.addEventListener('click', () => {
+                const categoryId = item.getAttribute('data-category');
+                scrollToCategory(categoryId);
+            });
+        });
+
+        // Chamar a função ao carregar a página e ao rolar
+        window.addEventListener('load', updateActiveCategory);
+        window.addEventListener('scroll', updateActiveCategory);
+    </script>
 </body>
 </html>
