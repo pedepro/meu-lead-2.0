@@ -1,0 +1,222 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Alterado de height para min-height para permitir rolagem da página */
+    background-color: #f0f2f5;
+    padding: 20px; /* Adicionado para evitar que o conteúdo encoste nas bordas */
+}
+
+.container {
+    width: 100%;
+    max-width: 600px; /* Aumentado para dar mais espaço aos pares de inputs */
+}
+
+.login-box, .register-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: opacity 0.3s ease;
+    width: 100%;
+}
+
+/* Estilo para a imagem no topo */
+.form-logo {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #1877f2;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para pares de inputs */
+.input-pair {
+    display: flex;
+    gap: 15px; /* Espaço entre os inputs lado a lado */
+    margin: 10px 0;
+}
+
+.input-pair input,
+.input-pair .cpf-cnpj-group {
+    flex: 1; /* Cada input ou grupo ocupa espaço igual */
+    min-width: 0; /* Evita que os inputs sejam cortados */
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 0; /* Margem movida para .input-pair */
+    border: 1px solid #dde4eb;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f9fafc;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 6px rgba(24, 119, 242, 0.3);
+    outline: none;
+}
+
+input[type="email"] {
+    position: relative;
+}
+
+input[list="email-suggestions"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+input[list="email-suggestions"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+datalist {
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+button {
+    background: #1877f2;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px; /* Aumentado para mais espaço */
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background: #0f5bb5;
+}
+
+p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #0f5bb5;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilos para o grupo CPF/CNPJ */
+.cpf-cnpj-group {
+    text-align: left;
+}
+
+.cpf-cnpj-group label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+.radio-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.radio-buttons label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+}
+
+.radio-buttons input[type="radio"] {
+    margin-right: 6px;
+    width: auto;
+    accent-color: #1877f2;
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 500px) {
+    .container {
+        max-width: 100%; /* Usa toda a largura disponível em telas pequenas */
+        padding: 10px;
+    }
+
+    .input-pair {
+        flex-direction: column; /* Empilha os inputs verticalmente */
+        gap: 10px; /* Reduz o espaço entre inputs empilhados */
+    }
+
+    .form-logo {
+        max-width: 300px; /* Reduz a imagem em telas menores */
+    }
+
+    input {
+        padding: 10px;
+    }
+
+    button {
+        padding: 10px;
+        margin-top: 15px;
+    }
+
+    h2 {
+        font-size: 20px; /* Reduz o título */
+    }
+}
+
+@media (max-width: 350px) {
+    .form-logo {
+        max-width: 250px; /* Ainda menor em telas muito estreitas */
+    }
+
+    input {
+        padding: 8px;
+    }
+
+    button {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .radio-buttons {
+        gap: 10px;
+    }
+}

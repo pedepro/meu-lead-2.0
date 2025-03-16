@@ -11,9 +11,11 @@
     <div class="container">
         <!-- Login -->
         <div class="login-box">
+            <img src="https://cloud.meuleaditapema.com.br/uploads/33204661-ad2b-477b-a361-0c67cc2fdc5f.png" alt="Logo" class="form-logo">
             <h2>Entrar</h2>
             <form id="login-form">
-                <input type="email" id="login-email" placeholder="E-mail" required>
+                <input type="email" id="login-email" placeholder="E-mail" list="email-suggestions" required>
+                <datalist id="email-suggestions"></datalist>
                 <input type="password" id="login-senha" placeholder="Senha" required>
                 <button type="submit">Entrar</button>
             </form>
@@ -23,21 +25,29 @@
 
         <!-- Cadastro -->
         <div class="register-box hidden">
+            <img src="https://cloud.meuleaditapema.com.br/uploads/33204661-ad2b-477b-a361-0c67cc2fdc5f.png" alt="Logo" class="form-logo">
             <h2>Criar Conta</h2>
             <form id="cadastro-form">
-                <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
-                <input type="email" id="cadastro-email" placeholder="E-mail" required>
-                <div class="cpf-cnpj-group">
-                    <label>Tipo de Documento:</label>
-                    <div class="radio-buttons">
-                        <label><input type="radio" name="document-type" value="cpf" checked> CPF</label>
-                        <label><input type="radio" name="document-type" value="cnpj"> CNPJ</label>
-                    </div>
-                    <input type="text" id="cadastro-cpf-cnpj" placeholder="Digite seu CPF ou CNPJ" required>
+                <div class="input-pair">
+                    <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
+                    <input type="email" id="cadastro-email" placeholder="E-mail" list="email-suggestions" required>
+                    <datalist id="email-suggestions"></datalist>
                 </div>
-                <input type="text" id="cadastro-creci" placeholder="CRECI (Opcional)">
-                <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp">
-                <input type="password" id="cadastro-senha" placeholder="Senha" required>
+                <div class="input-pair">
+                    <div class="cpf-cnpj-group">
+                        <label>Tipo de Documento:</label>
+                        <div class="radio-buttons">
+                            <label><input type="radio" name="document-type" value="cpf" checked> CPF</label>
+                            <label><input type="radio" name="document-type" value="cnpj"> CNPJ</label>
+                        </div>
+                        <input type="text" id="cadastro-cpf-cnpj" placeholder="Digite seu CPF ou CNPJ" maxlength="18" required>
+                    </div>
+                    <input type="text" id="cadastro-creci" placeholder="CRECI (Opcional)">
+                </div>
+                <div class="input-pair">
+                    <input type="tel" id="cadastro-whatsapp" placeholder="WhatsApp">
+                    <input type="password" id="cadastro-senha" placeholder="Senha" required>
+                </div>
                 <button type="submit">Cadastrar</button>
             </form>
             <p id="cadastro-mensagem"></p>
@@ -105,6 +115,39 @@
             }
         })();
 
+        // 📌 Função para atualizar sugestões de e-mail
+        function atualizarSugestoesEmail(input) {
+            const emailDomains = [
+                "@gmail.com",
+                "@hotmail.com",
+                "@outlook.com",
+                "@yahoo.com",
+                "@icloud.com",
+                "@live.com",
+                "@bol.com.br",
+                "@uol.com.br"
+            ];
+            const value = input.value;
+            const datalist = input.list;
+
+            // Só mostra sugestões se o usuário digitou "@"
+            if (value.includes("@")) {
+                const [prefixo] = value.split("@");
+                datalist.innerHTML = emailDomains
+                    .map(domain => `<option value="${prefixo}${domain}">`)
+                    .join("");
+            } else {
+                datalist.innerHTML = ""; // Limpa as sugestões se não houver "@"
+            }
+        }
+
+        // 📌 Listener para os inputs de e-mail
+        document.querySelectorAll('input[type="email"]').forEach(emailInput => {
+            emailInput.addEventListener("input", function() {
+                atualizarSugestoesEmail(this);
+            });
+        });
+
         // 📌 Login
         document.getElementById("login-form").addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -127,7 +170,6 @@
                     return;
                 }
 
-                // Salva token e userId em cookies e localStorage
                 setCookie("token", data.token, 30);
                 setCookie("userId", data.id, 30);
                 localStorage.setItem("token", data.token);
@@ -136,7 +178,6 @@
                 mensagem.textContent = "Login realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redireciona com base nos parâmetros
                 setTimeout(() => window.location.href = getRedirectUrl(), 1000);
 
             } catch (error) {
@@ -144,6 +185,42 @@
                 mensagem.style.color = "red";
                 console.error("Erro no login:", error);
             }
+        });
+
+        // 📌 Função para formatar CPF ou CNPJ
+        function formatarCpfCnpj(input) {
+            let value = input.value.replace(/\D/g, "");
+            const type = document.querySelector('input[name="document-type"]:checked').value;
+
+            if (type === "cpf") {
+                if (value.length > 11) value = value.slice(0, 11);
+                value = value
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            } else if (type === "cnpj") {
+                if (value.length > 14) value = value.slice(0, 14);
+                value = value
+                    .replace(/(\d{2})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1/$2")
+                    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+            }
+
+            input.value = value;
+        }
+
+        // 📌 Listener para o input CPF/CNPJ
+        const cpfCnpjInput = document.getElementById("cadastro-cpf-cnpj");
+        cpfCnpjInput.addEventListener("input", () => {
+            formatarCpfCnpj(cpfCnpjInput);
+        });
+
+        // 📌 Listener para os radio buttons (reformata ao trocar entre CPF e CNPJ)
+        document.querySelectorAll('input[name="document-type"]').forEach(radio => {
+            radio.addEventListener("change", () => {
+                formatarCpfCnpj(cpfCnpjInput);
+            });
         });
 
         // 📌 Cadastro
@@ -172,7 +249,6 @@
                     return;
                 }
 
-                // Salva token e userId em cookies e localStorage
                 setCookie("token", data.token, 30);
                 setCookie("userId", data.id, 30);
                 localStorage.setItem("token", data.token);
@@ -181,7 +257,6 @@
                 mensagem.textContent = "Cadastro realizado com sucesso!";
                 mensagem.style.color = "green";
 
-                // Redireciona com base nos parâmetros
                 setTimeout(() => window.location.href = getRedirectUrl(), 1000);
 
             } catch (error) {
@@ -198,23 +273,6 @@
                 value = "55" + value;
             }
             e.target.value = "+" + value;
-        });
-
-        // 📌 Formatação dinâmica de CPF/CNPJ
-        document.getElementById("cadastro-cpf-cnpj").addEventListener("input", function(e) {
-            let value = e.target.value.replace(/\D/g, "");
-            const type = document.querySelector('input[name="document-type"]:checked').value;
-
-            if (type === "cpf" && value.length <= 11) {
-                value = value
-                    .padEnd(11, "0")
-                    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            } else if (type === "cnpj" && value.length <= 14) {
-                value = value
-                    .padEnd(14, "0")
-                    .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-            }
-            e.target.value = value;
         });
     </script>
 </body>

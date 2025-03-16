@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="icon" type="image/x-icon" href="../assets/icon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(120deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-logo {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            font-weight: 400;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            outline: none;
+            background: transparent;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            font-size: 16px;
+            font-weight: 400;
+            color: #999;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input:focus + .input-label,
+        .input.has-val + .input-label {
+            top: -20px;
+            font-size: 12px;
+        }
+
+        .btn {
+            position: relative;
+            width: 100%;
+            padding: 15px 0;
+            background: linear-gradient(to right, #667eea, #5a67d8);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background 0.4s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #5a67d8, #667eea);
+        }
+
+        .btn:active {
+            background: linear-gradient(to right, #4a56c6, #5566d4);
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .toggle-text a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .show-pass {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .show-pass:hover {
+            color: #667eea;
+        }
+
+        .show-pass.active {
+            color: #667eea;
+        }
+
+        .hidden-autofill {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Formulário de Login -->
+        <form id="login-form" class="form">
+            <div class="form-title">Bem-vindo</div>
+            <img src="https://cloud.meuleaditapema.com.br/uploads/33204661-ad2b-477b-a361-0c67cc2fdc5f.png" alt="Logo" class="form-logo">
+
+            <!-- Campos ocultos falsos para enganar o preenchimento automático -->
+            <input type="text" class="hidden-autofill" autocomplete="email">
+            <input type="password" class="hidden-autofill" autocomplete="current-password">
+
+            <div class="input-group">
+                <input type="text" id="login-email" class="input" autocomplete="off" list="email-suggestions" required>
+                <span class="input-label">E-mail</span>
+                <datalist id="email-suggestions"></datalist>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="login-senha" class="input" autocomplete="current-password" required>
+                <span class="input-label">Senha</span>
+                <span class="show-pass zmdi zmdi-eye" onclick="togglePassword(this, 'login-senha')"></span>
+            </div>
+
+            <button type="submit" class="btn">Entrar</button>
+
+            <div class="toggle-text">
+                Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a>
+            </div>
+            <p id="login-mensagem" class="message"></p>
+        </form>
+
+        <!-- Formulário de Cadastro -->
+        <form id="cadastro-form" class="form hidden">
+            <div class="form-title">Criar Conta</div>
+            <img src="https://cloud.meuleaditapema.com.br/uploads/33204661-ad2b-477b-a361-0c67cc2fdc5f.png" alt="Logo" class="form-logo">
+
+            <div class="input-group">
+                <input type="text" id="cadastro-nome" class="input" autocomplete="name" required>
+                <span class="input-label">Nome completo</span>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="cadastro-email" class="input" autocomplete="email" list="email-suggestions" required>
+                <span class="input-label">E-mail</span>
+                <datalist id="email-suggestions"></datalist>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="cadastro-cpf-cnpj" class="input" maxlength="18" required>
+                <span class="input-label">CPF ou CNPJ</span>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="cadastro-creci" class="input">
+                <span class="input-label">CRECI (Opcional)</span>
+            </div>
+
+            <div class="input-group">
+                <input type="tel" id="cadastro-whatsapp" class="input" autocomplete="tel" required>
+                <span class="input-label">WhatsApp</span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="cadastro-senha" class="input" autocomplete="new-password" required>
+                <span class="input-label">Senha</span>
+                <span class="show-pass zmdi zmdi-eye" onclick="togglePassword(this, 'cadastro-senha')"></span>
+            </div>
+
+            <button type="submit" class="btn">Cadastrar</button>
+
+            <div class="toggle-text">
+                Já tem uma conta? <a href="#" onclick="toggleForms()">Entrar</a>
+            </div>
+            <p id="cadastro-mensagem" class="message"></p>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = "https://backand.meuleaditapema.com.br";
+
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const cadastroForm = document.getElementById('cadastro-form');
+            loginForm.classList.toggle('hidden');
+            cadastroForm.classList.toggle('hidden');
+        }
+
+        // Funções auxiliares para manipular cookies
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            // Simplifiquei removendo o domínio para evitar problemas locais
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+            // Verificação para depuração
+            console.log(`Cookie ${name} definido como: ${value}`);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function getRedirectUrl() {
+            const leadId = getUrlParameter("lead");
+            const imovelId = getUrlParameter("imovel");
+            if (leadId) {
+                return `https://lead.meuleaditapema.com.br/${leadId}`;
+            } else if (imovelId) {
+                return `https://imovel.meuleaditapema.com.br/${imovelId}`;
+            } else {
+                return "/";
+            }
+        }
+
+        (function syncAuth() {
+            const token = getCookie("token");
+            const userId = getCookie("userId");
+            console.log("Cookies iniciais - token:", token, "userId:", userId);
+            if (token && !localStorage.getItem("token")) {
+                localStorage.setItem("token", token);
+            }
+            if (userId && !localStorage.getItem("userId")) {
+                localStorage.setItem("userId", userId);
+            }
+            if (localStorage.getItem("token") && !token) {
+                setCookie("token", localStorage.getItem("token"), 30);
+            }
+            if (localStorage.getItem("userId") && !userId) {
+                setCookie("userId", localStorage.getItem("userId"), 30);
+            }
+        })();
+
+        function togglePassword(icon, inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('zmdi-eye');
+                icon.classList.add('zmdi-eye-off', 'active');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('zmdi-eye-off', 'active');
+                icon.classList.add('zmdi-eye');
+            }
+        }
+
+        document.querySelectorAll('.input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.classList.add('has-val');
+                if (input.id === 'login-email') {
+                    input.type = 'email';
+                    input.setAttribute('autocomplete', 'email');
+                }
+            });
+            input.addEventListener('blur', () => {
+                if (!input.value.trim()) input.classList.remove('has-val');
+            });
+            input.addEventListener('input', () => {
+                if (input.value.trim()) input.classList.add('has-val');
+                else input.classList.remove('has-val');
+            });
+        });
+
+        window.addEventListener('load', () => {
+            const emailInput = document.getElementById('login-email');
+            const senhaInput = document.getElementById('login-senha');
+            
+            emailInput.type = 'text';
+            emailInput.setAttribute('autocomplete', 'off');
+            emailInput.value = '';
+            senhaInput.value = '';
+
+            setTimeout(() => {
+                emailInput.value = '';
+                senhaInput.value = '';
+            }, 100);
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-senha').value;
+            const mensagem = document.getElementById('login-mensagem');
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    mensagem.textContent = data.error || 'Erro ao fazer login.';
+                    mensagem.style.color = 'red';
+                    return;
+                }
+
+                setCookie("token", data.token, 30);
+                setCookie("userId", data.id, 30);
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userId", data.id);
+
+                // Verificação após definir cookies
+                console.log("Após login - Cookies: token=", getCookie("token"), "userId=", getCookie("userId"));
+                console.log("Após login - LocalStorage: token=", localStorage.getItem("token"), "userId=", localStorage.getItem("userId"));
+
+                mensagem.textContent = 'Login realizado com sucesso!';
+                mensagem.style.color = '#28a745';
+                setTimeout(() => window.location.href = getRedirectUrl(), 1000);
+            } catch (error) {
+                mensagem.textContent = 'Erro de conexão.';
+                mensagem.style.color = 'red';
+                console.error('Erro no login:', error);
+            }
+        });
+
+        document.getElementById('cadastro-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('cadastro-nome').value;
+            const email = document.getElementById('cadastro-email').value;
+            const cpfCnpj = document.getElementById('cadastro-cpf-cnpj').value.replace(/\D/g, '');
+            const creci = document.getElementById('cadastro-creci').value || null;
+            const phone = document.getElementById('cadastro-whatsapp').value || null;
+            const password = document.getElementById('cadastro-senha').value;
+            const mensagem = document.getElementById('cadastro-mensagem');
+
+            try {
+                const response = await fetch(`${API_URL}/corretores`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, cpfCnpj, creci, phone, password })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    mensagem.textContent = data.error || 'Erro ao cadastrar.';
+                    mensagem.style.color = 'red';
+                    return;
+                }
+
+                setCookie("token", data.token, 30);
+                setCookie("userId", data.id, 30);
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userId", data.id);
+
+                // Verificação após definir cookies
+                console.log("Após cadastro - Cookies: token=", getCookie("token"), "userId=", getCookie("userId"));
+                console.log("Após cadastro - LocalStorage: token=", localStorage.getItem("token"), "userId=", localStorage.getItem("userId"));
+
+                mensagem.textContent = 'Cadastro realizado com sucesso!';
+                mensagem.style.color = '#28a745';
+                setTimeout(() => window.location.href = getRedirectUrl(), 1000);
+            } catch (error) {
+                mensagem.textContent = 'Erro de conexão.';
+                mensagem.style.color = 'red';
+                console.error('Erro no cadastro:', error);
+            }
+        });
+
+        const cpfCnpjInput = document.getElementById('cadastro-cpf-cnpj');
+        cpfCnpjInput.addEventListener('input', () => {
+            let value = cpfCnpjInput.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                if (value.length > 11) value = value.slice(0, 11);
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                            .replace(/(\d{3})(\d)/, '$1.$2')
+                            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            } else {
+                if (value.length > 14) value = value.slice(0, 14);
+                value = value.replace(/(\d{2})(\d)/, '$1.$2')
+                            .replace(/(\d{3})(\d)/, '$1.$2')
+                            .replace(/(\d{3})(\d)/, '$1/$2')
+                            .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+            }
+            cpfCnpjInput.value = value;
+        });
+
+        document.getElementById('cadastro-whatsapp').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (!value.startsWith('55')) value = '55' + value;
+            e.target.value = '+' + value;
+        });
+    </script>
+</body>
+</html>
