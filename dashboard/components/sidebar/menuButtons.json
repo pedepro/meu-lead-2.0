@@ -8,8 +8,7 @@
                 "link": "/meus-clientes", 
                 "icon": "fa fa-users",
                 "submenu": [
-                    { "id": "clientes", "label": "Ver lista de clientes", "link": "/clientes/lista" },
-                    { "id": "disparo-em-massa", "label": "Disparo em massa", "link": "/clientes/disparo" }
+                    { "id": "clientes", "label": "Ver lista de clientes", "link": "/clientes/lista" }
                 ]
             },
             { 
@@ -45,18 +44,16 @@
         "label": "Meu negócio",
         "buttons": [
             { 
-                "id": "configuracoes", 
-                "label": "Configurações", 
-                "link": "/configuracoes", 
-                "icon": "fa fa-cogs",
-                "submenu": [
-                    { "id": "meu-negocio", "label": "Meu Negócio", "link": "/configuracoes/meu-negocio" }                ]
-            },
-            { 
                 "id": "chatbot", 
                 "label": "ChatBot", 
                 "link": "/chatbot", 
                 "icon": "fa fa-robot" 
+            },
+            { 
+                "id": "configuracoes", 
+                "label": "Configurações", 
+                "link": "/configuracoes", 
+                "icon": "fa fa-cogs" 
             }
         ]
     }

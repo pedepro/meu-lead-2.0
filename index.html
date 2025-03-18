@@ -158,6 +158,33 @@
         .main-content {
             transition: margin-left 0.3s ease;
             padding: 20px;
+            position: relative;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+        }
+        .section-header h2 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+        .home-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        .home-link:hover {
+            color: #5a67d8;
+        }
+        .home-link i {
+            font-size: 20px;
         }
 
         /* Media Query para telas menores que 600px */
@@ -173,6 +200,14 @@
             }
             .main-content {
                 margin-left: 0 !important;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .section-header h2 {
+                font-size: 20px;
             }
         }
     </style>
@@ -337,7 +372,7 @@
         // Função para obter o parâmetro de sessão
         function getSessionParam() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('session') || 'imoveis';
+            return urlParams.get('session') || 'home'; // 'home' como padrão
         }
 
         // Função para atualizar o destaque da seção ativa
@@ -357,37 +392,50 @@
             let htmlFileToLoad = '';
             let jsFileToLoad = '';
             let cssFileToLoad = '';
+            let sectionTitle = '';
 
             switch (session) {
+                case 'home':
+                    htmlFileToLoad = `home.html?v=${appVersion}`;
+                    jsFileToLoad = `home.js?v=${appVersion}`;
+                    cssFileToLoad = `home.css?v=${appVersion}`;
+                    sectionTitle = 'Home';
+                    break;
                 case 'imoveis':
                     htmlFileToLoad = `imoveis.html?v=${appVersion}`;
                     jsFileToLoad = `imoveis.js?v=${appVersion}`;
                     cssFileToLoad = `imoveis.css?v=${appVersion}`;
+                    sectionTitle = 'Imóveis';
                     break;
                 case 'leads':
                     htmlFileToLoad = `leads.html?v=${appVersion}`;
                     jsFileToLoad = `leads.js?v=${appVersion}`;
                     cssFileToLoad = `leads.css?v=${appVersion}`;
+                    sectionTitle = 'Leads (Clientes)';
                     break;
                 case 'meusleads':
                     htmlFileToLoad = `meusleads.html?v=${appVersion}`;
                     jsFileToLoad = `meusleads.js?v=${appVersion}`;
                     cssFileToLoad = `meusleads.css?v=${appVersion}`;
+                    sectionTitle = 'Meus Leads';
                     break;
                 case 'meusimoveis':
                     htmlFileToLoad = `meusimoveis.html?v=${appVersion}`;
                     jsFileToLoad = `meusimoveis.js?v=${appVersion}`;
                     cssFileToLoad = `meusimoveis.css?v=${appVersion}`;
+                    sectionTitle = 'Meus Imóveis';
                     break;
                 case 'editar-perfil':
                     htmlFileToLoad = `editar-perfil.html?v=${appVersion}`;
                     jsFileToLoad = `editar-perfil.js?v=${appVersion}`;
                     cssFileToLoad = `editar-perfil.css?v=${appVersion}`;
+                    sectionTitle = 'Editar Perfil';
                     break;
                 default:
-                    htmlFileToLoad = `imoveis.html?v=${appVersion}`;
-                    jsFileToLoad = `imoveis.js?v=${appVersion}`;
-                    cssFileToLoad = `imoveis.css?v=${appVersion}`;
+                    htmlFileToLoad = `home.html?v=${appVersion}`;
+                    jsFileToLoad = `home.js?v=${appVersion}`;
+                    cssFileToLoad = `home.css?v=${appVersion}`;
+                    sectionTitle = 'Home';
             }
 
             fetch(htmlFileToLoad, { cache: 'no-store' })
@@ -397,7 +445,20 @@
                     return response.text();
                 })
                 .then(data => {
-                    mainContent.innerHTML = data;
+                    // Se for 'home', não inclui a div section-header
+                    if (session === 'home') {
+                        mainContent.innerHTML = data;
+                    } else {
+                        mainContent.innerHTML = `
+                            <div class="section-header">
+                                <a href="/" class="home-link" title="Voltar para Home">
+                                    <i class="fa-solid fa-house"></i> Voltar ao Início
+                                </a>
+                            </div>
+                            ${data}
+                        `;
+                    }
+
                     const existingScripts = document.querySelectorAll('script[data-dynamic]');
                     existingScripts.forEach(script => script.remove());
                     const existingStyles = document.querySelectorAll('link[data-dynamic]');
@@ -425,7 +486,22 @@
                     updateActiveSection(session);
                 })
                 .catch(error => {
-                    mainContent.innerHTML = '<p>Erro ao carregar o conteúdo. Tente novamente.</p>';
+                    // Se for 'home', não inclui a div section-header mesmo em caso de erro
+                    if (session === 'home') {
+                        mainContent.innerHTML = `
+                            <p>Erro ao carregar o conteúdo. Tente novamente.</p>
+                        `;
+                    } else {
+                        mainContent.innerHTML = `
+                            <div class="section-header">
+                                <h2>Erro</h2>
+                                <a href="/" class="home-link" title="Voltar para Home">
+                                    <i class="fa-solid fa-house"></i> Voltar ao Início
+                                </a>
+                            </div>
+                            <p>Erro ao carregar o conteúdo. Tente novamente.</p>
+                        `;
+                    }
                     console.error(error);
                 });
         }

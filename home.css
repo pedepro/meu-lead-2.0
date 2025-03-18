@@ -1,0 +1,562 @@
+/* Geral */
+#home-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Banner */
+.banner {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.banner h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.banner p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Slider */
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-height: 60vh;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.slider {
+    display: flex;
+    transition: transform 0.3s ease;
+    width: 100%;
+}
+
+.slider img {
+    width: 100vw;
+    height: 60vh;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s ease;
+    display: none;
+}
+
+.slider-arrow:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.slider-arrow.left {
+    left: 10px;
+}
+
+.slider-arrow.right {
+    right: 10px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dot.active {
+    background: white;
+}
+
+.apresentacao-video {
+    width: 100%;
+    height: 340px;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.apresentacao-imagem {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    height: auto;
+}
+
+/* Seção de Valores */
+.valores-section {
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.valores-section h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.valores-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.valor-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.valor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.valor-imagem {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.valor-card h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.valor-card p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Seção de Feedbacks */
+.feedbacks-section {
+    margin-bottom: 40px;
+    display: block; /* Inicialmente visível, será ajustado via JS */
+}
+
+.feedbacks-section h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.feedbacks-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.feedback-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feedback-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-imagem {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.feedback-content {
+    flex-grow: 1;
+}
+
+.feedback-card h4 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.feedback-card p {
+    font-size: 16px;
+    color: #555;
+    font-style: italic;
+}
+
+/* Seções de destaque */
+.imoveis-destaque, .leads-destaque {
+    margin-bottom: 40px;
+}
+
+.imoveis-destaque h2, .leads-destaque h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Container dos imóveis */
+.imoveis-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0;
+    justify-items: center;
+}
+
+/* Estilo dos cards de imóveis */
+.card {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.padrao-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.overlay {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.overlay-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.overlay-item i {
+    font-size: 20px;
+}
+
+.overlay-item span {
+    font-size: 14px;
+}
+
+.card h2 {
+    font-size: 20px;
+    margin: 10px;
+    margin-bottom: 0;
+    color: #333;
+}
+
+.card p {
+    margin: 5px 10px;
+    color: #555;
+}
+
+.btn-detalhes {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: calc(100% - 20px);
+    transition: background-color 0.3s ease;
+}
+
+.btn-detalhes:hover {
+    background-color: #0056b3;
+}
+
+/* Container dos leads */
+.clientes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+}
+
+/* Estilo dos cards de leads */
+.lead-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    padding-bottom: 60px;
+    width: 280px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.lead-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.lead-card.alto-padrao {
+    border-top: 6px solid #d4af37;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+}
+
+.lead-card.medio-padrao {
+    border-top: 6px solid #4682b4;
+    background: linear-gradient(135deg, #e6f0fa, #ffffff);
+}
+
+.lead-card-header {
+    padding: 16px;
+    position: relative;
+    flex-grow: 1;
+}
+
+.lead-card-header .lead-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.lead-card.alto-padrao .lead-badge {
+    background-color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-badge {
+    background-color: #4682b4;
+}
+
+.lead-card-header .lead-titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #65676b;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.lead-sku {
+    font-size: 14px;
+    font-weight: 600;
+    color: #65676b;
+    text-align: center;
+}
+
+.lead-card-header .lead-interesse {
+    font-size: 16px;
+    color: #1c1e21;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    text-align: center;
+    max-height: 67.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.lead-card-header .lead-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.lead-card.alto-padrao .lead-icon {
+    color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-icon {
+    color: #4682b4;
+}
+
+.lead-card-footer {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+}
+
+.lead-btn-adquirir {
+    width: 100%;
+    padding: 12px;
+    background-color: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.lead-btn-adquirir:hover {
+    background-color: #166fe5;
+    transform: translateY(-2px);
+}
+
+/* Ver mais */
+.ver-mais {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.ver-mais a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.ver-mais a:hover {
+    background-color: #5a67d8;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .imoveis-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .valores-container, .feedbacks-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .slider-container {
+        max-height: 50vh;
+    }
+    .slider img {
+        height: 50vh;
+    }
+    .feedback-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .imoveis-container {
+        grid-template-columns: 1fr;
+    }
+    .clientes-container {
+        grid-template-columns: 1fr;
+    }
+    .valores-container, .feedbacks-container {
+        grid-template-columns: 1fr;
+    }
+    .lead-card {
+        width: 100%;
+        max-width: 300px;
+    }
+    .banner h1 {
+        font-size: 24px;
+    }
+    .banner p {
+        font-size: 16px;
+    }
+    .slider-container {
+        max-height: 40vh;
+    }
+    .slider img {
+        height: 40vh;
+    }
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.dot.active {
+    background: white;
+}

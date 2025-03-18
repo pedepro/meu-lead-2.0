@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
       cadastroimovel: cadastroImovel,
       listaimoveis: listaImovel,
       estatisticas: estatisticas,
-      Rastreamento: rastreamento
+      Rastreamento: rastreamento,
+      configuracoes: configuracoes
   };
 
   // Verifica se session é nulo, vazio ou corresponde a uma função existente
@@ -152,3 +153,21 @@ function rastreamento() {
       })
       .catch(error => console.error("Erro ao carregar o HTML de estatisticas:", error));
 }
+
+function configuracoes() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'configuracoes/styles.css';
+    document.head.appendChild(link);
+  
+    fetch('configuracoes/index.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('dashboard-container').innerHTML = html;
+            const script = document.createElement('script');
+            script.src = 'configuracoes/script.js';
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Erro ao carregar o HTML clientes:", error));
+  }
+  

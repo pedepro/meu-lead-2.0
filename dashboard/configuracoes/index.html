@@ -1,0 +1,48 @@
+<section id="dashboard-section">
+    <h1>Editar Textos da Home</h1>
+    <form id="textos-form">
+        <div class="form-group">
+            <label for="titulo-principal">Título Principal:</label>
+            <input type="text" id="titulo-principal" name="titulo_principal" placeholder="Digite o título principal">
+        </div>
+        <div class="form-group">
+            <label for="subtitulo">Subtítulo:</label>
+            <input type="text" id="subtitulo" name="subtitulo" placeholder="Digite o subtítulo">
+        </div>
+        <div class="form-group">
+            <label for="tipo-apresentacao">Tipo de Apresentação:</label>
+            <select id="tipo-apresentacao" name="tipo_apresentacao">
+                <option value="imagem">Imagem</option>
+                <option value="video">Vídeo</option>
+            </select>
+        </div>
+        <div class="form-group" id="imagens-apresentacao-container" style="display: none;">
+            <label for="imagens-apresentacao">URLs das Imagens (separadas por vírgula):</label>
+            <input type="text" id="imagens-apresentacao" name="imagens_apresentacao" placeholder="Digite as URLs ou faça upload">
+            <input type="file" id="upload-imagens" accept="image/*" multiple>
+            <div id="preview-imagens" class="preview-container"></div>
+        </div>
+        <div class="form-group" id="video-apresentacao-container" style="display: none;">
+            <label for="video-apresentacao">URL do Vídeo:</label>
+            <input type="text" id="video-apresentacao" name="video_apresentacao" placeholder="Digite a URL ou faça upload">
+            <input type="file" id="upload-video" accept="video/*">
+            <div id="preview-video" class="preview-container"></div>
+        </div>
+
+        <!-- Seção de Valores -->
+        <div class="dynamic-section" id="valores-section">
+            <h2>Valores</h2>
+            <div id="valores-list"></div>
+            <button type="button" id="add-valor">Adicionar Valor</button>
+        </div>
+
+        <!-- Seção de Feedbacks -->
+        <div class="dynamic-section" id="feedbacks-section">
+            <h2>Feedbacks</h2>
+            <div id="feedbacks-list"></div>
+            <button type="button" id="add-feedback">Adicionar Feedback</button>
+        </div>
+
+        <button type="submit">Salvar Alterações</button>
+    </form>
+</section>
