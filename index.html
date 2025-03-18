@@ -115,8 +115,8 @@
             background-color: white;
             border-right: 2px solid #ddd;
             overflow-x: hidden;
-            transition: 0.3s ease;
-            z-index: 1;
+            transition: width 0.3s ease;
+            z-index: 1000; /* Abaixo do header (z-index: 1500) */
             padding-top: 80px;
             box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -128,28 +128,28 @@
             padding: 0;
         }
         .sidebar ul li {
-            padding: 10px 15px; /* Ajustado para botões mais elegantes */
+            padding: 10px 15px;
         }
         .sidebar ul li a {
             text-decoration: none;
             font-size: 18px;
             color: #333;
             display: block;
-            padding: 10px 15px; /* Padding interno para botões maiores */
-            border-radius: 6px; /* Bordas arredondadas */
+            padding: 10px 15px;
+            border-radius: 6px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .sidebar ul li a:hover {
-            background-color: #f5f7fa; /* Fundo claro ao passar o mouse */
-            color: #667eea; /* Cor de destaque */
+            background-color: #f5f7fa;
+            color: #667eea;
         }
         .sidebar ul li a:active {
-            background-color: #e0e7ff; /* Fundo ao clicar */
-            color: #5a67d8; /* Cor mais escura ao clicar */
+            background-color: #e0e7ff;
+            color: #5a67d8;
         }
         .sidebar ul li a.active {
-            background-color: #667eea; /* Fundo destacado para seção atual */
-            color: white; /* Texto branco para contraste */
+            background-color: #667eea;
+            color: white;
         }
         .sidebar ul li:has(#meusleads-link),
         .sidebar ul li:has(#meusimoveis-link) {
@@ -163,6 +163,22 @@
             transition: margin-left 0.3s ease;
             padding: 20px;
         }
+
+        /* Media Query para telas menores que 600px */
+        @media (max-width: 600px) {
+            .sidebar {
+                position: absolute; /* Fica acima do conteúdo, mas abaixo do header */
+                top: 70px; /* Abaixo do header */
+                height: calc(100% - 70px); /* Altura ajustada para não sobrepor o header */
+                z-index: 1000;
+            }
+            .sidebar.open {
+                width: 250px;
+            }
+            .main-content {
+                margin-left: 0 !important; /* Não empurra o conteúdo */
+            }
+        }
     </style>
 </head>
 <body>
@@ -171,7 +187,6 @@
             <button class="menu-toggle">☰</button>
             <img src="../assets/logohorizontal.png" alt="Descrição da imagem">
         </div>
-        <!-- Substituído por ícone do Font Awesome, mais elegante -->
         <i class="fa-solid fa-circle-user user-icon" id="user-icon"></i>
         <div class="dropdown" id="user-dropdown">
             <ul>
@@ -189,13 +204,29 @@
             <li><a href="?session=leads" id="clientes-link">Leads (Clientes)</a></li>
             <li><a href="?session=meusleads" id="meusleads-link">Meus Leads</a></li>
             <li><a href="?session=meusimoveis" id="meusimoveis-link">Meus Imóveis</a></li>
-            <!-- Removido o "Editar Perfil" da sidebar -->
         </ul>
     </nav>
 
     <main class="main-content" id="main-content"></main>
 
     <script>
+        let appVersion = "1.0.0"; // Versão padrão caso o fetch falhe
+
+        // Função para carregar a versão do arquivo versao.json
+        async function loadVersion() {
+            try {
+                const response = await fetch('versao.json', {
+                    cache: 'no-store'
+                });
+                if (!response.ok) throw new Error('Erro ao carregar versao.json');
+                const data = await response.json();
+                appVersion = data.version;
+                console.log(`Versão da aplicação carregada: ${appVersion}`);
+            } catch (error) {
+                console.error('Erro ao carregar a versão, usando padrão:', error);
+            }
+        }
+
         // Função para sincronizar localStorage com cookies
         function syncLocalStorageToCookies() {
             const token = localStorage.getItem("token");
@@ -239,13 +270,12 @@
             window.location.href = "/login";
         }
 
-        // Função para verificar login
+        // Função para verificar login (sem redirecionamento automático)
         async function verificarLogin() {
             const token = localStorage.getItem("token");
             const userId = localStorage.getItem("userId");
 
             if (!token || !userId) {
-                window.location.href = "/login";
                 return false;
             }
 
@@ -268,12 +298,10 @@
                     localStorage.removeItem("token");
                     localStorage.removeItem("userId");
                     syncLocalStorageToCookies();
-                    window.location.href = "/login";
                     return false;
                 }
             } catch (error) {
                 console.error("Erro ao verificar login no servidor:", error);
-                window.location.href = "/login";
                 return false;
             }
         }
@@ -295,7 +323,7 @@
             });
         }
 
-        // Função para carregar conteúdo dinâmico
+        // Função para carregar conteúdo dinâmico com controle de versão
         async function loadContent(session) {
             const mainContent = document.getElementById('main-content');
             let htmlFileToLoad = '';
@@ -304,42 +332,42 @@
 
             switch (session) {
                 case 'imoveis':
-                    htmlFileToLoad = 'imoveis.html';
-                    jsFileToLoad = 'imoveis.js';
-                    cssFileToLoad = 'imoveis.css';
+                    htmlFileToLoad = `imoveis.html?v=${appVersion}`;
+                    jsFileToLoad = `imoveis.js?v=${appVersion}`;
+                    cssFileToLoad = `imoveis.css?v=${appVersion}`;
                     break;
                 case 'leads':
-                    htmlFileToLoad = 'leads.html';
-                    jsFileToLoad = 'leads.js';
-                    cssFileToLoad = 'leads.css';
+                    htmlFileToLoad = `leads.html?v=${appVersion}`;
+                    jsFileToLoad = `leads.js?v=${appVersion}`;
+                    cssFileToLoad = `leads.css?v=${appVersion}`;
                     break;
                 case 'meusleads':
-                    htmlFileToLoad = 'meusleads.html';
-                    jsFileToLoad = 'meusleads.js';
-                    cssFileToLoad = 'meusleads.css';
+                    htmlFileToLoad = `meusleads.html?v=${appVersion}`;
+                    jsFileToLoad = `meusleads.js?v=${appVersion}`;
+                    cssFileToLoad = `meusleads.css?v=${appVersion}`;
                     break;
                 case 'meusimoveis':
-                    htmlFileToLoad = 'meusimoveis.html';
-                    jsFileToLoad = 'meusimoveis.js';
-                    cssFileToLoad = 'meusimoveis.css';
+                    htmlFileToLoad = `meusimoveis.html?v=${appVersion}`;
+                    jsFileToLoad = `meusimoveis.js?v=${appVersion}`;
+                    cssFileToLoad = `meusimoveis.css?v=${appVersion}`;
                     break;
                 case 'editar-perfil':
-                    htmlFileToLoad = 'editar-perfil.html';
-                    jsFileToLoad = 'editar-perfil.js';
-                    cssFileToLoad = 'editar-perfil.css';
+                    htmlFileToLoad = `editar-perfil.html?v=${appVersion}`;
+                    jsFileToLoad = `editar-perfil.js?v=${appVersion}`;
+                    cssFileToLoad = `editar-perfil.css?v=${appVersion}`;
                     break;
                 default:
-                    htmlFileToLoad = 'imoveis.html';
-                    jsFileToLoad = 'imoveis.js';
-                    cssFileToLoad = 'imoveis.css';
+                    htmlFileToLoad = `imoveis.html?v=${appVersion}`;
+                    jsFileToLoad = `imoveis.js?v=${appVersion}`;
+                    cssFileToLoad = `imoveis.css?v=${appVersion}`;
             }
 
             const isLoggedIn = await verificarLogin();
-            if (!isLoggedIn) return;
 
-            fetch(htmlFileToLoad)
+            fetch(htmlFileToLoad, { cache: 'no-store' })
                 .then(response => {
                     if (!response.ok) throw new Error('Arquivo HTML não encontrado');
+                    console.log(`HTML versão ${appVersion} carregado: ${htmlFileToLoad}`);
                     return response.text();
                 })
                 .then(data => {
@@ -354,7 +382,7 @@
                         link.rel = 'stylesheet';
                         link.href = cssFileToLoad;
                         link.setAttribute('data-dynamic', 'true');
-                        link.onload = () => console.log(`${cssFileToLoad} carregado com sucesso`);
+                        link.onload = () => console.log(`CSS versão ${appVersion} carregado: ${cssFileToLoad}`);
                         link.onerror = () => console.error(`Erro ao carregar ${cssFileToLoad}`);
                         document.head.appendChild(link);
                     }
@@ -363,12 +391,12 @@
                         const script = document.createElement('script');
                         script.src = jsFileToLoad;
                         script.setAttribute('data-dynamic', 'true');
-                        script.onload = () => console.log(`${jsFileToLoad} carregado com sucesso`);
+                        script.onload = () => console.log(`JS versão ${appVersion} carregado: ${jsFileToLoad}`);
                         script.onerror = () => console.error(`Erro ao carregar ${jsFileToLoad}`);
                         document.body.appendChild(script);
                     }
 
-                    updateActiveSection(session); // Destaca a seção atual após carregar
+                    updateActiveSection(session);
                 })
                 .catch(error => {
                     mainContent.innerHTML = '<p>Erro ao carregar o conteúdo. Tente novamente.</p>';
@@ -376,10 +404,13 @@
                 });
         }
 
+        // Evento para abrir/fechar a sidebar
         document.querySelector('.menu-toggle').addEventListener('click', () => {
             document.querySelector('.sidebar').classList.toggle('open');
-            document.querySelector('.main-content').style.marginLeft = 
-                document.querySelector('.sidebar').classList.contains('open') ? '250px' : '0';
+            if (window.innerWidth > 600) {
+                document.querySelector('.main-content').style.marginLeft = 
+                    document.querySelector('.sidebar').classList.contains('open') ? '250px' : '0';
+            }
         });
 
         document.getElementById('user-icon').addEventListener('click', () => {
@@ -395,19 +426,26 @@
             }
         });
 
+        // Carrega a versão e o conteúdo ao iniciar
         window.onload = async () => {
+            await loadVersion();
             syncCookiesToLocalStorage();
             const session = getSessionParam();
             await loadContent(session);
             syncLocalStorageToCookies();
         };
 
+        // Evento para os links da sidebar
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', async (e) => {
                 e.preventDefault();
                 const session = new URLSearchParams(link.search).get('session');
                 await loadContent(session);
                 window.history.pushState({}, '', `?session=${session}`);
+                // Fecha a sidebar em telas menores que 600px
+                if (window.innerWidth <= 600) {
+                    document.querySelector('.sidebar').classList.remove('open');
+                }
             });
         });
 
