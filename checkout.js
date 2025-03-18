@@ -1,29 +1,26 @@
-// Função para renderizar o checkout como popup
 window.renderizarCheckout = async function(leadId, padrao, valorFormatado) {
-    console.log("Lead ID recebido em renderizarCheckout:", leadId); // Debug
+    console.log("Lead ID recebido em renderizarCheckout:", leadId);
     let lead = {};
 
     try {
         const url = `https://pedepro-meulead.6a7cul.easypanel.host/clientes/${leadId}`;
-        console.log("Requisição para:", url); // Debug
+        console.log("Requisição para:", url);
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
         const data = await response.json();
-        console.log("Resposta da API:", data); // Debug
-        lead = data || {}; // Ajustado: usar diretamente 'data' em vez de 'data.cliente'
+        console.log("Resposta da API:", data);
+        lead = data || {};
     } catch (error) {
         console.error("Erro ao buscar lead na API:", error);
-        // Fallback: buscar o lead em window.leadsOriginais
         if (window.leadsOriginais && Array.isArray(window.leadsOriginais)) {
             console.log("Tentando fallback com window.leadsOriginais:", window.leadsOriginais);
             lead = window.leadsOriginais.find(l => l.id === leadId) || {};
         }
     }
 
-    // Verificar se o lead tem dados válidos
     if (!lead.id) {
         console.warn("Lead não encontrado na API ou em leadsOriginais, usando valores padrão.");
-        lead = { id: leadId }; // Garantir que pelo menos o ID esteja disponível
+        lead = { id: leadId };
     }
 
     const overlay = document.createElement("div");
@@ -34,15 +31,17 @@ window.renderizarCheckout = async function(leadId, padrao, valorFormatado) {
                 <h2>Confirmar Compra de Lead</h2>
                 <i class="material-icons close-icon" onclick="this.closest('.checkout-overlay').remove()">close</i>
             </div>
-            <div class="lead-info">
-                <div class="lead-interesse">SKU: ${lead.id || "N/A"}</div>
-                <div class="lead-interesse">Título: ${lead.titulo || "Não especificado"}</div>
-                <div class="lead-interesse">Interesse: ${lead.interesse || "Não especificado"}</div>
-                <div class="lead-interesse">Valor do Lead: ${valorFormatado}</div>
-            </div>
-            <div class="similar-leads">
-                <h3>Leads Semelhantes</h3>
-                <div class="similar-leads-container" id="similar-leads-container"></div>
+            <div class="checkout-content">
+                <div class="lead-info">
+                    <div class="lead-interesse">SKU: ${lead.id || "N/A"}</div>
+                    <div class="lead-interesse">Título: ${lead.titulo || "Não especificado"}</div>
+                    <div class="lead-interesse">Interesse: ${lead.interesse || "Não especificado"}</div>
+                    <div class="lead-interesse">Valor do Lead: ${valorFormatado}</div>
+                </div>
+                <div class="similar-leads">
+                    <h3>Leads Semelhantes</h3>
+                    <div class="similar-leads-container" id="similar-leads-container"></div>
+                </div>
             </div>
             <div class="checkout-footer">
                 <div class="total-price">Total: ${valorFormatado}</div>

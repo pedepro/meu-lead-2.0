@@ -4,7 +4,7 @@ function inicializarLeads() {
     window.leadsOriginais = [];
     window.paginaAtual = 1;
     window.totalLeads = 0;
-    window.itensPorPagina = 6; // Constante, mas redefinida para garantir
+    window.itensPorPagina = 6;
 
     // Função para criar o card de lead
     function criarCardLead(cliente) {
@@ -30,7 +30,7 @@ function inicializarLeads() {
                     <div class="lead-sku">SKU ${cliente.id}</div>
                 </div>
                 <div class="lead-card-footer">
-                    <button class="lead-btn-adquirir" onclick="mostrarCheckout(${cliente.id}, '${padrao}', '${valorFormatado}')">
+                    <button class="lead-btn-adquirir" onclick="verificarLoginAntesCheckout(${cliente.id}, '${padrao}', '${valorFormatado}')">
                         Obter por ${valorFormatado}
                     </button>
                 </div>
@@ -150,38 +150,154 @@ function inicializarLeads() {
 
     // Função para carregar dinamicamente CSS e JS do checkout
     async function carregarRecursosCheckout() {
-        // Carregar CSS se ainda não foi carregado
         if (!document.getElementById("checkout-css")) {
             const link = document.createElement("link");
             link.id = "checkout-css";
             link.rel = "stylesheet";
-            link.href = "checkout.css"; // Ajuste o caminho conforme sua estrutura
+            link.href = "checkout.css";
             document.head.appendChild(link);
             await new Promise(resolve => link.onload = resolve);
         }
 
-        // Carregar JS se ainda não foi carregado
         if (!document.getElementById("checkout-js")) {
             const script = document.createElement("script");
             script.id = "checkout-js";
-            script.src = "checkout.js"; // Ajuste o caminho conforme sua estrutura
+            script.src = "checkout.js";
             document.body.appendChild(script);
             await new Promise(resolve => script.onload = resolve);
         }
     }
 
-    // Função para mostrar o checkout
-    window.mostrarCheckout = async function(leadId, padrao, valorFormatado) {
-        // Carregar recursos dinamicamente antes de mostrar o checkout
-        await carregarRecursosCheckout();
+    // Função para criar e exibir o popup de login
+    function mostrarPopupLogin(leadId, padrao, valorFormatado) {
+        const overlay = document.createElement("div");
+        overlay.className = "popup-overlay";
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        `;
 
-        // Verificar se as funções estão disponíveis após o carregamento
-        if (typeof window.renderizarCheckout === "function") {
-            window.renderizarCheckout(leadId, padrao, valorFormatado);
-        } else {
-            console.error("Erro: Função renderizarCheckout não encontrada após carregar checkout.js");
+        const popup = document.createElement("div");
+        popup.className = "popup-content";
+        popup.style.cssText = `
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 90%;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        `;
+
+        popup.innerHTML = `
+            <h2 style="font-size: 20px; color: #333; margin-bottom: 15px;">Faça login para continuar</h2>
+            <p style="font-size: 16px; color: #666; margin-bottom: 20px;">
+                Você precisa estar logado para adquirir este lead.
+            </p>
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button onclick="window.location.href='/login'" 
+                        style="flex: 1; padding: 10px; background: #1877f2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    Fazer Login
+                </button>
+                <button onclick="document.body.removeChild(document.querySelector('.popup-overlay')); document.body.style.overflow = 'auto';" 
+                        style="flex: 1; padding: 10px; background: #e4e6eb; color: #333; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    Cancelar
+                </button>
+            </div>
+        `;
+
+        overlay.appendChild(popup);
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                document.body.removeChild(overlay);
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // Função para verificar login antes de abrir o checkout
+    window.verificarLoginAntesCheckout = async function(leadId, padrao, valorFormatado) {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (!token || !userId) {
+            mostrarPopupLogin(leadId, padrao, valorFormatado);
+            return;
+        }
+
+        try {
+            const url = `https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${userId}&token=${token}`;
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok && !data.error) {
+                await carregarRecursosCheckout();
+                if (typeof window.renderizarCheckout === "function") {
+                    document.body.style.overflow = 'hidden';
+                    window.renderizarCheckout(leadId, padrao, valorFormatado);
+
+                    // Usar MutationObserver para detectar remoção do overlay
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (!document.querySelector('.checkout-overlay')) {
+                                document.body.style.overflow = 'auto';
+                                observer.disconnect(); // Para de observar após restaurar
+                            }
+                        });
+                    });
+                    observer.observe(document.body, { childList: true, subtree: true });
+                } else {
+                    console.error("Erro: Função renderizarCheckout não encontrada após carregar checkout.js");
+                }
+            } else {
+                console.log("Credenciais inválidas ou erro na resposta:", data.error);
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                syncLocalStorageToCookies();
+                mostrarPopupLogin(leadId, padrao, valorFormatado);
+            }
+        } catch (error) {
+            console.error("Erro ao verificar login no servidor:", error);
+            mostrarPopupLogin(leadId, padrao, valorFormatado);
         }
     };
+
+    // Função para sincronizar localStorage com cookies
+    function syncLocalStorageToCookies() {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (token) {
+            document.cookie = `token=${token}; path=/; domain=.meuleaditapema.com.br; SameSite=Lax`;
+        } else {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+        }
+
+        if (userId) {
+            document.cookie = `userId=${userId}; path=/; domain=.meuleaditapema.com.br; SameSite=Lax`;
+        } else {
+            document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+        }
+    }
 
     // Inicialização da seção
     carregarClientesPaginados().then(() => {
@@ -197,5 +313,4 @@ function inicializarLeads() {
     }
 }
 
-// Chama a função de inicialização sempre que a seção for acessada
 inicializarLeads();

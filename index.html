@@ -57,14 +57,10 @@
             font-size: 28px;
             cursor: pointer;
             color: #838383;
-            display: none;
             transition: color 0.3s ease;
         }
         .user-icon:hover {
             color: #575757;
-        }
-        .logged-in .user-icon {
-            display: block;
         }
         .dropdown {
             position: absolute;
@@ -116,7 +112,7 @@
             border-right: 2px solid #ddd;
             overflow-x: hidden;
             transition: width 0.3s ease;
-            z-index: 1000; /* Abaixo do header (z-index: 1500) */
+            z-index: 1000;
             padding-top: 80px;
             box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -167,16 +163,16 @@
         /* Media Query para telas menores que 600px */
         @media (max-width: 600px) {
             .sidebar {
-                position: absolute; /* Fica acima do conteúdo, mas abaixo do header */
-                top: 70px; /* Abaixo do header */
-                height: calc(100% - 70px); /* Altura ajustada para não sobrepor o header */
+                position: absolute;
+                top: 70px;
+                height: calc(100% - 70px);
                 z-index: 1000;
             }
             .sidebar.open {
                 width: 250px;
             }
             .main-content {
-                margin-left: 0 !important; /* Não empurra o conteúdo */
+                margin-left: 0 !important;
             }
         }
     </style>
@@ -189,12 +185,7 @@
         </div>
         <i class="fa-solid fa-circle-user user-icon" id="user-icon"></i>
         <div class="dropdown" id="user-dropdown">
-            <ul>
-                <li><a href="?session=editar-perfil" id="edit-profile-link">Editar Perfil</a></li>
-                <li><a href="https://terms-of-use.meuleaditapema.com.br" target="_blank">Ver Termos de Uso</a></li>
-                <li><a href="https://privacy.meuleaditapema.com.br" target="_blank">Ver Políticas de Privacidade</a></li>
-                <li><a href="#" onclick="logout()">Sair</a></li>
-            </ul>
+            <ul id="dropdown-menu"></ul>
         </div>
     </header>
 
@@ -210,7 +201,7 @@
     <main class="main-content" id="main-content"></main>
 
     <script>
-        let appVersion = "1.0.0"; // Versão padrão caso o fetch falhe
+        let appVersion = "1.0.0";
 
         // Função para carregar a versão do arquivo versao.json
         async function loadVersion() {
@@ -270,7 +261,7 @@
             window.location.href = "/login";
         }
 
-        // Função para verificar login (sem redirecionamento automático)
+        // Função para verificar login
         async function verificarLogin() {
             const token = localStorage.getItem("token");
             const userId = localStorage.getItem("userId");
@@ -303,6 +294,43 @@
             } catch (error) {
                 console.error("Erro ao verificar login no servidor:", error);
                 return false;
+            }
+        }
+
+        // Função para atualizar o dropdown com base no status de login
+        async function updateDropdown() {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const isLoggedIn = await verificarLogin();
+
+            dropdownMenu.innerHTML = ''; // Limpa o menu existente
+
+            // Itens comuns a ambos os estados
+            const termsItem = '<li><a href="https://terms-of-use.meuleaditapema.com.br" target="_blank">Ver Termos de Uso</a></li>';
+            const privacyItem = '<li><a href="https://privacy.meuleaditapema.com.br" target="_blank">Ver Políticas de Privacidade</a></li>';
+
+            if (isLoggedIn) {
+                dropdownMenu.innerHTML = `
+                    <li><a href="?session=editar-perfil" id="edit-profile-link">Editar Perfil</a></li>
+                    ${termsItem}
+                    ${privacyItem}
+                    <li><a href="#" onclick="logout()">Sair</a></li>
+                `;
+            } else {
+                dropdownMenu.innerHTML = `
+                    ${termsItem}
+                    ${privacyItem}
+                    <li><a href="/login">Fazer Login</a></li>
+                `;
+            }
+
+            // Reassocia o evento do "Editar Perfil" se estiver logado
+            if (isLoggedIn) {
+                document.getElementById('edit-profile-link').addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await loadContent('editar-perfil');
+                    window.history.pushState({}, '', '?session=editar-perfil');
+                    document.getElementById('user-dropdown').classList.remove('active');
+                });
             }
         }
 
@@ -361,8 +389,6 @@
                     jsFileToLoad = `imoveis.js?v=${appVersion}`;
                     cssFileToLoad = `imoveis.css?v=${appVersion}`;
             }
-
-            const isLoggedIn = await verificarLogin();
 
             fetch(htmlFileToLoad, { cache: 'no-store' })
                 .then(response => {
@@ -426,10 +452,11 @@
             }
         });
 
-        // Carrega a versão e o conteúdo ao iniciar
+        // Carrega a versão, atualiza o dropdown e carrega o conteúdo ao iniciar
         window.onload = async () => {
             await loadVersion();
             syncCookiesToLocalStorage();
+            await updateDropdown(); // Atualiza o dropdown antes de carregar o conteúdo
             const session = getSessionParam();
             await loadContent(session);
             syncLocalStorageToCookies();
@@ -442,18 +469,10 @@
                 const session = new URLSearchParams(link.search).get('session');
                 await loadContent(session);
                 window.history.pushState({}, '', `?session=${session}`);
-                // Fecha a sidebar em telas menores que 600px
                 if (window.innerWidth <= 600) {
                     document.querySelector('.sidebar').classList.remove('open');
                 }
             });
-        });
-
-        document.getElementById('edit-profile-link').addEventListener('click', async (e) => {
-            e.preventDefault();
-            await loadContent('editar-perfil');
-            window.history.pushState({}, '', '?session=editar-perfil');
-            document.getElementById('user-dropdown').classList.remove('active');
         });
     </script>
 </body>
