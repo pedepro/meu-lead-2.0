@@ -29,6 +29,100 @@ function getNomeCidade(cidadeId) {
     return cidade ? cidade.name : "Cidade não encontrada";
 }
 
+
+// Função para verificar login e retornar dados do corretor
+async function verificarLogin() {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (!token || !userId) {
+        return { isLoggedIn: false, data: null };
+    }
+
+    try {
+        const url = `https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${userId}&token=${token}`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = await response.json();
+
+        if (response.ok && !data.error) {
+            return { isLoggedIn: true, data: data };
+        } else {
+            console.log("Credenciais inválidas ou erro na resposta:", data.error);
+            return { isLoggedIn: false, data: null };
+        }
+    } catch (error) {
+        console.error("Erro ao verificar login no servidor:", error);
+        return { isLoggedIn: false, data: null };
+    }
+}
+
+// Função para atualizar a interface
+async function atualizarInterfaceLogin() {
+    const { isLoggedIn, data } = await verificarLogin();
+    const body = document.body;
+    const userName = document.getElementById("name");
+
+    // Adiciona ou remove a classe logged-in do body
+    if (isLoggedIn) {
+        body.classList.add("logged-in");
+    } else {
+        body.classList.remove("logged-in");
+    }
+
+    // Atualiza o nome do usuário
+    if (userName) {
+        userName.textContent = isLoggedIn && data?.name ? data.name : "Faça login";
+    }
+}
+
+// Executar a validação imediatamente ao carregar a página
+document.addEventListener("DOMContentLoaded", async function () {
+    await atualizarInterfaceLogin(); // Aguarda a validação antes de prosseguir
+    // ... resto do seu código do DOMContentLoaded ...
+});
+
+// Para garantir que a validação ocorra mesmo em recarregamentos
+window.addEventListener("load", async function () {
+    await atualizarInterfaceLogin(); // Revalida após o carregamento completo
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function mostrarCheckout(leadId, padrao, valorFormatado) {
     console.log("mostrarCheckout chamado com:", leadId, padrao, valorFormatado);
     try {
@@ -155,7 +249,6 @@ function criarCardImovel(imovel) {
         ? imagemObj.url 
         : "assets/icon.ico";
 
-    // Nova URL direta para o subdomínio
     const detalhesUrl = `https://imovel.meuleaditapema.com.br/${imovel.id}`;
     const padrao = imovel.categoria === 1 ? "Médio Padrão" : 
                   imovel.categoria === 2 ? "Alto Padrão" : 
@@ -346,10 +439,83 @@ function createPaginationImoveisContainer() {
     return paginacao;
 }
 
-// Função para filtrar os imóveis
+// Função para exibir o dropdown de imóvel pronto
+function exibirDropdownImovelPronto() {
+    const filtrosContainer = garantirFiltrosContainer();
+    const dropdownsWrapper = filtrosContainer.querySelector(".dropdowns-wrapper") || filtrosContainer;
+
+    const existente = document.getElementById("dropdown-imovel-pronto");
+    if (existente) existente.remove();
+
+    const select = document.createElement("select");
+    select.id = "dropdown-imovel-pronto";
+    select.onchange = () => {
+        paginaImoveisAtual = 1;
+        filtrarImoveis();
+    };
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Todos (Status Obra)";
+    select.appendChild(defaultOption);
+
+    const opcoes = [
+        { value: "true", text: "Imóvel Pronto" },
+        { value: "false", text: "Em Construção" }
+    ];
+
+    opcoes.forEach(opcao => {
+        const option = document.createElement("option");
+        option.value = opcao.value;
+        option.textContent = opcao.text;
+        select.appendChild(option);
+    });
+
+    dropdownsWrapper.appendChild(select);
+}
+
+// Função para exibir o dropdown de mobiliado
+function exibirDropdownMobiliado() {
+    const filtrosContainer = garantirFiltrosContainer();
+    const dropdownsWrapper = filtrosContainer.querySelector(".dropdowns-wrapper") || filtrosContainer;
+
+    const existente = document.getElementById("dropdown-mobiliado");
+    if (existente) existente.remove();
+
+    const select = document.createElement("select");
+    select.id = "dropdown-mobiliado";
+    select.onchange = () => {
+        paginaImoveisAtual = 1;
+        filtrarImoveis();
+    };
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Todos (Mobiliado)";
+    select.appendChild(defaultOption);
+
+    const opcoes = [
+        { value: "true", text: "Sim" },
+        { value: "false", text: "Não" }
+    ];
+
+    opcoes.forEach(opcao => {
+        const option = document.createElement("option");
+        option.value = opcao.value;
+        option.textContent = opcao.text;
+        select.appendChild(option);
+    });
+
+    dropdownsWrapper.appendChild(select);
+}
+
+// Função filtrarImoveis atualizada
 function filtrarImoveis() {
     const cidadeSelecionada = document.getElementById("dropdown-cidades")?.value || "";
     const precoSelecionado = document.getElementById("dropdown-precos")?.value || "";
+    const padraoSelecionado = document.getElementById("dropdown-padrao-imoveis")?.value || "";
+    const imovelProntoSelecionado = document.getElementById("dropdown-imovel-pronto")?.value || "";
+    const mobiliadoSelecionado = document.getElementById("dropdown-mobiliado")?.value || "";
 
     let url = "https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis";
     const params = new URLSearchParams();
@@ -362,6 +528,18 @@ function filtrarImoveis() {
         const [min, max] = precoSelecionado.split('-').map(Number);
         params.append("precoMin", min);
         if (max) params.append("precoMax", max);
+    }
+
+    if (padraoSelecionado) {
+        params.append("categoria", padraoSelecionado);
+    }
+
+    if (imovelProntoSelecionado) {
+        params.append("imovel_pronto", imovelProntoSelecionado);
+    }
+
+    if (mobiliadoSelecionado) {
+        params.append("mobiliado", mobiliadoSelecionado);
     }
 
     params.append("limite", imoveisPorPagina);
@@ -491,6 +669,41 @@ function exibirDropdownPrecos() {
         const option = document.createElement("option");
         option.value = faixa.value;
         option.textContent = faixa.text;
+        select.appendChild(option);
+    });
+
+    dropdownsWrapper.appendChild(select);
+}
+
+// Função para exibir o dropdown de padrão
+function exibirDropdownPadraoImoveis() {
+    const filtrosContainer = garantirFiltrosContainer();
+    const dropdownsWrapper = filtrosContainer.querySelector(".dropdowns-wrapper") || filtrosContainer;
+
+    const existente = document.getElementById("dropdown-padrao-imoveis");
+    if (existente) existente.remove();
+
+    const select = document.createElement("select");
+    select.id = "dropdown-padrao-imoveis";
+    select.onchange = () => {
+        paginaImoveisAtual = 1;
+        filtrarImoveis();
+    };
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Todos os padrões";
+    select.appendChild(defaultOption);
+
+    const padroes = [
+        { value: "1", text: "Médio Padrão" },
+        { value: "2", text: "Alto Padrão" }
+    ];
+
+    padroes.forEach(padrao => {
+        const option = document.createElement("option");
+        option.value = padrao.value;
+        option.textContent = padrao.text;
         select.appendChild(option);
     });
 
@@ -714,12 +927,19 @@ async function carregarClientes() {
     await carregarClientesPaginados();
 }
 
-// Função para carregar imóveis afiliados e comprados
+// Função para carregar os imóveis de um corretor
 async function carregaraImoveis() {
     try {
         const container = document.getElementById("meus-imoveis-container");
         if (!container) {
             console.error("Erro: Elemento #meus-imoveis-container não encontrado.");
+            return;
+        }
+
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            console.error("Erro: userId não encontrado no localStorage.");
+            container.innerHTML = "<p>Erro: Usuário não identificado. Faça login novamente.</p>";
             return;
         }
 
@@ -732,14 +952,27 @@ async function carregaraImoveis() {
         titulo.style.color = "#555555";
         container.appendChild(titulo);
 
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/1");
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/${userId}`);
         const data = await response.json();
+
+        if (!data.success) {
+            container.innerHTML += `<p>${data.message || 'Nenhum imóvel encontrado.'}</p>`;
+            return;
+        }
+
         const imoveis = Array.isArray(data.imoveis) ? data.imoveis : [];
+        const totalImoveis = data.total || 0;
 
         if (imoveis.length === 0) {
             container.innerHTML += "<p>Nenhum imóvel encontrado.</p>";
             return;
         }
+
+        const totalTexto = document.createElement("p");
+        totalTexto.textContent = `Total de imóveis: ${totalImoveis}`;
+        totalTexto.style.marginLeft = "15px";
+        totalTexto.style.color = "#777";
+        container.appendChild(totalTexto);
 
         imoveis.forEach(imovel => {
             const card = document.createElement("div");
@@ -749,7 +982,7 @@ async function carregaraImoveis() {
             console.log(`Imagem para imóvel ${imovel.id}:`, imagemObj);
             const imagem = imagemObj && imagemObj.url 
                 ? imagemObj.url 
-                : "https://source.unsplash.com/400x300/?house";
+                : "https://cloud.meuleaditapema.com.br/uploads/7607cc83-a6c4-4e8f-8a19-c19b14625b4e.png";
 
             const phone = imovel.whatsapp ? imovel.whatsapp.replace(/\D/g, '') : '';
             const mensagem = `Olá ${imovel.nome_proprietario || 'Proprietário'}`;
@@ -802,6 +1035,10 @@ async function carregaraImoveis() {
         });
     } catch (error) {
         console.error("Erro ao carregar imóveis:", error);
+        const container = document.getElementById("meus-imoveis-container");
+        if (container) {
+            container.innerHTML += "<p>Erro ao carregar os imóveis. Tente novamente mais tarde.</p>";
+        }
     }
 }
 
@@ -841,13 +1078,25 @@ async function removerAfiliacao(imovelId) {
 }
 
 // Função para carregar leads adquiridos
-async function carregarLeadsAdquiridos(corretorId) {
+async function carregarLeadsAdquiridos() {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes/${corretorId}`);
+        const meusLeadsContainer = document.getElementById("meus-leads");
+        if (!meusLeadsContainer) {
+            console.error("Erro: Elemento #meus-leads não encontrado.");
+            return;
+        }
+
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            console.error("Erro: userId não encontrado no localStorage.");
+            meusLeadsContainer.innerHTML = "<p>Erro: Usuário não identificado. Faça login novamente.</p>";
+            return;
+        }
+
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes/${userId}`);
         const data = await response.json();
         const leads = Array.isArray(data.clientes) ? data.clientes : [];
 
-        const meusLeadsContainer = document.getElementById("meus-leads");
         meusLeadsContainer.innerHTML = "";
 
         const titleContainer = document.createElement("div");
@@ -868,8 +1117,8 @@ async function carregarLeadsAdquiridos(corretorId) {
         } else {
             leads.forEach(lead => {
                 const padrao = lead.categoria === 1 ? "medio-padrao" : 
-                               lead.categoria === 2 ? "alto-padrao" : 
-                               "medio-padrao";
+                              lead.categoria === 2 ? "alto-padrao" : 
+                              "medio-padrao";
                 const icon = lead.categoria === 2 ? "star" : "home";
 
                 const card = document.createElement("div");
@@ -898,31 +1147,10 @@ async function carregarLeadsAdquiridos(corretorId) {
         meusLeadsContainer.appendChild(gridContainer);
     } catch (error) {
         console.error("Erro ao carregar leads adquiridos:", error);
-    }
-}
-
-// Função para carregar dados do corretor
-async function carregarCorretor() {
-    const id = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
-
-    if (!id || !token) {
-        console.warn("ID ou token não encontrados no localStorage.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${id}&token=${token}`);
-        const data = await response.json();
-
-        if (response.ok) {
-            window.corretor = data;
-            document.getElementById("name").textContent = `Olá, ${data.name}`;
-        } else {
-            console.error("Erro ao carregar corretor:", data.error);
+        const meusLeadsContainer = document.getElementById("meus-leads");
+        if (meusLeadsContainer) {
+            meusLeadsContainer.innerHTML = "<p>Erro ao carregar os leads. Tente novamente mais tarde.</p>";
         }
-    } catch (error) {
-        console.error("Erro na requisição:", error);
     }
 }
 
@@ -979,8 +1207,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const clientesLink = document.getElementById("clientes-link");
     const meusImoveisLink = document.getElementById("meusimoveis-link");
     const meusLeadsLink = document.getElementById("meusleads-link");
-    const editarPerfilLink = document.getElementById("editar-perfil-link"); // Novo link
+    const editarPerfilLink = document.getElementById("editar-perfil-link");
     const userInfoContainer = document.getElementById("user-info-container");
+    const logoutIcon = document.getElementById("logout-icon");
     const imoveisContainer = document.getElementById("imoveis-container");
     const clientesContainer = document.getElementById("clientes-container");
     const meusImoveisContainer = document.getElementById("meus-imoveis-container");
@@ -988,6 +1217,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const homeSection = document.getElementById("home-section");
     const verMaisImoveis = document.getElementById("ver-mais-imoveis");
     const verMaisLeads = document.getElementById("ver-mais-leads");
+
+    // Atualizar interface com base no status de login
+    atualizarInterfaceLogin();
 
     function gerenciarFiltros(visivel) {
         const filtrosContainer = document.getElementById("filtros-imoveis");
@@ -1037,6 +1269,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             await carregarImoveis();
             await exibirDropdownCidades();
             exibirDropdownPrecos();
+            exibirDropdownPadraoImoveis();
+            exibirDropdownImovelPronto();
+            exibirDropdownMobiliado();
             centralizarPaginacaoImoveis();
         });
     }
@@ -1059,38 +1294,67 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (meusImoveisLink) {
         meusImoveisLink.addEventListener("click", function (e) {
             e.preventDefault();
-            sidebar.classList.remove("open");
-            homeSection.style.display = "none";
-            imoveisContainer.style.display = "none";
-            clientesContainer.style.display = "none";
-            meusImoveisContainer.style.display = "grid";
-            meusLeadsContainer.style.display = "none";
-            gerenciarFiltros(false);
-            gerenciarPaginacaoImoveis(false);
-            carregaraImoveis();
+            if (verificarLogin()) {
+                sidebar.classList.remove("open");
+                homeSection.style.display = "none";
+                imoveisContainer.style.display = "none";
+                clientesContainer.style.display = "none";
+                meusImoveisContainer.style.display = "grid";
+                meusLeadsContainer.style.display = "none";
+                gerenciarFiltros(false);
+                gerenciarPaginacaoImoveis(false);
+                carregaraImoveis();
+            } else {
+                alert("Faça login para acessar seus imóveis.");
+            }
         });
     }
 
     if (meusLeadsLink) {
         meusLeadsLink.addEventListener("click", function (e) {
             e.preventDefault();
-            sidebar.classList.remove("open");
-            homeSection.style.display = "none";
-            imoveisContainer.style.display = "none";
-            clientesContainer.style.display = "none";
-            meusImoveisContainer.style.display = "none";
-            meusLeadsContainer.style.display = "grid";
-            gerenciarFiltros(false);
-            gerenciarPaginacaoImoveis(false);
-            carregarLeadsAdquiridos(1);
+            if (verificarLogin()) {
+                sidebar.classList.remove("open");
+                homeSection.style.display = "none";
+                imoveisContainer.style.display = "none";
+                clientesContainer.style.display = "none";
+                meusImoveisContainer.style.display = "none";
+                meusLeadsContainer.style.display = "grid";
+                gerenciarFiltros(false);
+                gerenciarPaginacaoImoveis(false);
+                carregarLeadsAdquiridos();
+            } else {
+                alert("Faça login para acessar seus leads adquiridos.");
+            }
         });
     }
 
-    if (editarPerfilLink) { // Novo evento
+    if (editarPerfilLink) {
         editarPerfilLink.addEventListener("click", function (e) {
             e.preventDefault();
+            if (verificarLogin()) {
+                sidebar.classList.remove("open");
+                mostrarModalEditarPerfil();
+            } else {
+                alert("Faça login para editar seu perfil.");
+            }
+        });
+    }
+
+    if (logoutIcon) {
+        logoutIcon.addEventListener("click", function () {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            atualizarInterfaceLogin();
+            homeSection.style.display = "block";
+            imoveisContainer.style.display = "none";
+            clientesContainer.style.display = "none";
+            meusImoveisContainer.style.display = "none";
+            meusLeadsContainer.style.display = "none";
+            gerenciarFiltros(false);
+            gerenciarPaginacaoImoveis(false);
             sidebar.classList.remove("open");
-            mostrarModalEditarPerfil();
+            alert("Logout realizado com sucesso!");
         });
     }
 
@@ -1112,6 +1376,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         userInfoContainer.addEventListener("click", function () {
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             window.location.href = "/login";
         });
     }
@@ -1127,7 +1393,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     await carregarCidades();
     await carregarImoveisPreview();
     await carregarLeadsPreview();
-    carregarCorretor();
 });
 
 // Esconder preloader após o carregamento
@@ -1139,7 +1404,6 @@ window.addEventListener("load", function () {
         }
     }, 1000);
 });
-
 
 // Função para mostrar o modal de edição de perfil
 function mostrarModalEditarPerfil() {
@@ -1186,7 +1450,6 @@ function mostrarModalEditarPerfil() {
             `;
             document.body.appendChild(overlay);
 
-            // Alternar visibilidade dos campos de senha
             const togglePasswordBtn = document.getElementById("toggle-password-btn");
             const passwordFields = document.getElementById("password-fields");
             togglePasswordBtn.addEventListener("click", () => {
@@ -1201,7 +1464,6 @@ function mostrarModalEditarPerfil() {
                 }
             });
 
-            // Evento de envio do formulário
             document.getElementById("edit-profile-form").addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
@@ -1229,7 +1491,7 @@ function mostrarModalEditarPerfil() {
                     if (response.ok) {
                         mostrarNotificacao("Perfil atualizado com sucesso!", "success");
                         overlay.remove();
-                        carregarCorretor();
+                        atualizarInterfaceLogin();
                     } else {
                         mostrarNotificacao(`Erro: ${result.error}`, "error");
                     }
@@ -1245,7 +1507,6 @@ function mostrarModalEditarPerfil() {
         });
 }
 
-
 // Função para exibir notificação personalizada
 function mostrarNotificacao(mensagem, tipo = "success") {
     const notification = document.createElement("div");
@@ -1256,13 +1517,9 @@ function mostrarNotificacao(mensagem, tipo = "success") {
     `;
     document.body.appendChild(notification);
 
-    // Mostrar a notificação
     setTimeout(() => notification.classList.add("show"), 100);
-
-    // Esconder após 3 segundos
     setTimeout(() => {
         notification.classList.remove("show");
-        setTimeout(() => notification.remove(), 300); // Remove após a transição
+        setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
-

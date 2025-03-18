@@ -250,9 +250,7 @@
         function setCookie(name, value, days) {
             const expires = new Date();
             expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-            // Simplifiquei removendo o domínio para evitar problemas locais
-            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
-            // Verificação para depuração
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;domain=.meuleaditapema.com.br;SameSite=Lax`;
             console.log(`Cookie ${name} definido como: ${value}`);
         }
 
@@ -279,24 +277,6 @@
                 return "/";
             }
         }
-
-        (function syncAuth() {
-            const token = getCookie("token");
-            const userId = getCookie("userId");
-            console.log("Cookies iniciais - token:", token, "userId:", userId);
-            if (token && !localStorage.getItem("token")) {
-                localStorage.setItem("token", token);
-            }
-            if (userId && !localStorage.getItem("userId")) {
-                localStorage.setItem("userId", userId);
-            }
-            if (localStorage.getItem("token") && !token) {
-                setCookie("token", localStorage.getItem("token"), 30);
-            }
-            if (localStorage.getItem("userId") && !userId) {
-                setCookie("userId", localStorage.getItem("userId"), 30);
-            }
-        })();
 
         function togglePassword(icon, inputId) {
             const input = document.getElementById(inputId);
@@ -331,16 +311,31 @@
         window.addEventListener('load', () => {
             const emailInput = document.getElementById('login-email');
             const senhaInput = document.getElementById('login-senha');
-            
+
+            // Forçar tipo inicial e limpar valores
             emailInput.type = 'text';
             emailInput.setAttribute('autocomplete', 'off');
             emailInput.value = '';
             senhaInput.value = '';
 
-            setTimeout(() => {
-                emailInput.value = '';
-                senhaInput.value = '';
-            }, 100);
+            // Colocar foco no campo de email automaticamente
+            emailInput.focus();
+
+            // Função para verificar preenchimento automático
+            function checkAutofill() {
+                if (emailInput.value.trim()) {
+                    emailInput.classList.add('has-val');
+                } else {
+                    emailInput.classList.remove('has-val');
+                }
+            }
+
+            // Verificar imediatamente ao carregar
+            checkAutofill();
+
+            // Verificar novamente após pequenos atrasos para capturar preenchimento automático tardio
+            setTimeout(checkAutofill, 100);
+            setTimeout(checkAutofill, 500);
         });
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -363,12 +358,12 @@
                     return;
                 }
 
+                // Salvar cookies e localStorage ao fazer login
                 setCookie("token", data.token, 30);
                 setCookie("userId", data.id, 30);
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userId", data.id);
 
-                // Verificação após definir cookies
                 console.log("Após login - Cookies: token=", getCookie("token"), "userId=", getCookie("userId"));
                 console.log("Após login - LocalStorage: token=", localStorage.getItem("token"), "userId=", localStorage.getItem("userId"));
 
@@ -406,12 +401,12 @@
                     return;
                 }
 
+                // Salvar cookies e localStorage ao fazer cadastro
                 setCookie("token", data.token, 30);
                 setCookie("userId", data.id, 30);
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userId", data.id);
 
-                // Verificação após definir cookies
                 console.log("Após cadastro - Cookies: token=", getCookie("token"), "userId=", getCookie("userId"));
                 console.log("Após cadastro - LocalStorage: token=", localStorage.getItem("token"), "userId=", localStorage.getItem("userId"));
 

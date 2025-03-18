@@ -37,7 +37,13 @@ if (btnIndisponiveis) {
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
-        const response = await fetch("https://backand.meuleaditapema.com.br/cidades");
+        const response = await fetch("https://backand.meuleaditapema.com.br/cidades", {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+        }
         const data = await response.json();
         console.log('Cidades recebidas:', data);
 
@@ -45,6 +51,7 @@ async function carregarCidades() {
         atualizarFiltros();
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
+        cidades = []; // Garante que cidades seja um array vazio em caso de erro
     }
 }
 
@@ -203,7 +210,6 @@ function adicionarEventosAcoes() {
             if (btn.classList.contains('edit')) {
                 window.location.href = `?session=cadastroimovel&editid=${imovelId}`;
             } else if (btn.classList.contains('delete')) {
-                // Abre o modal
                 imovelIdToDelete = imovelId;
                 modalImovelId.textContent = imovelId;
                 modal.style.display = 'flex';
@@ -211,13 +217,11 @@ function adicionarEventosAcoes() {
         });
     });
 
-    // Evento para cancelar (fechar o modal)
     modalCancel.addEventListener('click', () => {
         modal.style.display = 'none';
         imovelIdToDelete = null;
     });
 
-    // Evento para confirmar a exclusão
     modalConfirm.addEventListener('click', async () => {
         if (imovelIdToDelete) {
             try {
@@ -244,7 +248,6 @@ function adicionarEventosAcoes() {
         }
     });
 
-    // Fechar o modal clicando fora dele
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -449,6 +452,11 @@ function createFilterPanel() {
     return filterPanel;
 }
 
-// Chama as funções para carregar os dados ao iniciar o script
-carregarCidades();
-carregarImoveis();
+// Função para inicializar a tela de listagem
+async function inicializarTelaListagem() {
+    await carregarCidades(); // Primeiro carrega as cidades
+    await carregarImoveis();  // Depois carrega os imóveis
+}
+
+// Chama a função de inicialização ao carregar o script
+inicializarTelaListagem();

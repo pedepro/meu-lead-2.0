@@ -1,0 +1,37 @@
+<div id="imoveis-section">
+    <div id="filtros-imoveis">
+        <div class="dropdowns-wrapper">
+            <select id="dropdown-cidades">
+                <option value="">Todas as cidades</option>
+                <!-- As opções serão preenchidas dinamicamente via JS -->
+            </select>
+            <select id="dropdown-precos">
+                <option value="">Todos os preços</option>
+                <option value="0-500000">Até R$ 500 mil</option>
+                <option value="500000-1000000">R$ 500 mil - R$ 1 milhão</option>
+                <option value="1000000-2000000">R$ 1 milhão - R$ 2 milhões</option>
+                <option value="2000000-5000000">R$ 2 milhões - R$ 5 milhões</option>
+                <option value="5000000-10000000">R$ 5 milhões - R$ 10 milhões</option>
+                <option value="10000000-20000000">R$ 10 milhões - R$ 20 milhões</option>
+                <option value="20000000">+ R$ 20 milhões</option>
+            </select>
+            <select id="dropdown-padrao-imoveis">
+                <option value="">Todos os padrões</option>
+                <option value="1">Médio Padrão</option>
+                <option value="2">Alto Padrão</option>
+            </select>
+            <select id="dropdown-imovel-pronto">
+                <option value="">Todos (Status Obra)</option>
+                <option value="true">Imóvel Pronto</option>
+                <option value="false">Em Construção</option>
+            </select>
+            <select id="dropdown-mobiliado">
+                <option value="">Todos (Mobiliado)</option>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+        </div>
+    </div>
+    <div id="imoveis-container" class="imoveis-container"></div>
+    <div id="paginacao-imoveis" class="paginacao-imoveis"></div>
+</div>

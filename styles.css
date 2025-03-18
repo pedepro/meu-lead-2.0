@@ -107,6 +107,7 @@ header h1 {
     color: rgb(119, 119, 119);
     font-size: 18px;
     cursor: pointer;
+    display: none; /* Escondido por padrão */
 }
 
 .sidebar.open {
@@ -122,6 +123,13 @@ header h1 {
 .sidebar ul li {
     padding: 10px;
     text-align: left;
+}
+
+/* Esconder os itens restritos por padrão */
+#meusleads-link,
+#meusimoveis-link,
+#editar-perfil-link {
+    display: none; /* Escondidos por padrão */
 }
 
 .sidebar ul li a {
@@ -183,13 +191,12 @@ header h1 {
 }
 
 /* Estilo do container principal */
-/* Estilo do container principal */
 #meus-leads {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
-    width: 100%; /* Garante que o contêiner principal use a largura total disponível */
-    box-sizing: border-box; /* Inclui padding na largura */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Estilo do contêiner do título */
@@ -204,8 +211,9 @@ header h1 {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
     justify-items: center;
-    width: 800px !important;    max-width: 100%; /* Evita que o grid exceda o contêiner pai */
-    box-sizing: border-box; /* Inclui padding/margem na largura */
+    width: 800px !important;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Responsividade */
@@ -221,13 +229,11 @@ header h1 {
         padding: 20px 10px;
     }
     .leads-grid {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+        grid-template-columns: 1fr;
     }
 }
 
-
-
-/* Estilo dos cards de imóveis (inalterado) */
+/* Estilo dos cards de imóveis */
 .card {
     position: relative;
     width: 100%;
@@ -310,13 +316,13 @@ header h1 {
     color: #555;
 }
 
-/* Estilo dos cards de leads (atualizado com largura fixa e altura mínima) */
+/* Estilo dos cards de leads */
 #clientes-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
     padding: 40px 20px;
-    justify-items: center; /* Centraliza os cards no grid */
+    justify-items: center;
 }
 
 .lead-card {
@@ -326,9 +332,9 @@ header h1 {
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    padding-bottom: 60px; /* Espaço para o botão */
-    width: 280px; /* Largura fixa */
-    min-height: 200px; /* Altura mínima para uniformidade */
+    padding-bottom: 60px;
+    width: 280px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -352,7 +358,7 @@ header h1 {
 .lead-card-header {
     padding: 16px;
     position: relative;
-    flex-grow: 1; /* Permite que o header ocupe o espaço disponível */
+    flex-grow: 1;
 }
 
 .lead-card-header .lead-badge {
@@ -393,7 +399,7 @@ header h1 {
     font-size: 16px;
     color: #1c1e21;
     line-height: 1.4;
-    margin-bottom: 8px; /* Espaçamento entre linhas */
+    margin-bottom: 8px;
 }
 
 .lead-card-header .lead-icon {
@@ -445,22 +451,22 @@ header h1 {
     }
 
     .lead-card {
-        width: 250px; /* Reduz a largura em telas menores */
-        min-height: 180px; /* Ajusta a altura mínima */
+        width: 250px;
+        min-height: 180px;
     }
 }
 
 @media (max-width: 480px) {
     #clientes-container {
-        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+        grid-template-columns: 1fr;
         padding: 20px 10px;
     }
 
     .lead-card {
-        width: 100%; /* Ocupa toda a largura disponível */
-        max-width: 350px; /* Mantém um limite máximo */
-        min-height: 180px; /* Mantém altura mínima */
-        margin: 0 auto; /* Centraliza o card */
+        width: 100%;
+        max-width: 350px;
+        min-height: 180px;
+        margin: 0 auto;
     }
 
     .lead-btn-adquirir {
@@ -469,7 +475,7 @@ header h1 {
     }
 }
 
-/* Estilo para cards de clientes antigos (mantido para compatibilidade) */
+/* Estilo para cards de clientes antigos */
 .card-cliente {
     background: white;
     padding: 15px;
@@ -571,7 +577,7 @@ header h1 {
     }
 }
 
-/* Outros estilos (imóveis, paginação, etc.) mantidos intactos */
+/* Outros estilos (imóveis, paginação, etc.) */
 .image-container {
     position: relative;
 }
@@ -607,7 +613,7 @@ header h1 {
     flex-wrap: wrap;
 }
 
-#dropdown-cidades, #dropdown-precos {
+#dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
     padding: 12px 16px;
     font-size: 15px;
     font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
@@ -624,11 +630,26 @@ header h1 {
     appearance: none;
 }
 
-#dropdown-cidades:hover, #dropdown-precos:hover,
-#dropdown-cidades:focus, #dropdown-precos:focus {
+#dropdown-cidades:hover, #dropdown-precos:hover, #dropdown-padrao-imoveis:hover, #dropdown-imovel-pronto:hover, #dropdown-mobiliado:hover,
+#dropdown-cidades:focus, #dropdown-precos:focus, #dropdown-padrao-imoveis:focus, #dropdown-imovel-pronto:focus, #dropdown-mobiliado:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     outline: none;
+}
+
+/* Ajuste responsivo para telas menores */
+@media (max-width: 768px) {
+    #dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
+        width: calc(50% - 8px);
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
+        width: 100%;
+    }
 }
 
 #contagem-resultados {
@@ -666,16 +687,6 @@ header h1 {
 }
 
 @media (max-width: 768px) {
-    .dropdowns-wrapper {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    #dropdown-cidades, #dropdown-precos {
-        width: 100%;
-        max-width: none;
-    }
-
     #contagem-resultados {
         margin-top: 12px;
     }
@@ -688,18 +699,6 @@ header h1 {
     .paginacao button {
         width: 100%;
         text-align: center;
-    }
-}
-
-@media (max-width: 420px) {
-    #filtros-imoveis {
-        margin: 10px;
-        padding: 12px;
-    }
-
-    #dropdown-cidades, #dropdown-precos {
-        font-size: 14px;
-        padding: 10px 14px;
     }
 }
 
@@ -753,7 +752,7 @@ header h1 {
     margin: 20px 0;
 }
 
-/* Outros elementos mantidos */
+/* Outros elementos */
 .contagem-leads {
     margin: 15px 0;
     padding: 10px;
@@ -931,20 +930,18 @@ header h1 {
     background-color: #cc0000;
 }
 
-
-
 /* Estilo do banner */
 .banner {
     width: 100%;
-    height: 300px; /* Altura proporcional, ajustável */
+    height: 300px;
     overflow: hidden;
-    background-color: #ddd; /* Cor fallback caso a imagem não carregue */
+    background-color: #ddd;
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Mantém a proporção da imagem */
+    object-fit: cover;
 }
 
 /* Estilo da seção inicial */
@@ -1009,12 +1006,6 @@ header h1 {
         grid-template-columns: 1fr;
     }
 }
-
-
-
-
-
-
 
 /* Overlay da tela de confirmação */
 .checkout-overlay {
@@ -1086,8 +1077,8 @@ header h1 {
 /* Seção de leads semelhantes */
 .similar-leads {
     margin-top: 20px;
-    flex-grow: 1; /* Permite que esta seção cresça para ocupar espaço disponível */
-    overflow-y: auto; /* Rolagem vertical apenas para leads semelhantes, se necessário */
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .similar-leads h3 {
@@ -1180,47 +1171,46 @@ header h1 {
     background-color: #166fe5;
 }
 
-/* Responsividade para dispositivos móveis (telas menores que 500px) */
+/* Responsividade para dispositivos móveis */
 @media (max-width: 500px) {
     .checkout-overlay {
-        align-items: flex-start; /* Alinha o modal no topo */
-        background: rgba(0, 0, 0, 0.8); /* Fundo mais escuro para destaque */
+        align-items: flex-start;
+        background: rgba(0, 0, 0, 0.8);
     }
 
     .checkout-modal {
         width: 100%;
-        height: 90vh; /* 90% da altura da tela */
-        max-width: none; /* Remove limite de largura */
-        border-radius: 12px 12px 0 0; /* Arredondamento apenas no topo */
-        box-shadow: none; /* Remove sombra */
-        padding: 15px; /* Reduz padding para mais espaço */
-        position: absolute; /* Posiciona fixo em relação ao overlay */
-        top: 10%; /* Começa a 10% do topo */
-        bottom: 0; /* Fixa no fundo */
-        overflow-y: hidden; /* Remove rolagem vertical do modal */
+        height: 90vh;
+        max-width: none;
+        border-radius: 12px 12px 0 0;
+        box-shadow: none;
+        padding: 15px;
+        position: absolute;
+        top: 10%;
+        bottom: 0;
+        overflow-y: hidden;
     }
 
     .checkout-header {
-        padding-right: 10px; /* Espaço para o ícone X */
+        padding-right: 10px;
     }
 
-    /* Informações do lead principal */
     .lead-info {
-       padding: 10px;
-       border-bottom: 1px solid #ddd;
-}
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
 
     .checkout-header h2 {
         font-size: 18px;
     }
 
     .similar-leads {
-        overflow-y: auto; /* Rolagem apenas nos leads semelhantes */
-        max-height: calc(100% - 200px); /* Limita altura para evitar overflow */
+        overflow-y: auto;
+        max-height: calc(100% - 200px);
     }
 
     .mini-lead-card {
-        flex: 0 0 160px; /* Reduz tamanho dos cards para caber mais na tela */
+        flex: 0 0 160px;
     }
 
     .checkout-footer {
@@ -1232,29 +1222,6 @@ header h1 {
         width: 100%;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Modal de Edição de Perfil */
 .edit-profile-overlay {
@@ -1378,14 +1345,13 @@ header h1 {
     margin-top: 15px;
 }
 
-
-/* Notificação personalizada no estilo Facebook */
+/* Notificação personalizada */
 .notification {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #1877f2; /* Azul do Facebook */
+    background-color: #1877f2;
     color: #fff;
     padding: 12px 20px;
     border-radius: 8px;
@@ -1401,11 +1367,11 @@ header h1 {
 }
 
 .notification.success {
-    background-color: #28a745; /* Verde para sucesso */
+    background-color: #28a745;
 }
 
 .notification.error {
-    background-color: #dc3545; /* Vermelho para erro */
+    background-color: #dc3545;
 }
 
 .notification.show {
@@ -1416,10 +1382,9 @@ header h1 {
     font-size: 20px;
 }
 
-
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* Proporção do vídeo */
+    padding-bottom: 56.25%;
     overflow: hidden;
     background-color: #0865FE;
     display: flex;

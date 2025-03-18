@@ -1,0 +1,212 @@
+/* Container dos leads adquiridos */
+.meus-leads-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+    background-color: #f0f0f0; /* Temporário para visualizar */
+}
+
+/* Estilo dos cards de leads */
+.lead-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    padding-bottom: 60px;
+    width: 280px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.lead-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.lead-card.alto-padrao {
+    border-top: 6px solid #d4af37;
+    background: linear-gradient(135deg, #fff8e1, #ffffff);
+}
+
+.lead-card.medio-padrao {
+    border-top: 6px solid #4682b4;
+    background: linear-gradient(135deg, #e6f0fa, #ffffff);
+}
+
+.lead-card-header {
+    padding: 16px;
+    position: relative;
+    flex-grow: 1;
+}
+
+.lead-card-header .lead-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.lead-card.alto-padrao .lead-badge {
+    background-color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-badge {
+    background-color: #4682b4;
+}
+
+.lead-card-header .lead-titulo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #65676b;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.lead-sku {
+    font-size: 14px;
+    font-weight: 600;
+    color: #65676b;
+    text-align: center;
+}
+
+.lead-card-header .lead-interesse {
+    font-size: 16px;
+    color: #1c1e21;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.lead-card-header .lead-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.lead-card.alto-padrao .lead-icon {
+    color: #d4af37;
+}
+
+.lead-card.medio-padrao .lead-icon {
+    color: #4682b4;
+}
+
+.lead-card-footer {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+}
+
+.lead-btn-adquirir {
+    width: 100%;
+    padding: 12px;
+    background-color: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.lead-btn-adquirir:hover {
+    background-color: #166fe5;
+    transform: translateY(-2px);
+}
+
+/* Paginação de meus leads */
+.paginacao-meus-leads {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 10px;
+    width: calc(100% - 20px);
+}
+
+.paginacao-meus-leads-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.paginacao-meus-leads-seta {
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.paginacao-meus-leads-seta:hover {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.paginacao-meus-leads-texto {
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    padding: 8px;
+}
+
+/* Mensagem de nenhum resultado */
+.nenhum-resultado {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+    grid-column: 1 / -1;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .meus-leads-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .meus-leads-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .lead-card {
+        width: 100%;
+        max-width: 350px;
+        min-height: 180px;
+        margin: 0 auto;
+    }
+
+    .lead-btn-adquirir {
+        padding: 10px;
+        font-size: 13px;
+    }
+}

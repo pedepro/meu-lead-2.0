@@ -1,0 +1,118 @@
+.editar-perfil-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.editar-perfil-container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#toggle-password-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#toggle-password-btn:hover {
+    background-color: #5a6268;
+}
+
+#salvar-perfil-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#salvar-perfil-btn:hover {
+    background-color: #0056b3;
+}
+
+.mensagem-perfil {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.mensagem-perfil.success {
+    color: #28a745;
+}
+
+.mensagem-perfil.error {
+    color: #dc3545;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .editar-perfil-container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .editar-perfil-container h2 {
+        font-size: 20px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    #toggle-password-btn,
+    #salvar-perfil-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

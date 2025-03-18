@@ -1,0 +1,247 @@
+/* Estilo dos cards de imóveis */
+.card {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.padrao-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.overlay {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.overlay-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.overlay-item i {
+    font-size: 20px;
+}
+
+.overlay-item span {
+    font-size: 14px;
+}
+
+.card h2 {
+    font-size: 20px;
+    margin: 10px;
+    margin-bottom: 0;
+    color: #333;
+}
+
+.card p {
+    margin: 5px 10px;
+    color: #555;
+}
+
+.btn-detalhes {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: calc(100% - 20px);
+    transition: background-color 0.3s ease;
+}
+
+.btn-detalhes:hover {
+    background-color: #0056b3;
+}
+
+/* Filtros */
+#filtros-imoveis {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dropdowns-wrapper {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+#dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    width: 220px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    appearance: none;
+}
+
+#dropdown-cidades:hover, #dropdown-precos:hover, #dropdown-padrao-imoveis:hover, #dropdown-imovel-pronto:hover, #dropdown-mobiliado:hover,
+#dropdown-cidades:focus, #dropdown-precos:focus, #dropdown-padrao-imoveis:focus, #dropdown-imovel-pronto:focus, #dropdown-mobiliado:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+/* Container dos imóveis */
+.imoveis-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+}
+
+/* Paginação */
+.paginacao-imoveis {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.paginacao-imoveis-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.paginacao-imoveis-seta {
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.paginacao-imoveis-seta:hover {
+    color: #007bff;
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.paginacao-imoveis-texto {
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    padding: 8px;
+}
+
+.nenhum-resultado {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+    grid-column: 1 / -1;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .imoveis-container {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0px;
+    }
+}
+
+@media (max-width: 600px) {
+    .imoveis-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    #dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
+        width: calc(50% - 8px);
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #dropdown-cidades, #dropdown-precos, #dropdown-padrao-imoveis, #dropdown-imovel-pronto, #dropdown-mobiliado {
+        width: 100%;
+    }
+}
+
+
+/* Ajuste para telas de celular */
+@media (max-width: 600px) {
+    .imoveis-container {
+        grid-template-columns: 1fr; /* Já está assim, mantém uma coluna */
+        padding: 0; /* Remove o padding lateral */
+        max-width: 100%; /* Permite que o container ocupe toda a largura */
+        margin: 0; /* Remove margens laterais */
+    }
+
+    .card {
+        max-width: 100%; /* Faz o card ocupar toda a largura disponível */
+        margin: 0; /* Remove qualquer margem que possa interferir */
+    }
+
+    .btn-detalhes {
+        width: calc(100% - 20px); /* Mantém o botão ajustado com um pequeno espaçamento interno */
+    }
+}

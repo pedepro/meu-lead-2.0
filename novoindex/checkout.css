@@ -1,0 +1,193 @@
+.checkout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Mantido para o overlay escurecido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.checkout-modal {
+    background: #fff; /* Fundo branco dos cards de leads */
+    width: 100%;
+    max-width: 800px;
+    height: 80vh;
+    border-radius: 12px; /* Mesma borda dos cards */
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave dos cards */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkout-header h2 {
+    font-size: 24px;
+    color: #333; /* Cor do texto dos filtros e paginação */
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif; /* Mesma fonte */
+}
+
+.close-icon {
+    cursor: pointer;
+    font-size: 24px;
+    color: #65676b; /* Cor do SKU nos cards */
+}
+
+.close-icon:hover {
+    color: #1c1e21; /* Cor do interesse nos cards */
+}
+
+.lead-info {
+    margin-bottom: 20px;
+}
+
+.lead-info div {
+    font-size: 16px;
+    color: #1c1e21; /* Cor do interesse nos cards */
+    margin: 5px 0;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+}
+
+.similar-leads {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.similar-leads h3 {
+    font-size: 20px;
+    color: #333; /* Cor do texto dos filtros */
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+}
+
+.similar-leads-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px; /* Menor que os 24px dos leads, mas ajustado para o espaço do popup */
+}
+
+.mini-lead-card {
+    padding: 10px;
+    background: #f8f9fa; /* Fundo dos filtros e mensagem de nenhum resultado */
+    border-radius: 8px; /* Bordas menores que os cards principais */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mini-lead-card:hover {
+    background: #e6f0fa; /* Gradiente do médio padrão para hover */
+}
+
+.mini-lead-card.selected {
+    background: #1877f2; /* Cor do botão "Obter por" */
+    color: #fff;
+}
+
+.mini-lead-card.medio-padrao .lead-badge {
+    background: #4682b4; /* Cor do médio padrão */
+}
+
+.mini-lead-card.alto-padrao .lead-badge {
+    background: #d4af37; /* Cor do alto padrão */
+}
+
+.mini-lead-card .lead-badge {
+    font-size: 12px;
+    padding: 4px 8px; /* Mesmo padding do badge nos cards */
+    border-radius: 4px;
+    color: #fff;
+    margin-bottom: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.mini-lead-card .lead-sku,
+.mini-lead-card .lead-interesse {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #65676b; /* Cor do SKU nos cards */
+}
+
+.mini-lead-card.selected .lead-sku,
+.mini-lead-card.selected .lead-interesse {
+    color: #fff; /* Texto branco quando selecionado */
+}
+
+.checkout-footer {
+    border-top: 1px solid #e0e0e0; /* Mesma borda dos filtros */
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333; /* Cor do texto dos filtros */
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+}
+
+.checkout-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.confirm-btn {
+    padding: 12px 20px; /* Mesmo padding do botão "Obter por" */
+    background-color: #1877f2; /* Cor do botão "Obter por" */
+    color: #fff;
+    border: none;
+    border-radius: 6px; /* Bordas do botão "Obter por" */
+    font-size: 14px; /* Mesmo tamanho do botão "Obter por" */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s; /* Transição do botão "Obter por" */
+    font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+}
+
+.confirm-btn:hover {
+    background-color: #166fe5; /* Hover do botão "Obter por" */
+    transform: translateY(-2px); /* Efeito de elevação do botão "Obter por" */
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .checkout-modal {
+        width: 90%;
+        height: 90vh;
+        padding: 15px;
+    }
+
+    .checkout-header h2 {
+        font-size: 20px;
+    }
+
+    .similar-leads-container {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-lead-card {
+        padding: 8px;
+    }
+
+    .total-price {
+        font-size: 16px;
+    }
+
+    .confirm-btn {
+        padding: 10px 16px; /* Ajuste do botão "Obter por" em telas menores */
+        font-size: 13px;
+    }
+}
