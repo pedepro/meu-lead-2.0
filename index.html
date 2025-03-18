@@ -1,97 +1,422 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Lead Itapema - imóveis e leads para conectar corretores com os melhores negócios.</title>
-    <!-- Metatags Open Graph -->
-    <meta property="og:title" content="Meu Lead Itapema">
-    <meta property="og:description" content="Encontre os melhores imóveis e leads para corretores em um só lugar!">
-    <meta property="og:image" content="https://meuleaditapema.com.br/assets/icon.ico">
-    <meta property="og:url" content="https://meuleaditapema.com.br">
-    <meta property="og:type" content="website">
-
-    <!-- Adicionar link para o manifest.json -->
-    <link rel="manifest" href="/manifest.json">
-    <!-- Definir a cor da barra de status -->
-    <meta name="theme-color" content="#1877f2">
-
-    <link rel="icon" type="image/x-icon" href="assets/icon.ico">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icon.ico">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet">
+    <!-- Adicionando Font Awesome para ícones mais elegantes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Imóveis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            transition: margin-left 0.3s ease;
+            padding-top: 70px;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1500;
+            gap: 10px;
+        }
+        header h1 {
+            font-size: 22px;
+            color: #333;
+        }
+        header img {
+            height: 50px;
+        }
+        .menu-toggle {
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        .menu-toggle:hover {
+            color: #667eea;
+        }
+        .user-icon {
+            font-size: 28px;
+            cursor: pointer;
+            color: #838383;
+            display: none;
+            transition: color 0.3s ease;
+        }
+        .user-icon:hover {
+            color: #575757;
+        }
+        .logged-in .user-icon {
+            display: block;
+        }
+        .dropdown {
+            position: absolute;
+            top: 65px;
+            right: 20px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 2000;
+            width: 220px;
+            padding: 10px 0;
+        }
+        .dropdown.active {
+            display: block;
+        }
+        .dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown ul li {
+            padding: 0;
+        }
+        .dropdown ul li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            display: block;
+            padding: 12px 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dropdown ul li a:hover {
+            background-color: #f5f7fa;
+            color: #667eea;
+        }
+        .dropdown ul li a:active {
+            background-color: #e0e7ff;
+            color: #5a67d8;
+        }
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: white;
+            border-right: 2px solid #ddd;
+            overflow-x: hidden;
+            transition: 0.3s ease;
+            z-index: 1;
+            padding-top: 80px;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar.open {
+            width: 250px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px 15px; /* Ajustado para botões mais elegantes */
+        }
+        .sidebar ul li a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            display: block;
+            padding: 10px 15px; /* Padding interno para botões maiores */
+            border-radius: 6px; /* Bordas arredondadas */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #f5f7fa; /* Fundo claro ao passar o mouse */
+            color: #667eea; /* Cor de destaque */
+        }
+        .sidebar ul li a:active {
+            background-color: #e0e7ff; /* Fundo ao clicar */
+            color: #5a67d8; /* Cor mais escura ao clicar */
+        }
+        .sidebar ul li a.active {
+            background-color: #667eea; /* Fundo destacado para seção atual */
+            color: white; /* Texto branco para contraste */
+        }
+        .sidebar ul li:has(#meusleads-link),
+        .sidebar ul li:has(#meusimoveis-link) {
+            display: none !important;
+        }
+        .logged-in .sidebar ul li:has(#meusleads-link),
+        .logged-in .sidebar ul li:has(#meusimoveis-link) {
+            display: block !important;
+        }
+        .main-content {
+            transition: margin-left 0.3s ease;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div id="preloader">
-        <img src="assets/logohorizontal.png" alt="Carregando..." id="preloader-img">
-    </div>
-    
     <header>
-        <button class="menu-toggle">☰</button>
-        <img id="logo" src="assets/logohorizontal.png" alt="Descrição da imagem">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="menu-toggle">☰</button>
+            <img src="../assets/logohorizontal.png" alt="Descrição da imagem">
+        </div>
+        <!-- Substituído por ícone do Font Awesome, mais elegante -->
+        <i class="fa-solid fa-circle-user user-icon" id="user-icon"></i>
+        <div class="dropdown" id="user-dropdown">
+            <ul>
+                <li><a href="?session=editar-perfil" id="edit-profile-link">Editar Perfil</a></li>
+                <li><a href="https://terms-of-use.meuleaditapema.com.br" target="_blank">Ver Termos de Uso</a></li>
+                <li><a href="https://privacy.meuleaditapema.com.br" target="_blank">Ver Políticas de Privacidade</a></li>
+                <li><a href="#" onclick="logout()">Sair</a></li>
+            </ul>
+        </div>
     </header>
 
-    <!-- Sidebar Oculta -->
     <nav class="sidebar">
         <ul>
-            <li><a href="#" id="imoveis-link">Imóveis</a></li>
-            <li><a href="#" id="clientes-link">Leads (Clientes)</a></li>
-            <li><a href="#" id="meusleads-link">Leads Adquiridos</a></li>
-            <li><a href="#" id="meusimoveis-link">Meus Imóveis</a></li>
-            <li><a href="#" id="editar-perfil-link">Editar Perfil</a></li>
+            <li><a href="?session=imoveis" id="imoveis-link">Imóveis</a></li>
+            <li><a href="?session=leads" id="clientes-link">Leads (Clientes)</a></li>
+            <li><a href="?session=meusleads" id="meusleads-link">Meus Leads</a></li>
+            <li><a href="?session=meusimoveis" id="meusimoveis-link">Meus Imóveis</a></li>
+            <!-- Removido o "Editar Perfil" da sidebar -->
         </ul>
-        <div class="user-info" id="user-info-container">
-            <div id="name">Faça login</div>
-            <i class="material-icons" id="logout-icon">logout</i>
-        </div>
     </nav>
 
-    <main class="main-content">
-        <!-- Seção inicial com banner -->
-        <section id="home-section">
-            <div class="banner">
-                <img src="https://img.cdndsgni.com/preview/10068733.jpg" alt="Banner Promocional">
-            </div>
-            <div class="video-container">
-                <video src="assets/video.mp4" autoplay loop></video>
-            </div>
-            <div class="preview-container">
-                <h2>Imóveis em Destaque</h2>
-                <div id="imoveis-preview" class="container"></div>
-                <a href="#" id="ver-mais-imoveis" class="ver-mais">Ver mais imóveis</a>
-            </div>
-            <div class="preview-container">
-                <h2>Leads em Destaque</h2>
-                <div id="leads-preview" class="container"></div>
-                <a href="#" id="ver-mais-leads" class="ver-mais">Ver mais leads</a>
-            </div>
-        </section>
+    <main class="main-content" id="main-content"></main>
 
-        <!-- Containers existentes -->
-        <div class="container" id="imoveis-container" style="display: none;">
-            <div class="container" id="filtros-imoveis"></div>
-            <div id="imoveis-container-inner"></div>
-            <h2>Filtros</h2>
-        </div>
-        <div class="container" id="clientes-container" style="display: none;"></div>
-        <div id="meus-imoveis-container" style="display: none;"></div>
-        <div class="container" id="meus-leads" style="display: none;"></div>
-    </main>
-
-    <script src="script.js"></script>
-    <!-- Registrar o Service Worker -->
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado com sucesso:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao registrar Service Worker:', error);
-                    });
+        // Função para sincronizar localStorage com cookies
+        function syncLocalStorageToCookies() {
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("userId");
+
+            if (token) {
+                document.cookie = `token=${token}; path=/; domain=.meuleaditapema.com.br; SameSite=Lax`;
+            } else {
+                document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+            }
+
+            if (userId) {
+                document.cookie = `userId=${userId}; path=/; domain=.meuleaditapema.com.br; SameSite=Lax`;
+            } else {
+                document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+            }
+        }
+
+        // Função para sincronizar cookies com localStorage
+        function syncCookiesToLocalStorage() {
+            const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+                const [key, value] = cookie.split("=");
+                acc[key] = value;
+                return acc;
+            }, {});
+
+            if (cookies.token && !localStorage.getItem("token")) {
+                localStorage.setItem("token", cookies.token);
+            }
+            if (cookies.userId && !localStorage.getItem("userId")) {
+                localStorage.setItem("userId", cookies.userId);
+            }
+        }
+
+        // Função de logout
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+            document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+            window.location.href = "/login";
+        }
+
+        // Função para verificar login
+        async function verificarLogin() {
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("userId");
+
+            if (!token || !userId) {
+                window.location.href = "/login";
+                return false;
+            }
+
+            try {
+                const url = `https://pedepro-meulead.6a7cul.easypanel.host/corretor?id=${userId}&token=${token}`;
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const data = await response.json();
+
+                if (response.ok && !data.error) {
+                    document.body.classList.add("logged-in");
+                    return true;
+                } else {
+                    console.log("Credenciais inválidas ou erro na resposta:", data.error);
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    syncLocalStorageToCookies();
+                    window.location.href = "/login";
+                    return false;
+                }
+            } catch (error) {
+                console.error("Erro ao verificar login no servidor:", error);
+                window.location.href = "/login";
+                return false;
+            }
+        }
+
+        // Função para obter o parâmetro de sessão
+        function getSessionParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('session') || 'imoveis';
+        }
+
+        // Função para atualizar o destaque da seção ativa
+        function updateActiveSection(session) {
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+                const linkSession = new URLSearchParams(link.search).get('session');
+                if (linkSession === session) {
+                    link.classList.add('active');
+                }
             });
         }
+
+        // Função para carregar conteúdo dinâmico
+        async function loadContent(session) {
+            const mainContent = document.getElementById('main-content');
+            let htmlFileToLoad = '';
+            let jsFileToLoad = '';
+            let cssFileToLoad = '';
+
+            switch (session) {
+                case 'imoveis':
+                    htmlFileToLoad = 'imoveis.html';
+                    jsFileToLoad = 'imoveis.js';
+                    cssFileToLoad = 'imoveis.css';
+                    break;
+                case 'leads':
+                    htmlFileToLoad = 'leads.html';
+                    jsFileToLoad = 'leads.js';
+                    cssFileToLoad = 'leads.css';
+                    break;
+                case 'meusleads':
+                    htmlFileToLoad = 'meusleads.html';
+                    jsFileToLoad = 'meusleads.js';
+                    cssFileToLoad = 'meusleads.css';
+                    break;
+                case 'meusimoveis':
+                    htmlFileToLoad = 'meusimoveis.html';
+                    jsFileToLoad = 'meusimoveis.js';
+                    cssFileToLoad = 'meusimoveis.css';
+                    break;
+                case 'editar-perfil':
+                    htmlFileToLoad = 'editar-perfil.html';
+                    jsFileToLoad = 'editar-perfil.js';
+                    cssFileToLoad = 'editar-perfil.css';
+                    break;
+                default:
+                    htmlFileToLoad = 'imoveis.html';
+                    jsFileToLoad = 'imoveis.js';
+                    cssFileToLoad = 'imoveis.css';
+            }
+
+            const isLoggedIn = await verificarLogin();
+            if (!isLoggedIn) return;
+
+            fetch(htmlFileToLoad)
+                .then(response => {
+                    if (!response.ok) throw new Error('Arquivo HTML não encontrado');
+                    return response.text();
+                })
+                .then(data => {
+                    mainContent.innerHTML = data;
+                    const existingScripts = document.querySelectorAll('script[data-dynamic]');
+                    existingScripts.forEach(script => script.remove());
+                    const existingStyles = document.querySelectorAll('link[data-dynamic]');
+                    existingStyles.forEach(style => style.remove());
+
+                    if (cssFileToLoad) {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = cssFileToLoad;
+                        link.setAttribute('data-dynamic', 'true');
+                        link.onload = () => console.log(`${cssFileToLoad} carregado com sucesso`);
+                        link.onerror = () => console.error(`Erro ao carregar ${cssFileToLoad}`);
+                        document.head.appendChild(link);
+                    }
+
+                    if (jsFileToLoad) {
+                        const script = document.createElement('script');
+                        script.src = jsFileToLoad;
+                        script.setAttribute('data-dynamic', 'true');
+                        script.onload = () => console.log(`${jsFileToLoad} carregado com sucesso`);
+                        script.onerror = () => console.error(`Erro ao carregar ${jsFileToLoad}`);
+                        document.body.appendChild(script);
+                    }
+
+                    updateActiveSection(session); // Destaca a seção atual após carregar
+                })
+                .catch(error => {
+                    mainContent.innerHTML = '<p>Erro ao carregar o conteúdo. Tente novamente.</p>';
+                    console.error(error);
+                });
+        }
+
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.main-content').style.marginLeft = 
+                document.querySelector('.sidebar').classList.contains('open') ? '250px' : '0';
+        });
+
+        document.getElementById('user-icon').addEventListener('click', () => {
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('user-dropdown');
+            const userIcon = document.getElementById('user-icon');
+            if (!dropdown.contains(e.target) && !userIcon.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        window.onload = async () => {
+            syncCookiesToLocalStorage();
+            const session = getSessionParam();
+            await loadContent(session);
+            syncLocalStorageToCookies();
+        };
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const session = new URLSearchParams(link.search).get('session');
+                await loadContent(session);
+                window.history.pushState({}, '', `?session=${session}`);
+            });
+        });
+
+        document.getElementById('edit-profile-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await loadContent('editar-perfil');
+            window.history.pushState({}, '', '?session=editar-perfil');
+            document.getElementById('user-dropdown').classList.remove('active');
+        });
     </script>
 </body>
 </html>
