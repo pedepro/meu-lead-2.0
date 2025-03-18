@@ -459,12 +459,17 @@ async function carregarTextos() {
 // Função principal que inicializa a página
 async function inicializarPagina() {
     console.log("Iniciando carregamento da página...");
+
+    // Primeiro carrega as cidades, que são uma dependência
+    await carregarCidades();
+
+    // Depois carrega os outros elementos, que dependem das cidades
     await Promise.all([
-        carregarCidades(),
         carregarTextos(),
         carregarImoveisPreview(),
         carregarLeadsPreview()
     ]);
+
     console.log("Página inicializada com sucesso!");
 }
 
