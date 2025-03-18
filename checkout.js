@@ -4,11 +4,9 @@ window.renderizarCheckout = async function(leadId, padrao, valorFormatado) {
 
     try {
         const url = `https://pedepro-meulead.6a7cul.easypanel.host/clientes/${leadId}`;
-        console.log("Requisição para:", url);
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
         const data = await response.json();
-        console.log("Resposta da API:", data);
         lead = data || {};
     } catch (error) {
         console.error("Erro ao buscar lead na API:", error);
