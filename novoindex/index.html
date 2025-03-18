@@ -84,13 +84,13 @@
         .sidebar ul li:has(#meusleads-link),
         .sidebar ul li:has(#meusimoveis-link),
         .sidebar ul li:has(#editar-perfil-link),
-        #logout-icon {
+        .sidebar ul li:has(#logout-link) {
             display: none !important;
         }
         .logged-in .sidebar ul li:has(#meusleads-link),
         .logged-in .sidebar ul li:has(#meusimoveis-link),
         .logged-in .sidebar ul li:has(#editar-perfil-link),
-        .logged-in #logout-icon {
+        .logged-in .sidebar ul li:has(#logout-link) {
             display: block !important;
         }
         .main-content {
@@ -112,6 +112,7 @@
             <li><a href="?session=meusleads" id="meusleads-link">Meus Leads</a></li>
             <li><a href="?session=meusimoveis" id="meusimoveis-link">Meus Imóveis</a></li>
             <li><a href="?session=editar-perfil" id="editar-perfil-link">Editar Perfil</a></li>
+            <li><a href="#" id="logout-link" onclick="logout()">Sair</a></li>
         </ul>
     </nav>
 
@@ -150,6 +151,20 @@
             if (cookies.userId && !localStorage.getItem("userId")) {
                 localStorage.setItem("userId", cookies.userId);
             }
+        }
+
+        // Função de logout
+        function logout() {
+            // Limpar localStorage
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+
+            // Expirar cookies explicitamente no domínio raiz
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+            document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
+
+            // Redirecionar para a página de login
+            window.location.href = "/login";
         }
 
         // Função para verificar login
@@ -300,6 +315,7 @@
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', async (e) => {
                 e.preventDefault();
+                if (link.id === 'logout-link') return; // Evita carregar conteúdo ao clicar em "Sair"
                 const session = new URLSearchParams(link.search).get('session');
                 await loadContent(session);
                 window.history.pushState({}, '', `?session=${session}`);
