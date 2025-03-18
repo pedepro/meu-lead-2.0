@@ -417,6 +417,11 @@
             window.history.pushState({}, '', '?session=editar-perfil');
             document.getElementById('user-dropdown').classList.remove('active');
         });
+
+        localStorage.clear();
+            document.cookie.split(";").forEach(cookie => {
+            document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/;domain=.meuleaditapema.com.br");
+        });
     </script>
 </body>
 </html>
