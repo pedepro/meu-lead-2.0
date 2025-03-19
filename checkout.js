@@ -67,7 +67,7 @@ async function carregarLeadsSemelhantes(leadId, padrao, valorFormatado, overlay)
         let totalPrice = parseFloat(valorFormatado.replace("R$", "").replace(".", "").replace(",", "."));
 
         if (data.clientes && Array.isArray(data.clientes)) {
-            const filteredLeads = data.clientes.filter(lead => lead.id !== leadId);
+            const filteredLeads = data.clientes.filter(lead => String(lead.id) !== String(leadId));
             filteredLeads.forEach(lead => {
                 const valorLead = parseFloat(lead.valor_lead || 0).toLocaleString('pt-BR', { 
                     style: 'currency', 
@@ -76,14 +76,14 @@ async function carregarLeadsSemelhantes(leadId, padrao, valorFormatado, overlay)
                 const valorInteresse = parseFloat(lead.valor || 0).toLocaleString('pt-BR', { 
                     style: 'currency', 
                     currency: 'BRL' 
-                }); // Formatando o campo 'valor' no padrão brasileiro
+                });
                 const miniCard = document.createElement("div");
                 miniCard.className = `mini-lead-card ${padrao}`;
                 miniCard.innerHTML = `
                     <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
                     <div class="lead-sku">SKU ${lead.id}</div>
                     <div class="lead-interesse">${lead.titulo || "N/A"}</div>
-                    <div class="lead-interesse"> Até ${valorInteresse}</div>
+                    <div class="lead-interesse">Até ${valorInteresse}</div>
                     <div class="lead-interesse">${valorLead}</div>
                 `;
                 miniCard.onclick = () => {
@@ -114,11 +114,60 @@ async function carregarLeadsSemelhantes(leadId, padrao, valorFormatado, overlay)
     }
 }
 
-// Função para confirmar a compra
-function confirmarCompra(leadId) {
+// Função para confirmar a compra com requisição ao servidor
+async function confirmarCompra(leadId) {
     const selectedLeads = window.selectedLeads || [leadId];
     console.log("Leads a comprar:", selectedLeads);
-    alert(`Compra confirmada para os leads: ${selectedLeads.join(", ")}. Redirecionando para o checkout...`);
-    document.querySelector(".checkout-overlay").remove();
-    inicializarLeads();
+
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (!token || !userId) {
+        alert("Faça login para adquirir este lead.");
+        window.location.href = `https://meuleaditapema.com.br/login`;
+        return;
+    }
+
+    try {
+        const pedidoData = {
+            userId: userId,
+            token: token,
+            entregue: false,
+            pago: false,
+            imoveis_id: [],
+            leads_id: selectedLeads
+        };
+
+        console.log("Enviando pedido para o backend:", pedidoData);
+
+        const response = await fetch('https://backand.meuleaditapema.com.br/criar-pedido', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pedidoData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erro ao criar o pedido');
+        }
+
+        const result = await response.json();
+        console.log("Resposta do backend:", result);
+
+        document.querySelector(".checkout-overlay").remove();
+
+        if (result.success && result.invoiceUrl) {
+            window.location.href = result.invoiceUrl;
+        } else {
+            alert('Pedido criado com sucesso, mas não foi possível redirecionar para o pagamento.');
+            inicializarLeads();
+        }
+    } catch (error) {
+        console.error("Erro ao confirmar compra:", error);
+        alert(`Erro ao processar a compra: ${error.message}`);
+        document.querySelector(".checkout-overlay").remove();
+        inicializarLeads();
+    }
 }
