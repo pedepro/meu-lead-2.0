@@ -136,6 +136,9 @@
             </div>
         </fieldset>
 
+        <!-- Seção para os toggles (adicionada dinamicamente via JS no modo cadastro) -->
+        <div id="toggle-options-container"></div>
+
         <!-- Botão -->
         <div class="button-container">
             <button type="submit" id="btn-submit">Cadastrar Imóvel</button>
@@ -293,14 +296,14 @@
     }
 
     .toggle-container label {
-        font-size: 12px;
-        color: #666;
+        font-size: 14px;
+        color: #555;
         display: flex;
         align-items: center;
     }
 
     .toggle-container input[type="checkbox"] {
-        margin-right: 5px;
+        margin-right: 8px;
     }
 
     .button-container {
@@ -401,15 +404,15 @@
     /* Notificação personalizada no estilo Facebook */
     .notification {
         position: fixed;
-        top: 70px; /* Margem superior de 70px */
-        right: 20px; /* Alinhado à direita com uma margem */
-        transform: none; /* Removido o translateX para alinhar à direita */
-        background-color: #1877f2; /* Azul do Facebook */
+        top: 70px;
+        right: 20px;
+        transform: none;
+        background-color: #1877f2;
         color: #fff;
         padding: 12px 20px;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        z-index: 4000; /* z-index maior que o header */
+        z-index: 4000;
         font-size: 16px;
         font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
         display: flex;
@@ -420,11 +423,11 @@
     }
 
     .notification.success {
-        background-color: #28a745; /* Verde para sucesso */
+        background-color: #28a745;
     }
 
     .notification.error {
-        background-color: #dc3545; /* Vermelho para erro */
+        background-color: #dc3545;
     }
 
     .notification.show {

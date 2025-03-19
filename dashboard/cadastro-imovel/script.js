@@ -316,7 +316,6 @@ async function carregarDadosImovel(editId) {
     }
 }
 
-// Função para verificar o modo (cadastro ou edição) e inicializar a tela
 async function inicializarTelaCadastroImovel() {
     const urlParams = new URLSearchParams(window.location.search);
     const editId = urlParams.get('editid');
@@ -339,10 +338,95 @@ async function inicializarTelaCadastroImovel() {
         atualizarValorExtenso('price_contato', 'priceContatoExtenso');
     });
 
+    // Adicionar os toggles apenas no modo cadastro (quando não há editId)
+    if (!editId) {
+        const toggleContainer = document.getElementById('toggle-options-container');
+        toggleContainer.innerHTML = `
+            <fieldset class="section">
+                <legend>Opções de Envio</legend>
+                <div class="field-group">
+                    <div class="toggle-container">
+                        <label>
+                            <input type="checkbox" id="enviarEmail" name="enviarEmail"> 
+                            Enviar para corretores por email
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <label>
+                            <input type="checkbox" id="enviarWhatsapp" name="enviarWhatsapp"> 
+                            Enviar para corretores por whatsapp
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <label>
+                            <input type="checkbox" id="publicarImediato" name="publicarImediato"> 
+                            Publicar imediatamente
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        `;
+    }
+
     if (editId) {
         await carregarDadosImovel(editId);
     } else {
-        await carregarCidades(); // Carrega as cidades no modo cadastro também
+        await carregarCidades();
+        document.getElementById('valorExtenso').textContent = '';
+        document.getElementById('priceContatoExtenso').textContent = '';
+    }
+}
+
+async function inicializarTelaCadastroImovel() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('editid');
+
+    const valorInput = document.getElementById('valor');
+    const priceContatoInput = document.getElementById('price_contato');
+
+    const newValorInput = valorInput.cloneNode(true);
+    const newPriceContatoInput = priceContatoInput.cloneNode(true);
+    valorInput.parentNode.replaceChild(newValorInput, valorInput);
+    priceContatoInput.parentNode.replaceChild(newPriceContatoInput, priceContatoInput);
+
+    newValorInput.addEventListener('input', () => {
+        formatarReais(newValorInput);
+        atualizarValorExtenso('valor', 'valorExtenso');
+    });
+
+    newPriceContatoInput.addEventListener('input', () => {
+        formatarReais(newPriceContatoInput);
+        atualizarValorExtenso('price_contato', 'priceContatoExtenso');
+    });
+
+    // Adicionar os toggles apenas no modo cadastro (quando não há editId)
+    if (!editId) {
+        const toggleContainer = document.getElementById('toggle-options-container');
+        toggleContainer.innerHTML = `
+            <fieldset class="section">
+                <legend>Opções de Envio</legend>
+                <div class="field-group">
+                    <div class="toggle-container">
+                        <label>
+                            <input type="checkbox" id="enviarEmail" name="enviarEmail"> 
+                            Enviar para corretores por email
+                        </label>
+                    </div>
+                    <div class="toggle-container">
+                        <label>
+                            <input type="checkbox" id="enviarWhatsapp" name="enviarWhatsapp"> 
+                            Enviar para corretores por whatsapp
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        `;
+    }
+
+    if (editId) {
+        await carregarDadosImovel(editId);
+    } else {
+        await carregarCidades();
         document.getElementById('valorExtenso').textContent = '';
         document.getElementById('priceContatoExtenso').textContent = '';
     }
@@ -394,6 +478,12 @@ if (formImovel) {
         console.log('Valor bruto de imovel_pronto:', imovelProntoValue);
         console.log('Valor bruto de mobiliado:', mobiliadoValue);
 
+        // Adicionar os toggles apenas no modo cadastro (quando não há editId)
+        if (!editId) {
+            imovelData.enviarEmail = document.getElementById('enviarEmail')?.checked || false;
+            imovelData.enviarWhatsapp = document.getElementById('enviarWhatsapp')?.checked || false;
+        }
+
         elements.forEach(element => {
             if (element.name === 'imagens') {
                 // Ignorar imagens por enquanto
@@ -405,7 +495,8 @@ if (formImovel) {
                 imovelData.valor = valorInput ? parseFloat(valorInput.replace(/\./g, '').replace(',', '.')) : '';
             } else if (element.name === 'price_contato') {
                 imovelData.price_contato = priceContatoInput ? parseFloat(priceContatoInput.replace(/\./g, '').replace(',', '.')) : '';
-            } else {
+            } else if (!['enviarEmail', 'enviarWhatsapp'].includes(element.name)) {
+                // Evitar sobrescrever os toggles já definidos no modo cadastro
                 imovelData[element.name] = element.value || '';
             }
         });
