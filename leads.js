@@ -134,6 +134,9 @@ function inicializarLeads() {
                 window.leadsOriginais = data.clientes;
                 window.totalLeads = data.total || 0;
                 renderizarLeads(window.leadsOriginais);
+                // Disparar evento de carregamento concluído após sucesso
+                window.dispatchEvent(new Event("carregamentoCompleto"));
+                console.log("Evento 'carregamentoCompleto' disparado após carregar leads.");
             } else {
                 console.warn("Nenhum lead encontrado:", data);
                 window.leadsOriginais = [];

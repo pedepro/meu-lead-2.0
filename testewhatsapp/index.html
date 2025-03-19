@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Web Estático Completo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #e5ddd5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 1440px;
+            height: 100%;
+            display: flex;
+            background-color: #fff;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+        }
+
+        .menu {
+            width: 60px;
+            background-color: #f0f2f5;
+            border-right: 1px solid #e1e1e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .menu i {
+            font-size: 24px;
+            color: #54656f;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .menu i.active {
+            color: #00a884;
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            height: 60px;
+            background-color: #00a884;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .sidebar-header .icons {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .search-bar {
+            padding: 10px 16px;
+            background-color: #f0f2f5;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .search-container {
+            background-color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+        }
+
+        .search-container i {
+            color: #54656f;
+            margin-right: 10px;
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .contact-list {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+        }
+
+        .contact {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid #e1e1e1;
+            cursor: pointer;
+            background-color: #fff;
+        }
+
+        .contact:hover {
+            background-color: #f5f6f5;
+        }
+
+        .contact.active {
+            background-color: #ebebeb;
+        }
+
+        .contact img {
+            width: 49px;
+            height: 49px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            color: #111b21;
+        }
+
+        .last-message {
+            font-size: 14px;
+            color: #667781;
+            margin-top: 4px;
+        }
+
+        .contact-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .unread {
+            background-color: #25d366;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-area {
+            width: calc(70% - 60px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            height: 60px;
+            background-color: #00a884;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .chat-header h2 {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .chat-header .icons {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            background-color: #e5ddd5;
+            background-image: url('https://i.imgur.com/8z5K6L9.png');
+            overflow-y: auto;
+        }
+
+        .message {
+            max-width: 60%;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            border-radius: 7.5px;
+            font-size: 14.2px;
+            line-height: 19px;
+            position: relative;
+        }
+
+        .sent {
+            background-color: #d9fdd3;
+            margin-left: auto;
+        }
+
+        .received {
+            background-color: #fff;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            position: absolute;
+            bottom: 2px;
+            right: 6px;
+        }
+
+        .file {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 7.5px;
+        }
+
+        .chat-footer {
+            height: 62px;
+            background-color: #f0f2f5;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            position: relative;
+        }
+
+        .chat-footer i {
+            color: #54656f;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            background-color: #fff;
+            border-radius: 3px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .emoji-picker span {
+            font-size: 24px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .profile-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background-color: #fff;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .profile-header {
+            background-color: #00a884;
+            height: 150px;
+            position: relative;
+        }
+
+        .profile-header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -60px;
+            left: 20px;
+            border: 3px solid #fff;
+        }
+
+        .profile-info {
+            padding: 80px 20px 20px;
+        }
+
+        .profile-info h3 {
+            font-size: 20px;
+            color: #111b21;
+            margin-bottom: 10px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            color: #667781;
+            margin-bottom: 10px;
+        }
+
+        .profile-close {
+            text-align: right;
+            padding: 10px;
+        }
+
+        .profile-close button {
+            background-color: #00a884;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .stories-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 2000;
+        }
+
+        .story-content {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 400px;
+            margin: 0 auto;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .story-content img {
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .story-content h3 {
+            font-size: 16px;
+            color: #111b21;
+        }
+
+        .story-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="menu">
+            <i class="fas fa-user-circle active"></i>
+            <i class="fas fa-circle" onclick="showStories()"></i>
+            <i class="fas fa-comment-alt"></i>
+            <i class="fas fa-phone"></i>
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="icons">
+                    <i class="fas fa-comment-alt"></i>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="search-bar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Pesquisar ou começar uma nova conversa" onkeyup="searchContacts(this.value)">
+                </div>
+            </div>
+            <ul class="contact-list" id="contact-list">
+                <li class="contact" data-contact="1">
+                    <img src="https://via.placeholder.com/49" alt="Ana">
+                    <div class="contact-info">
+                        <div class="contact-name">Ana Silva</div>
+                        <div class="last-message">Oi, tudo bem?</div>
+                    </div>
+                    <div class="contact-status">
+                        <span class="unread">2</span>
+                    </div>
+                </li>
+                <li class="contact" data-contact="2">
+                    <img src="https://via.placeholder.com/49" alt="João">
+                    <div class="contact-info">
+                        <div class="contact-name">João Pedro</div>
+                        <div class="last-message">Vamos marcar algo?</div>
+                    </div>
+                </li>
+                <li class="contact" data-contact="3">
+                    <img src="https://via.placeholder.com/49" alt="Maria">
+                    <div class="contact-info">
+                        <div class="contact-name">Maria Oliveira</div>
+                        <div class="last-message">Te vejo amanhã!</div>
+                    </div>
+                    <div class="contact-status">
+                        <span class="unread">1</span>
+                    </div>
+                </li>
+                <li class="contact new-contact" data-contact="4" style="display: none;">
+                    <img src="https://via.placeholder.com/49" alt="Novo">
+                    <div class="contact-info">
+                        <div class="contact-name">Novo Contato</div>
+                        <div class="last-message">Clique para iniciar</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="chat-area">
+            <div class="chat-header" id="chat-header">
+                <img src="https://via.placeholder.com/40" alt="Contato" id="profile-pic">
+                <h2>Selecione um contato</h2>
+                <div class="icons">
+                    <i class="fas fa-search"></i>
+                    <i class="fas fa-paperclip"></i>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-footer">
+                <i class="fas fa-smile" onclick="toggleEmojiPicker()"></i>
+                <input type="text" placeholder="Digite uma mensagem">
+                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-microphone"></i>
+                <div class="emoji-picker" id="emoji-picker">
+                    <span>😊</span><span>😂</span><span>😍</span><span>😢</span><span>😡</span>
+                    <span>👍</span><span>👎</span><span>🙌</span><span>👏</span><span>🙏</span>
+                    <span>❤️</span><span>💔</span><span>💪</span><span>✨</span><span>🌟</span>
+                </div>
+            </div>
+        </div>
+        <div class="profile-modal" id="profile-modal"></div>
+        <div class="stories-modal" id="stories-modal">
+            <div class="story-content" id="story-content"></div>
+            <i class="fas fa-times story-close" onclick="document.getElementById('stories-modal').style.display='none'"></i>
+        </div>
+    </div>
+
+    <script>
+        const chats = {
+            1: {
+                name: "Ana Silva",
+                phone: "+55 11 99999-9999",
+                about: "Disponível",
+                email: "ana.silva@email.com",
+                lastSeen: "Hoje às 10:30",
+                story: "https://via.placeholder.com/300x400?text=Story+Ana",
+                messages: [
+                    { type: "received", text: "Oi, tudo bem?", time: "10:30" },
+                    { type: "sent", text: "Oi! Tudo ótimo por aqui, e contigo?", time: "10:31" },
+                    { type: "received", text: "Arquivo: documento.pdf", class: "file", time: "10:32" }
+                ]
+            },
+            2: {
+                name: "João Pedro",
+                phone: "+55 21 98888-8888",
+                about: "Ocupado",
+                email: "joao.pedro@email.com",
+                lastSeen: "Ontem às 15:00",
+                story: "https://via.placeholder.com/300x400?text=Story+João",
+                messages: [
+                    { type: "received", text: "Vamos marcar algo?", time: "09:45" },
+                    { type: "sent", text: "Claro, quando você pode?", time: "09:46" }
+                ]
+            },
+            3: {
+                name: "Maria Oliveira",
+                phone: "+55 31 97777-7777",
+                about: "Em reunião",
+                email: "maria.oliveira@email.com",
+                lastSeen: "Hoje às 15:20",
+                story: "https://via.placeholder.com/300x400?text=Story+Maria",
+                messages: [
+                    { type: "received", text: "Te vejo amanhã!", time: "15:20" },
+                    { type: "sent", text: "Perfeito, até amanhã então!", time: "15:21" }
+                ]
+            },
+            4: {
+                name: "Novo Contato",
+                phone: "+55 99 96666-6666",
+                about: "Novo",
+                email: "novo@email.com",
+                lastSeen: "Hoje às 09:00",
+                story: null,
+                messages: [
+                    { type: "sent", text: "Oi, tudo bem? Sou eu!", time: "09:00" }
+                ]
+            }
+        };
+
+        const contacts = document.querySelectorAll('.contact');
+        const chatHeader = document.getElementById('chat-header');
+        const chatMessages = document.getElementById('chat-messages');
+        const profileModal = document.getElementById('profile-modal');
+        const storiesModal = document.getElementById('stories-modal');
+        const storyContent = document.getElementById('story-content');
+
+        contacts.forEach(contact => {
+            contact.addEventListener('click', () => {
+                contacts.forEach(c => c.classList.remove('active'));
+                contact.classList.add('active');
+
+                const contactId = contact.getAttribute('data-contact');
+                const chat = chats[contactId];
+
+                chatHeader.innerHTML = `
+                    <img src="https://via.placeholder.com/40" alt="${chat.name}" id="profile-pic">
+                    <h2>${chat.name}</h2>
+                    <div class="icons">
+                        <i class="fas fa-search"></i>
+                        <i class="fas fa-paperclip"></i>
+                        <i class="fas fa-ellipsis-v"></i>
+                    </div>
+                `;
+
+                chatMessages.innerHTML = '';
+                chat.messages.forEach(msg => {
+                    const msgElement = document.createElement('div');
+                    msgElement.classList.add('message', msg.type);
+                    if (msg.class) msgElement.classList.add(msg.class);
+                    msgElement.innerHTML = `${msg.text}<span class="message-time">${msg.time}</span>`;
+                    chatMessages.appendChild(msgElement);
+                });
+
+                const profilePic = document.getElementById('profile-pic');
+                profilePic.addEventListener('click', () => {
+                    profileModal.innerHTML = `
+                        <div class="profile-header">
+                            <img src="https://via.placeholder.com/120" alt="${chat.name}">
+                        </div>
+                        <div class="profile-info">
+                            <h3>${chat.name}</h3>
+                            <p>${chat.phone}</p>
+                            <p>Sobre: ${chat.about}</p>
+                            <p>Email: ${chat.email}</p>
+                            <p>Última visualização: ${chat.lastSeen}</p>
+                        </div>
+                        <div class="profile-close">
+                            <button onclick="document.getElementById('profile-modal').style.display='none'">Fechar</button>
+                        </div>
+                    `;
+                    profileModal.style.display = 'block';
+                });
+            });
+        });
+
+        function searchContacts(query) {
+            const contacts = document.querySelectorAll('.contact');
+            let found = false;
+            contacts.forEach(contact => {
+                const name = contact.querySelector('.contact-name').textContent.toLowerCase();
+                if (name.includes(query.toLowerCase())) {
+                    contact.style.display = 'flex';
+                    found = true;
+                } else {
+                    contact.style.display = 'none';
+                }
+            });
+            const newContact = document.querySelector('.new-contact');
+            newContact.style.display = query && !found ? 'flex' : 'none';
+        }
+
+        function showStories() {
+            storiesModal.style.display = 'block';
+            storyContent.innerHTML = '';
+            Object.values(chats).forEach(chat => {
+                if (chat.story) {
+                    storyContent.innerHTML += `
+                        <img src="${chat.story}" alt="${chat.name}">
+                        <h3>${chat.name}</h3>
+                    `;
+                }
+            });
+        }
+
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

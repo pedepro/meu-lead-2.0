@@ -308,126 +308,122 @@ async function carregarLeadsPreview() {
 // Função para carregar os textos dinâmicos
 async function carregarTextos() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/textos");
+        const response = await fetch("https://backand.meuleaditapema.com.br/get-content");
         const data = await response.json();
         console.log("Dados dos textos recebidos da API:", data);
 
-        if (data.success && data.textos) {
-            // Título e subtítulo
-            const tituloPrincipal = document.getElementById("titulo-principal");
-            const subtitulo = document.getElementById("subtitulo");
-            console.log("Elemento #titulo-principal encontrado:", !!tituloPrincipal);
-            console.log("Elemento #subtitulo encontrado:", !!subtitulo);
-            if (tituloPrincipal) {
-                tituloPrincipal.textContent = data.textos.titulo_principal || "Bem-vindo ao Meu Lead Itapema";
-                console.log("Título principal definido como:", tituloPrincipal.textContent);
-            }
-            if (subtitulo) {
-                subtitulo.textContent = data.textos.subtitulo || "Encontre os melhores imóveis e leads para o seu negócio!";
-                console.log("Subtítulo definido como:", subtitulo.textContent);
-            }
+        // Título e subtítulo
+        const tituloPrincipal = document.getElementById("titulo-principal");
+        const subtitulo = document.getElementById("subtitulo");
+        console.log("Elemento #titulo-principal encontrado:", !!tituloPrincipal);
+        console.log("Elemento #subtitulo encontrado:", !!subtitulo);
+        if (tituloPrincipal) {
+            tituloPrincipal.textContent = data.ajustes.titulo || "Bem-vindo ao Meu Lead Itapema";
+            console.log("Título principal definido como:", tituloPrincipal.textContent);
+        }
+        if (subtitulo) {
+            subtitulo.textContent = data.ajustes.subtitulo || "Encontre os melhores imóveis e leads para o seu negócio!";
+            console.log("Subtítulo definido como:", subtitulo.textContent);
+        }
 
-            // Tipo de apresentação (dinâmico)
-            const apresentacaoContainer = document.getElementById("apresentacao");
-            console.log("Elemento #apresentacao encontrado:", !!apresentacaoContainer);
-            if (apresentacaoContainer) {
-                const tipoApresentacao = data.textos.tipo_apresentacao || "imagem";
-                const imagensApresentacao = data.textos.url_imagens_apresentacao || [];
-                const videoApresentacao = data.textos.url_video_apresentacao || "";
-                const fallbackImagem = "assets/apresentacao.jpg";
+        // Tipo de apresentação (dinâmico)
+        const apresentacaoContainer = document.getElementById("apresentacao");
+        console.log("Elemento #apresentacao encontrado:", !!apresentacaoContainer);
+        if (apresentacaoContainer) {
+            const tipoApresentacao = data.ajustes.tipo_apn === 1 ? "imagem" : "video";
+            const imagensApresentacao = data.ajustes.imagens || [];
+            const videoApresentacao = data.ajustes.video || "";
+            const fallbackImagem = "assets/apresentacao.jpg";
 
-                if (tipoApresentacao === "video" && videoApresentacao) {
-                    apresentacaoContainer.innerHTML = `
-                        <video src="${videoApresentacao}" controls autoplay muted loop class="apresentacao-video"></video>
-                    `;
-                    console.log("Vídeo de apresentação renderizado com URL:", videoApresentacao);
-                } else if (tipoApresentacao === "imagem" && imagensApresentacao.length > 0) {
-                    apresentacaoContainer.innerHTML = `
-                        <div class="slider-container" id="slider-container">
-                            <button class="slider-arrow left" id="prev-arrow">‹</button>
-                            <div class="slider" id="slider-imagens">
-                                ${imagensApresentacao.map(img => `<img src="${img}" alt="Imagem de Apresentação" loading="lazy">`).join('')}
-                            </div>
-                            <button class="slider-arrow right" id="next-arrow">›</button>
-                            <div class="slider-dots" id="slider-dots">
-                                ${imagensApresentacao.map((_, i) => `<div class="dot${i === 0 ? ' active' : ''}"></div>`).join('')}
-                            </div>
+            if (tipoApresentacao === "video" && videoApresentacao) {
+                apresentacaoContainer.innerHTML = `
+                    <video src="${videoApresentacao}" controls autoplay muted loop class="apresentacao-video"></video>
+                `;
+                console.log("Vídeo de apresentação renderizado com URL:", videoApresentacao);
+            } else if (tipoApresentacao === "imagem" && imagensApresentacao.length > 0) {
+                apresentacaoContainer.innerHTML = `
+                    <div class="slider-container" id="slider-container">
+                        <button class="slider-arrow left" id="prev-arrow">‹</button>
+                        <div class="slider" id="slider-imagens">
+                            ${imagensApresentacao.map(img => `<img src="${img}" alt="Imagem de Apresentação" loading="lazy">`).join('')}
                         </div>
-                    `;
-                    const slider = document.getElementById("slider-imagens");
-                    const prevArrow = document.getElementById("prev-arrow");
-                    const nextArrow = document.getElementById("next-arrow");
-                    const dotsContainer = document.getElementById("slider-dots");
-                    const totalSlides = imagensApresentacao.length;
-                    slideIndex = 0;
+                        <button class="slider-arrow right" id="next-arrow">›</button>
+                        <div class="slider-dots" id="slider-dots">
+                            ${imagensApresentacao.map((_, i) => `<div class="dot${i === 0 ? ' active' : ''}"></div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                const slider = document.getElementById("slider-imagens");
+                const prevArrow = document.getElementById("prev-arrow");
+                const nextArrow = document.getElementById("next-arrow");
+                const dotsContainer = document.getElementById("slider-dots");
+                const totalSlides = imagensApresentacao.length;
+                slideIndex = 0;
 
-                    function updateSlider() {
-                        slider.style.transform = `translateX(-${slideIndex * 100}vw)`;
-                        document.querySelectorAll(".dot").forEach((dot, index) => dot.classList.toggle("active", index === slideIndex));
-                        prevArrow.style.display = slideIndex === 0 ? "none" : "block";
-                        nextArrow.style.display = slideIndex === totalSlides - 1 ? "none" : "block";
-                    }
-
-                    function goToSlide(index) {
-                        slideIndex = Math.max(0, Math.min(index, totalSlides - 1));
-                        updateSlider();
-                    }
-
-                    prevArrow.addEventListener("click", () => { if (slideIndex > 0) { slideIndex--; updateSlider(); } });
-                    nextArrow.addEventListener("click", () => { if (slideIndex < totalSlides - 1) { slideIndex++; updateSlider(); } });
-                    dotsContainer.addEventListener("click", (e) => {
-                        const dot = e.target.closest(".dot");
-                        if (dot) goToSlide(Array.from(dotsContainer.children).indexOf(dot));
-                    });
-
-                    updateSlider();
-                    console.log("Slideshow de imagens renderizado com URLs:", imagensApresentacao);
-                } else {
-                    apresentacaoContainer.innerHTML = `
-                        <img src="${fallbackImagem}" alt="Apresentação" class="apresentacao-imagem">
-                    `;
-                    console.log("Imagem estática de fallback renderizada");
+                function updateSlider() {
+                    slider.style.transform = `translateX(-${slideIndex * 100}vw)`;
+                    document.querySelectorAll(".dot").forEach((dot, index) => dot.classList.toggle("active", index === slideIndex));
+                    prevArrow.style.display = slideIndex === 0 ? "none" : "block";
+                    nextArrow.style.display = slideIndex === totalSlides - 1 ? "none" : "block";
                 }
-            }
 
-            // Valores
-            const valoresContainer = document.getElementById("valores");
-            console.log("Elemento #valores encontrado:", !!valoresContainer);
-            if (valoresContainer && data.textos.valores) {
-                const valoresHTML = data.textos.valores.map(valor => `
-                    <div class="valor-card">
-                        <img src="${valor.imagem_url}" alt="${valor.titulo}" class="valor-imagem">
-                        <h3>${valor.titulo}</h3>
-                        <p>${valor.subtitulo}</p>
-                    </div>
-                `).join("");
-                valoresContainer.innerHTML = valoresHTML;
-                console.log("Valores renderizados:", valoresHTML);
-            }
+                function goToSlide(index) {
+                    slideIndex = Math.max(0, Math.min(index, totalSlides - 1));
+                    updateSlider();
+                }
 
-            // Feedbacks
-            const feedbacksSection = document.querySelector(".feedbacks-section");
-            const feedbacksContainer = document.getElementById("feedbacks");
-            console.log("Elemento #feedbacks encontrado:", !!feedbacksContainer);
-            if (feedbacksContainer && data.textos.feedbacks && data.textos.feedbacks.length > 0) {
-                const feedbacksHTML = data.textos.feedbacks.map(feedback => `
-                    <div class="feedback-card">
-                        <img src="${feedback.imagem}" alt="${feedback.nome}" class="feedback-imagem">
-                        <div class="feedback-content">
-                            <h4>${feedback.nome}</h4>
-                            <p>"${feedback.comentario}"</p>
-                        </div>
-                    </div>
-                `).join("");
-                feedbacksContainer.innerHTML = feedbacksHTML;
-                feedbacksSection.style.display = "block"; // Exibe a seção se houver feedbacks
-                console.log("Feedbacks renderizados:", feedbacksHTML);
+                prevArrow.addEventListener("click", () => { if (slideIndex > 0) { slideIndex--; updateSlider(); } });
+                nextArrow.addEventListener("click", () => { if (slideIndex < totalSlides - 1) { slideIndex++; updateSlider(); } });
+                dotsContainer.addEventListener("click", (e) => {
+                    const dot = e.target.closest(".dot");
+                    if (dot) goToSlide(Array.from(dotsContainer.children).indexOf(dot));
+                });
+
+                updateSlider();
+                console.log("Slideshow de imagens renderizado com URLs:", imagensApresentacao);
             } else {
-                feedbacksSection.style.display = "none"; // Oculta a seção se não houver feedbacks
-                console.log("Nenhum feedback disponível, seção ocultada");
+                apresentacaoContainer.innerHTML = `
+                    <img src="${fallbackImagem}" alt="Apresentação" class="apresentacao-imagem">
+                `;
+                console.log("Imagem estática de fallback renderizada");
             }
+        }
+
+        // Valores
+        const valoresContainer = document.getElementById("valores");
+        console.log("Elemento #valores encontrado:", !!valoresContainer);
+        if (valoresContainer && data.valores) {
+            const valoresHTML = data.valores.map(valor => `
+                <div class="valor-card">
+                    <img src="${valor.img}" alt="${valor.titulo}" class="valor-imagem">
+                    <h3>${valor.titulo}</h3>
+                    <p>${valor.subtitulo}</p>
+                </div>
+            `).join("");
+            valoresContainer.innerHTML = valoresHTML;
+            console.log("Valores renderizados:", valoresHTML);
+        }
+
+        // Feedbacks
+        const feedbacksSection = document.querySelector(".feedbacks-section");
+        const feedbacksContainer = document.getElementById("feedbacks");
+        console.log("Elemento #feedbacks encontrado:", !!feedbacksContainer);
+        if (feedbacksContainer && data.feedbacks && data.feedbacks.length > 0) {
+            const feedbacksHTML = data.feedbacks.map(feedback => `
+                <div class="feedback-card">
+                    <img src="${feedback.img}" alt="${feedback.nome}" class="feedback-imagem">
+                    <div class="feedback-content">
+                        <h4>${feedback.nome}</h4>
+                        <p>"${feedback.comentario}"</p>
+                    </div>
+                </div>
+            `).join("");
+            feedbacksContainer.innerHTML = feedbacksHTML;
+            feedbacksSection.style.display = "block"; // Exibe a seção se houver feedbacks
+            console.log("Feedbacks renderizados:", feedbacksHTML);
         } else {
-            console.warn("Dados dos textos inválidos ou não encontrados:", data);
+            feedbacksSection.style.display = "none"; // Oculta a seção se não houver feedbacks
+            console.log("Nenhum feedback disponível, seção ocultada");
         }
     } catch (error) {
         console.error("Erro ao carregar textos:", error);
@@ -471,6 +467,9 @@ async function inicializarPagina() {
     ]);
 
     console.log("Página inicializada com sucesso!");
+    
+    // Disparar evento personalizado para sinalizar o fim do carregamento
+    window.dispatchEvent(new Event("carregamentoCompleto"));
 }
 
 // Chama a função de inicialização explicitamente

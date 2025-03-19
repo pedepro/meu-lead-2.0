@@ -33,6 +33,10 @@ function inicializarEditarPerfil() {
             document.getElementById("phone").value = data.phone || '';
             document.getElementById("creci").value = data.creci || '';
             document.getElementById("email").value = data.email || '';
+
+            // Disparar evento de carregamento concluído após sucesso
+            window.dispatchEvent(new Event("carregamentoCompleto"));
+            console.log("Evento 'carregamentoCompleto' disparado após carregar dados do corretor.");
         } catch (error) {
             console.error("Erro ao carregar dados do corretor:", error);
             mensagemPerfil.textContent = "Erro ao carregar seus dados. Tente novamente.";

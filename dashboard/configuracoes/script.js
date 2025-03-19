@@ -24,40 +24,38 @@ async function uploadFile(file) {
     }
 }
 
-// Função para carregar os dados atuais do textos.json
+// Função para carregar os dados do banco via /get-content
 async function carregarTextos() {
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/textos");
+        const response = await fetch("https://backand.meuleaditapema.com.br/get-content");
         const data = await response.json();
         console.log("Dados carregados:", data);
 
-        if (data.success && data.textos) {
-            document.getElementById("titulo-principal").value = data.textos.titulo_principal || "";
-            document.getElementById("subtitulo").value = data.textos.subtitulo || "";
-            const tipoApresentacao = document.getElementById("tipo-apresentacao");
-            tipoApresentacao.value = data.textos.tipo_apresentacao || "imagem";
+        // Preencher ajustes
+        document.getElementById("titulo-principal").value = data.ajustes.titulo || "";
+        document.getElementById("subtitulo").value = data.ajustes.subtitulo || "";
+        const tipoApresentacao = document.getElementById("tipo-apresentacao");
+        tipoApresentacao.value = data.ajustes.tipo_apn === 1 ? "imagem" : "video";
 
-            // Carregar URLs de imagens
-            const imagensInput = document.getElementById("imagens-apresentacao");
-            const imagensApresentacao = data.textos.url_imagens_apresentacao || [];
-            imagensInput.value = Array.isArray(imagensApresentacao) ? imagensApresentacao.join(", ") : "";
+        const imagensInput = document.getElementById("imagens-apresentacao");
+        imagensInput.value = Array.isArray(data.ajustes.imagens) ? data.ajustes.imagens.join(", ") : "";
 
-            // Carregar URL de vídeo
-            const videoInput = document.getElementById("video-apresentacao");
-            videoInput.value = data.textos.url_video_apresentacao || "";
+        const videoInput = document.getElementById("video-apresentacao");
+        videoInput.value = data.ajustes.video || "";
 
-            toggleApresentacao(tipoApresentacao.value);
-            previewMedia(imagensApresentacao, "imagem", "preview-imagens");
-            previewMedia(videoInput.value, "video", "preview-video");
-            
-            const valoresList = document.getElementById("valores-list");
-            valoresList.innerHTML = "";
-            (data.textos.valores || []).forEach(valor => adicionarValor(valor));
+        toggleApresentacao(tipoApresentacao.value);
+        previewMedia(data.ajustes.imagens, "imagem", "preview-imagens");
+        previewMedia(data.ajustes.video, "video", "preview-video");
 
-            const feedbacksList = document.getElementById("feedbacks-list");
-            feedbacksList.innerHTML = "";
-            (data.textos.feedbacks || []).forEach(feedback => adicionarFeedback(feedback));
-        }
+        // Preencher valores
+        const valoresList = document.getElementById("valores-list");
+        valoresList.innerHTML = "";
+        (data.valores || []).forEach(valor => adicionarValor(valor));
+
+        // Preencher feedbacks
+        const feedbacksList = document.getElementById("feedbacks-list");
+        feedbacksList.innerHTML = "";
+        (data.feedbacks || []).forEach(feedback => adicionarFeedback(feedback));
     } catch (error) {
         console.error("Erro ao carregar textos:", error);
         alert("Erro ao carregar os dados. Tente novamente.");
@@ -105,15 +103,16 @@ function previewMedia(url, tipo, containerId) {
 }
 
 // Função para adicionar um novo valor ao DOM
-function adicionarValor(valor = { titulo: "", subtitulo: "", imagem_url: "" }) {
+function adicionarValor(valor = { id: null, img: "", titulo: "", subtitulo: "" }) {
     const valoresList = document.getElementById("valores-list");
     const previewId = `valor-preview-${previewCounter++}`;
     const div = document.createElement("div");
     div.className = "valor-item";
+    div.dataset.id = valor.id || ""; // Armazena o ID para edição/exclusão
     div.innerHTML = `
         <input type="text" name="valor-titulo" placeholder="Título" value="${valor.titulo}">
         <input type="text" name="valor-subtitulo" placeholder="Subtítulo" value="${valor.subtitulo}">
-        <input type="text" name="valor-imagem" placeholder="URL da Imagem" value="${valor.imagem_url}">
+        <input type="text" name="valor-imagem" placeholder="URL da Imagem" value="${valor.img}">
         <input type="file" name="valor-upload" accept="image/*">
         <div class="preview-container" id="${previewId}"></div>
         <button type="button" class="remove-btn">Remover</button>
@@ -132,18 +131,19 @@ function adicionarValor(valor = { titulo: "", subtitulo: "", imagem_url: "" }) {
         }
     });
 
-    previewMedia(valor.imagem_url, "imagem", previewId);
+    previewMedia(valor.img, "imagem", previewId);
     div.querySelector(".remove-btn").addEventListener("click", () => valoresList.removeChild(div));
 }
 
 // Função para adicionar um novo feedback ao DOM
-function adicionarFeedback(feedback = { imagem: "", nome: "", comentario: "" }) {
+function adicionarFeedback(feedback = { id: null, img: "", nome: "", comentario: "" }) {
     const feedbacksList = document.getElementById("feedbacks-list");
     const previewId = `feedback-preview-${previewCounter++}`;
     const div = document.createElement("div");
     div.className = "feedback-item";
+    div.dataset.id = feedback.id || ""; // Armazena o ID para edição/exclusão
     div.innerHTML = `
-        <input type="text" name="feedback-imagem" placeholder="URL da Imagem" value="${feedback.imagem}">
+        <input type="text" name="feedback-imagem" placeholder="URL da Imagem" value="${feedback.img}">
         <input type="file" name="feedback-upload" accept="image/*">
         <div class="preview-container" id="${previewId}"></div>
         <input type="text" name="feedback-nome" placeholder="Nome" value="${feedback.nome}">
@@ -164,7 +164,7 @@ function adicionarFeedback(feedback = { imagem: "", nome: "", comentario: "" }) 
         }
     });
 
-    previewMedia(feedback.imagem, "imagem", previewId);
+    previewMedia(feedback.img, "imagem", previewId);
     div.querySelector(".remove-btn").addEventListener("click", () => feedbacksList.removeChild(div));
 }
 
@@ -177,52 +177,97 @@ async function salvarTextos(event) {
     const imagensInput = form.querySelector("#imagens-apresentacao").value;
     const videoInput = form.querySelector("#video-apresentacao").value;
 
-    const dados = {
-        titulo_principal: form.querySelector("#titulo-principal").value,
-        subtitulo: form.querySelector("#subtitulo").value,
-        tipo_apresentacao: tipoApresentacao,
-        url_imagens_apresentacao: imagensInput ? imagensInput.split(",").map(u => u.trim()).filter(u => u) : [],
-        url_video_apresentacao: videoInput || "",
-        valores: [],
-        feedbacks: []
-    };
-
-    const valoresItems = document.querySelectorAll(".valor-item");
-    valoresItems.forEach(item => {
-        dados.valores.push({
-            titulo: item.querySelector("[name='valor-titulo']").value,
-            subtitulo: item.querySelector("[name='valor-subtitulo']").value,
-            imagem_url: item.querySelector("[name='valor-imagem']").value
-        });
-    });
-
-    const feedbacksItems = document.querySelectorAll(".feedback-item");
-    feedbacksItems.forEach(item => {
-        dados.feedbacks.push({
-            imagem: item.querySelector("[name='feedback-imagem']").value,
-            nome: item.querySelector("[name='feedback-nome']").value,
-            comentario: item.querySelector("[name='feedback-comentario']").value
-        });
-    });
-
     try {
-        const response = await fetch("https://pedepro-meulead.6a7cul.easypanel.host/editar-textos", {
+        // Atualizar mli_ajustes (só linha id = 1)
+        await fetch("https://backand.meuleaditapema.com.br/edit-content", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dados)
+            body: JSON.stringify({
+                table: "mli_ajustes",
+                action: "update",
+                data: {
+                    titulo: form.querySelector("#titulo-principal").value,
+                    subtitulo: form.querySelector("#subtitulo").value,
+                    tipo_apn: tipoApresentacao === "imagem" ? 1 : 2,
+                    video: videoInput || null,
+                    imagens: imagensInput ? imagensInput.split(",").map(u => u.trim()).filter(u => u) : []
+                }
+            })
         });
-        const result = await response.json();
-        console.log("Resposta da API:", result);
 
-        if (result.success) {
-            alert("Textos salvos com sucesso!");
-            carregarTextos(); // Recarregar para refletir mudanças
-        } else {
-            throw new Error(result.message || "Erro ao salvar");
+        // Atualizar/Criar/Excluir mli_valores
+        const valoresItems = document.querySelectorAll(".valor-item");
+        for (const item of valoresItems) {
+            const id = item.dataset.id;
+            const valorData = {
+                img: item.querySelector("[name='valor-imagem']").value,
+                titulo: item.querySelector("[name='valor-titulo']").value,
+                subtitulo: item.querySelector("[name='valor-subtitulo']").value
+            };
+            if (id) {
+                // Atualizar
+                await fetch("https://backand.meuleaditapema.com.br/edit-content", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        table: "mli_valores",
+                        action: "update",
+                        data: { id, ...valorData }
+                    })
+                });
+            } else {
+                // Criar
+                await fetch("https://backand.meuleaditapema.com.br/edit-content", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        table: "mli_valores",
+                        action: "create",
+                        data: valorData
+                    })
+                });
+            }
         }
+
+        // Atualizar/Criar/Excluir mli_feedbacks
+        const feedbacksItems = document.querySelectorAll(".feedback-item");
+        for (const item of feedbacksItems) {
+            const id = item.dataset.id;
+            const feedbackData = {
+                img: item.querySelector("[name='feedback-imagem']").value,
+                nome: item.querySelector("[name='feedback-nome']").value,
+                comentario: item.querySelector("[name='feedback-comentario']").value
+            };
+            if (id) {
+                // Atualizar
+                await fetch("https://backand.meuleaditapema.com.br/edit-content", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        table: "mli_feedbacks",
+                        action: "update",
+                        data: { id, ...feedbackData }
+                    })
+                });
+            } else {
+                // Criar
+                await fetch("https://backand.meuleaditapema.com.br/edit-content", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        table: "mli_feedbacks",
+                        action: "create",
+                        data: feedbackData
+                    })
+                });
+            }
+        }
+
+        alert("Dados salvos com sucesso!");
+        carregarTextos(); // Recarregar para refletir mudanças
     } catch (error) {
         console.error("Erro ao salvar textos:", error);
-        alert("Erro ao salvar os textos. Tente novamente.");
+        alert("Erro ao salvar os dados. Tente novamente.");
     }
 }
 

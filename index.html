@@ -190,10 +190,11 @@
         /* Media Query para telas menores que 600px */
         @media (max-width: 600px) {
             .sidebar {
-                position: absolute;
+                position: fixed;
                 top: 70px;
-                height: calc(100% - 70px);
+                height: 100vh; /* Altura total da viewport */
                 z-index: 1000;
+                padding-top: 10px;
             }
             .sidebar.open {
                 width: 250px;
@@ -226,10 +227,10 @@
 
     <nav class="sidebar">
         <ul>
-            <li><a href="?session=imoveis" id="imoveis-link">Imóveis</a></li>
-            <li><a href="?session=leads" id="clientes-link">Leads (Clientes)</a></li>
-            <li><a href="?session=meusleads" id="meusleads-link">Meus Leads</a></li>
-            <li><a href="?session=meusimoveis" id="meusimoveis-link">Meus Imóveis</a></li>
+            <li><a href="?session=imoveis" id="imoveis-link"><i class="fa-solid fa-building" style="margin-right: 8px;"></i>Imóveis</a></li>
+            <li><a href="?session=leads" id="clientes-link"><i class="fa-solid fa-users" style="margin-right: 8px;"></i>Leads</a></li>
+            <li><a href="?session=meusleads" id="meusleads-link"><i class="fa-solid fa-user-check" style="margin-right: 8px;"></i>Meus Leads</a></li>
+            <li><a href="?session=meusimoveis" id="meusimoveis-link"><i class="fa-solid fa-house-user" style="margin-right: 8px;"></i>Meus Imóveis</a></li>
         </ul>
     </nav>
 
@@ -551,5 +552,6 @@
             });
         });
     </script>
+    <script src="loading.js"></script>
 </body>
 </html>

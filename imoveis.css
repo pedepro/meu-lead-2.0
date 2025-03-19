@@ -142,7 +142,6 @@
     display: grid !important;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
     justify-items: center;
@@ -231,9 +230,7 @@
 @media (max-width: 600px) {
     .imoveis-container {
         grid-template-columns: 1fr; /* Já está assim, mantém uma coluna */
-        padding: 0; /* Remove o padding lateral */
         max-width: 100%; /* Permite que o container ocupe toda a largura */
-        margin: 0; /* Remove margens laterais */
     }
 
     .card {

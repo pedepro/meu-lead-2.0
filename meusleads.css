@@ -1,13 +1,12 @@
 /* Container dos leads adquiridos */
 .meus-leads-container {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
-    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
     justify-items: center;
-    background-color: #f0f0f0; /* Temporário para visualizar */
+    width: 100%;
 }
 
 /* Estilo dos cards de leads */
@@ -19,11 +18,13 @@
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
     padding-bottom: 60px;
-    width: 280px;
+    width: 100%;
+    max-width: 280px;
     min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .lead-card:hover {
@@ -139,6 +140,8 @@
     margin: 20px 0;
     gap: 10px;
     width: calc(100% - 20px);
+    max-width: 1200px;
+    box-sizing: border-box;
 }
 
 .paginacao-meus-leads-wrapper {
@@ -184,29 +187,45 @@
     grid-column: 1 / -1;
 }
 
-/* Responsividade */
-@media (max-width: 900px) {
-    .meus-leads-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
 @media (max-width: 600px) {
     .meus-leads-container {
         grid-template-columns: 1fr;
     }
+
+    .lead-card {
+        width: calc(100% - 20px); /* 10px de margem de cada lado */
+        max-width: none;
+        margin: 0 10px;
+    }
+
+    .paginacao-meus-leads {
+        width: calc(100% - 20px);
+        padding: 0 10px;
+    }
 }
 
 @media (max-width: 480px) {
     .lead-card {
-        width: 100%;
-        max-width: 350px;
+        width: calc(100% - 20px); /* Mantém 10px de margem de cada lado */
         min-height: 180px;
-        margin: 0 auto;
+        margin: 0 10px;
     }
 
     .lead-btn-adquirir {
         padding: 10px;
         font-size: 13px;
+    }
+
+    .lead-card-header .lead-titulo {
+        font-size: 16px;
+    }
+
+    .lead-card-header .lead-interesse {
+        font-size: 14px;
+    }
+
+    .lead-sku {
+        font-size: 12px;
     }
 }

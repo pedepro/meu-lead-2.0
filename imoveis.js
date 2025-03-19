@@ -201,6 +201,9 @@ function inicializarImoveis() {
                 window.imoveisOriginais = data.imoveis || [];
                 window.totalImoveis = data.total || 0;
                 renderizarImoveis(window.imoveisOriginais);
+                // Disparar evento de carregamento concluído após sucesso
+                window.dispatchEvent(new Event("carregamentoCompleto"));
+                console.log("Evento 'carregamentoCompleto' disparado após carregar imóveis.");
             } else {
                 console.warn("Nenhum imóvel encontrado:", data.message);
                 window.imoveisOriginais = [];
