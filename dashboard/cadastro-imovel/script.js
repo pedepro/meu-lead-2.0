@@ -279,6 +279,7 @@ async function carregarDadosImovel(editId) {
         document.getElementById('texto_principal').value = imovel.texto_principal || '';
         document.getElementById('descricao').value = imovel.descricao || '';
         document.getElementById('descricao_negociacao').value = imovel.descricao_negociacao || '';
+        document.getElementById('estado').value = imovel.estado || ''; // Preenche o campo estado
 
         // Aguarda o carregamento das cidades antes de definir o valor
         await carregarCidades();
@@ -313,67 +314,6 @@ async function carregarDadosImovel(editId) {
     } catch (error) {
         console.error('Erro ao carregar dados do imóvel:', error);
         mostrarNotificacao('Erro ao carregar dados do imóvel: ' + error.message, 'error');
-    }
-}
-
-async function inicializarTelaCadastroImovel() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const editId = urlParams.get('editid');
-
-    const valorInput = document.getElementById('valor');
-    const priceContatoInput = document.getElementById('price_contato');
-
-    const newValorInput = valorInput.cloneNode(true);
-    const newPriceContatoInput = priceContatoInput.cloneNode(true);
-    valorInput.parentNode.replaceChild(newValorInput, valorInput);
-    priceContatoInput.parentNode.replaceChild(newPriceContatoInput, priceContatoInput);
-
-    newValorInput.addEventListener('input', () => {
-        formatarReais(newValorInput);
-        atualizarValorExtenso('valor', 'valorExtenso');
-    });
-
-    newPriceContatoInput.addEventListener('input', () => {
-        formatarReais(newPriceContatoInput);
-        atualizarValorExtenso('price_contato', 'priceContatoExtenso');
-    });
-
-    // Adicionar os toggles apenas no modo cadastro (quando não há editId)
-    if (!editId) {
-        const toggleContainer = document.getElementById('toggle-options-container');
-        toggleContainer.innerHTML = `
-            <fieldset class="section">
-                <legend>Opções de Envio</legend>
-                <div class="field-group">
-                    <div class="toggle-container">
-                        <label>
-                            <input type="checkbox" id="enviarEmail" name="enviarEmail"> 
-                            Enviar para corretores por email
-                        </label>
-                    </div>
-                    <div class="toggle-container">
-                        <label>
-                            <input type="checkbox" id="enviarWhatsapp" name="enviarWhatsapp"> 
-                            Enviar para corretores por whatsapp
-                        </label>
-                    </div>
-                    <div class="toggle-container">
-                        <label>
-                            <input type="checkbox" id="publicarImediato" name="publicarImediato"> 
-                            Publicar imediatamente
-                        </label>
-                    </div>
-                </div>
-            </fieldset>
-        `;
-    }
-
-    if (editId) {
-        await carregarDadosImovel(editId);
-    } else {
-        await carregarCidades();
-        document.getElementById('valorExtenso').textContent = '';
-        document.getElementById('priceContatoExtenso').textContent = '';
     }
 }
 
@@ -474,9 +414,11 @@ if (formImovel) {
         const mobiliadoValue = document.getElementById('mobiliado').value;
         const valorInput = document.getElementById('valor').value;
         const priceContatoInput = document.getElementById('price_contato').value;
+        const estadoInput = document.getElementById('estado').value; // Captura o valor do campo estado
 
         console.log('Valor bruto de imovel_pronto:', imovelProntoValue);
         console.log('Valor bruto de mobiliado:', mobiliadoValue);
+        console.log('Valor bruto de estado:', estadoInput);
 
         // Adicionar os toggles apenas no modo cadastro (quando não há editId)
         if (!editId) {
@@ -495,6 +437,8 @@ if (formImovel) {
                 imovelData.valor = valorInput ? parseFloat(valorInput.replace(/\./g, '').replace(',', '.')) : '';
             } else if (element.name === 'price_contato') {
                 imovelData.price_contato = priceContatoInput ? parseFloat(priceContatoInput.replace(/\./g, '').replace(',', '.')) : '';
+            } else if (element.name === 'estado') {
+                imovelData.estado = estadoInput || ''; // Inclui o campo estado no imovelData
             } else if (!['enviarEmail', 'enviarWhatsapp'].includes(element.name)) {
                 // Evitar sobrescrever os toggles já definidos no modo cadastro
                 imovelData[element.name] = element.value || '';
