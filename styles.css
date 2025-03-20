@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    background-color: #f4f7f6;
+    transition: margin-left 0.3s ease;
+    padding-top: 70px;
+}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1500;
+    gap: 10px;
+}
+header h1 {
+    font-size: 22px;
+    color: #333;
+}
+header img {
+    height: 50px;
+}
+.menu-toggle {
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+.menu-toggle:hover {
+    color: #667eea;
+}
+.user-icon {
+    font-size: 28px;
+    cursor: pointer;
+    color: #838383;
+    transition: color 0.3s ease;
+}
+.user-icon:hover {
+    color: #575757;
+}
+.dropdown {
+    position: absolute;
+    top: 65px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 2000;
+    width: 220px;
+    padding: 10px 0;
+}
+.dropdown.active {
+    display: block;
+}
+.dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.dropdown ul li {
+    padding: 0;
+}
+.dropdown ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: block;
+    padding: 12px 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.dropdown ul li a:hover {
+    background-color: #f5f7fa;
+    color: #667eea;
+}
+.dropdown ul li a:active {
+    background-color: #e0e7ff;
+    color: #5a67d8;
+}
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    border-right: 2px solid #ddd;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    padding-top: 80px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+.sidebar.open {
+    width: 250px;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li {
+    padding: 10px 15px;
+}
+.sidebar ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.sidebar ul li a:hover {
+    background-color: #f5f7fa;
+    color: #667eea;
+}
+.sidebar ul li a:active {
+    background-color: #e0e7ff;
+    color: #5a67d8;
+}
+.sidebar ul li a.active {
+    background-color: #667eea;
+    color: white;
+}
+.sidebar ul li:has(#meusleads-link),
+.sidebar ul li:has(#meusimoveis-link),
+.sidebar ul li:has(#meuspedidos-link) {
+    display: none !important;
+}
+.logged-in .sidebar ul li:has(#meusleads-link),
+.logged-in .sidebar ul li:has(#meusimoveis-link),
+.logged-in .sidebar ul li:has(#meuspedidos-link) {
+    display: block !important;
+}
+.main-content {
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+    position: relative;
+}
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+}
+.section-header h2 {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+}
+.home-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: #667eea;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+.home-link:hover {
+    color: #5a67d8;
+}
+.home-link i {
+    font-size: 20px;
+}
+
+/* Media Query para telas menores que 600px */
+@media (max-width: 600px) {
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        height: 100vh;
+        z-index: 1000;
+        padding-top: 10px;
+    }
+    .sidebar.open {
+        width: 250px;
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .section-header h2 {
+        font-size: 20px;
+    }
+}

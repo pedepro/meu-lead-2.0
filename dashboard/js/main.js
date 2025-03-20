@@ -1,14 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Mensagem de aviso
     const mensagem = `
 Aqui é da equipe de programação da Meu Lead Itapema. 
 Se alguém disse pra você que acessando aqui você pode obter dados ou informações não liberadas para você, 
 tome cuidado, pois pode ser um golpe.
     `;
 
-    
-
-    // Desenho ASCII fallback para "Meu Lead Itapema" caso a imagem não carregue
     const asciiLogoFallback = `
    Meu Lead Itapema
    -----------------
@@ -18,29 +14,9 @@ tome cuidado, pois pode ser um golpe.
    -------------
     `;
 
-    // Função para carregar e exibir a logo
-    const logoUrl = "https://cloud.meuleaditapema.com.br/uploads/3cbeb5c8-1937-40b0-8f03-765d7a5eba77.png";
-    const img = new Image();
-    img.crossOrigin = "Anonymous"; // Tentativa de evitar CORS, mas depende do servidor
-    img.onload = () => {
-        console.log("%c ", `
-            font-size: 1px;
-            padding: ${img.height / 2}px ${img.width / 2}px;
-            background: url(${logoUrl}) no-repeat center;
-            background-size: contain;
-        `);
-        console.log(mensagem);
-                console.log(asciiLogoFallback);
-
-    };
-    img.onerror = () => {
-        console.log("❌ Erro ao carregar a logo da Meu Lead Itapema (provavelmente devido a CORS)");
-        console.log(asciiLogoFallback);
-        console.log(mensagem);
-    };
-    img.src = logoUrl;
+    console.log(asciiLogoFallback);
+    console.log(mensagem);
 });
-
 
 
 

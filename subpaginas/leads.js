@@ -111,7 +111,7 @@ function inicializarLeads() {
         const ordenacaoSelecionada = document.getElementById("dropdown-ordenacao-leads")?.value || "";
 
         const offset = (window.paginaAtual - 1) * window.itensPorPagina;
-        const url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list-clientes");
+        const url = new URL("https://pedepro-meulead.6a7cul.easypanel.host/list/clientes");
         url.searchParams.set("limit", window.itensPorPagina);
         url.searchParams.set("offset", offset);
 
@@ -157,7 +157,7 @@ function inicializarLeads() {
             const link = document.createElement("link");
             link.id = "checkout-css";
             link.rel = "stylesheet";
-            link.href = "checkout.css";
+            link.href = "subpaginas/checkout.css"; // Ajustado para a pasta subpaginas
             document.head.appendChild(link);
             await new Promise(resolve => link.onload = resolve);
         }
@@ -165,7 +165,7 @@ function inicializarLeads() {
         if (!document.getElementById("checkout-js")) {
             const script = document.createElement("script");
             script.id = "checkout-js";
-            script.src = "checkout.js";
+            script.src = "subpaginas/checkout.js"; // Ajustado para a pasta subpaginas
             document.body.appendChild(script);
             await new Promise(resolve => script.onload = resolve);
         }

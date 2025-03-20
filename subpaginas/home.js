@@ -1,13 +1,13 @@
 // Variáveis globais
 let cidades = [];
 let slideIndex = 0;
+let autoSlideInterval;
 
 // Função para carregar as cidades da API
 async function carregarCidades() {
     try {
         const response = await fetch("https://backand.meuleaditapema.com.br/cidades");
         const data = await response.json();
-        console.log("Dados das cidades recebidos:", data);
         cidades = Array.isArray(data) ? data : [];
     } catch (error) {
         console.error("Erro ao carregar cidades:", error);
@@ -36,7 +36,7 @@ function criarCardImovel(imovel) {
     const formatarTexto = (quantidade, singular, plural) => 
         `${quantidade} ${quantidade === 1 ? singular : plural}`;
 
-    const cardHTML = `
+    return `
         <div class="card">
             <div class="image-container">
                 <img src="${imagem}" alt="Imóvel">
@@ -70,8 +70,6 @@ function criarCardImovel(imovel) {
             </button>
         </div>
     `;
-    console.log("Card de imóvel criado:", cardHTML);
-    return cardHTML;
 }
 
 // Função para carregar dinamicamente CSS e JS do checkout
@@ -80,19 +78,17 @@ async function carregarRecursosCheckout() {
         const link = document.createElement("link");
         link.id = "checkout-css";
         link.rel = "stylesheet";
-        link.href = "checkout.css";
+        link.href = "subpaginas/checkout.css";
         document.head.appendChild(link);
         await new Promise(resolve => link.onload = resolve);
-        console.log("CSS do checkout carregado");
     }
 
     if (!document.getElementById("checkout-js")) {
         const script = document.createElement("script");
         script.id = "checkout-js";
-        script.src = "checkout.js";
+        script.src = "subpaginas/checkout.js";
         document.body.appendChild(script);
         await new Promise(resolve => script.onload = resolve);
-        console.log("JS do checkout carregado");
     }
 }
 
@@ -147,13 +143,11 @@ function mostrarPopupLogin(leadId, padrao, valorFormatado) {
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
-    console.log("Popup de login exibido para leadId:", leadId);
 
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             document.body.removeChild(overlay);
             document.body.style.overflow = 'auto';
-            console.log("Popup de login fechado");
         }
     });
 }
@@ -162,7 +156,6 @@ function mostrarPopupLogin(leadId, padrao, valorFormatado) {
 async function verificarLoginAntesCheckout(leadId, padrao, valorFormatado) {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-    console.log("Verificando login - token:", token, "userId:", userId);
 
     if (!token || !userId) {
         mostrarPopupLogin(leadId, padrao, valorFormatado);
@@ -179,20 +172,17 @@ async function verificarLoginAntesCheckout(leadId, padrao, valorFormatado) {
         });
 
         const data = await response.json();
-        console.log("Resposta da verificação de login:", data);
 
         if (response.ok && !data.error) {
             await carregarRecursosCheckout();
             if (typeof window.renderizarCheckout === "function") {
                 document.body.style.overflow = 'hidden';
                 window.renderizarCheckout(leadId, padrao, valorFormatado);
-                console.log("Checkout renderizado para leadId:", leadId);
                 const observer = new MutationObserver((mutations) => {
                     mutations.forEach((mutation) => {
                         if (!document.querySelector('.checkout-overlay')) {
                             document.body.style.overflow = 'auto';
                             observer.disconnect();
-                            console.log("Overlay de checkout removido, overflow restaurado");
                         }
                     });
                 });
@@ -201,7 +191,6 @@ async function verificarLoginAntesCheckout(leadId, padrao, valorFormatado) {
                 console.error("Erro: Função renderizarCheckout não encontrada após carregar checkout.js");
             }
         } else {
-            console.log("Credenciais inválidas ou erro na resposta:", data.error);
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.meuleaditapema.com.br;";
@@ -229,7 +218,7 @@ function criarCardLead(cliente) {
     });
     const titulo = cliente.titulo || "Lead sem título";
 
-    const cardHTML = `
+    return `
         <div class="lead-card ${padrao}">
             <div class="lead-card-header">
                 <div class="lead-badge">${padrao === "alto-padrao" ? "Alto Padrão" : "Médio Padrão"}</div>
@@ -245,8 +234,6 @@ function criarCardLead(cliente) {
             </div>
         </div>
     `;
-    console.log("Card de lead criado:", cardHTML);
-    return cardHTML;
 }
 
 // Função para carregar preview de imóveis
@@ -254,20 +241,14 @@ async function carregarImoveisPreview() {
     try {
         const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-imoveis/disponiveis?limite=10&offset=0&destaque=true`);
         const data = await response.json();
-        console.log("Dados dos imóveis recebidos:", data);
         const imoveisPreview = document.getElementById("imoveis-preview");
-        if (!imoveisPreview) {
-            console.warn("Elemento #imoveis-preview não encontrado no DOM");
-            return;
-        }
+        if (!imoveisPreview) return;
         imoveisPreview.innerHTML = "";
         if (data.success && data.imoveis && Array.isArray(data.imoveis)) {
             data.imoveis.forEach(imovel => {
                 imoveisPreview.innerHTML += criarCardImovel(imovel);
             });
-            console.log("Imóveis renderizados no #imoveis-preview");
         } else {
-            console.warn("Nenhum imóvel em destaque encontrado:", data);
             imoveisPreview.innerHTML = "<p>Nenhum imóvel em destaque disponível no momento.</p>";
         }
     } catch (error) {
@@ -280,22 +261,16 @@ async function carregarImoveisPreview() {
 // Função para carregar preview de leads
 async function carregarLeadsPreview() {
     try {
-        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list-clientes?limit=4&offset=0`);
+        const response = await fetch(`https://pedepro-meulead.6a7cul.easypanel.host/list/clientes?limit=4&offset=0&destaque=true`);
         const data = await response.json();
-        console.log("Dados dos leads recebidos:", data);
         const leadsPreview = document.getElementById("leads-preview");
-        if (!leadsPreview) {
-            console.warn("Elemento #leads-preview não encontrado no DOM");
-            return;
-        }
+        if (!leadsPreview) return;
         leadsPreview.innerHTML = "";
         if (data.clientes && Array.isArray(data.clientes)) {
             data.clientes.forEach(cliente => {
                 leadsPreview.innerHTML += criarCardLead(cliente);
             });
-            console.log("Leads renderizados no #leads-preview");
         } else {
-            console.warn("Nenhum lead encontrado no preview:", data);
             leadsPreview.innerHTML = "<p>Nenhum lead disponível no momento.</p>";
         }
     } catch (error) {
@@ -310,25 +285,17 @@ async function carregarTextos() {
     try {
         const response = await fetch("https://backand.meuleaditapema.com.br/get-content");
         const data = await response.json();
-        console.log("Dados dos textos recebidos da API:", data);
 
-        // Título e subtítulo
         const tituloPrincipal = document.getElementById("titulo-principal");
         const subtitulo = document.getElementById("subtitulo");
-        console.log("Elemento #titulo-principal encontrado:", !!tituloPrincipal);
-        console.log("Elemento #subtitulo encontrado:", !!subtitulo);
         if (tituloPrincipal) {
             tituloPrincipal.textContent = data.ajustes.titulo || "Bem-vindo ao Meu Lead Itapema";
-            console.log("Título principal definido como:", tituloPrincipal.textContent);
         }
         if (subtitulo) {
             subtitulo.textContent = data.ajustes.subtitulo || "Encontre os melhores imóveis e leads para o seu negócio!";
-            console.log("Subtítulo definido como:", subtitulo.textContent);
         }
 
-        // Tipo de apresentação (dinâmico)
         const apresentacaoContainer = document.getElementById("apresentacao");
-        console.log("Elemento #apresentacao encontrado:", !!apresentacaoContainer);
         if (apresentacaoContainer) {
             const tipoApresentacao = data.ajustes.tipo_apn === 1 ? "imagem" : "video";
             const imagensApresentacao = data.ajustes.imagens || [];
@@ -339,7 +306,6 @@ async function carregarTextos() {
                 apresentacaoContainer.innerHTML = `
                     <video src="${videoApresentacao}" controls autoplay muted loop class="apresentacao-video"></video>
                 `;
-                console.log("Vídeo de apresentação renderizado com URL:", videoApresentacao);
             } else if (tipoApresentacao === "imagem" && imagensApresentacao.length > 0) {
                 apresentacaoContainer.innerHTML = `
                     <div class="slider-container" id="slider-container">
@@ -360,38 +326,121 @@ async function carregarTextos() {
                 const totalSlides = imagensApresentacao.length;
                 slideIndex = 0;
 
-                function updateSlider() {
+                function updateSlider(instant = false) {
+                    // Se for uma transição instantânea (para o loop infinito), remove a animação
+                    slider.style.transition = instant ? 'none' : 'transform 0.3s ease';
                     slider.style.transform = `translateX(-${slideIndex * 100}vw)`;
                     document.querySelectorAll(".dot").forEach((dot, index) => dot.classList.toggle("active", index === slideIndex));
-                    prevArrow.style.display = slideIndex === 0 ? "none" : "block";
-                    nextArrow.style.display = slideIndex === totalSlides - 1 ? "none" : "block";
+                    // Sempre mostra as setas para o efeito infinito
+                    prevArrow.style.display = "block";
+                    nextArrow.style.display = "block";
                 }
 
-                function goToSlide(index) {
-                    slideIndex = Math.max(0, Math.min(index, totalSlides - 1));
-                    updateSlider();
+                function goToSlide(index, instant = false) {
+                    slideIndex = index;
+                    updateSlider(instant);
                 }
 
-                prevArrow.addEventListener("click", () => { if (slideIndex > 0) { slideIndex--; updateSlider(); } });
-                nextArrow.addEventListener("click", () => { if (slideIndex < totalSlides - 1) { slideIndex++; updateSlider(); } });
-                dotsContainer.addEventListener("click", (e) => {
-                    const dot = e.target.closest(".dot");
-                    if (dot) goToSlide(Array.from(dotsContainer.children).indexOf(dot));
+                // Eventos de clique nos botões
+                prevArrow.addEventListener("click", () => {
+                    slideIndex--;
+                    if (slideIndex < 0) {
+                        slideIndex = totalSlides - 1;
+                        goToSlide(slideIndex, true); // Transição instantânea para o último
+                        setTimeout(() => updateSlider(), 0); // Reaplica a transição suave
+                    } else {
+                        updateSlider();
+                    }
+                    resetAutoSlide();
                 });
 
+                nextArrow.addEventListener("click", () => {
+                    slideIndex++;
+                    if (slideIndex >= totalSlides) {
+                        slideIndex = 0;
+                        goToSlide(slideIndex, true); // Transição instantânea para o primeiro
+                        setTimeout(() => updateSlider(), 0); // Reaplica a transição suave
+                    } else {
+                        updateSlider();
+                    }
+                    resetAutoSlide();
+                });
+
+                dotsContainer.addEventListener("click", (e) => {
+                    const dot = e.target.closest(".dot");
+                    if (dot) {
+                        goToSlide(Array.from(dotsContainer.children).indexOf(dot));
+                        resetAutoSlide();
+                    }
+                });
+
+                // Eventos de toque para rolagem com o dedo
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                slider.addEventListener("touchstart", (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    clearInterval(autoSlideInterval);
+                });
+
+                slider.addEventListener("touchmove", (e) => {
+                    touchEndX = e.touches[0].clientX;
+                });
+
+                slider.addEventListener("touchend", () => {
+                    const diffX = touchStartX - touchEndX;
+                    if (diffX > 50) { // Swipe para esquerda
+                        slideIndex++;
+                        if (slideIndex >= totalSlides) {
+                            slideIndex = 0;
+                            goToSlide(slideIndex, true);
+                            setTimeout(() => updateSlider(), 0);
+                        } else {
+                            updateSlider();
+                        }
+                    } else if (diffX < -50) { // Swipe para direita
+                        slideIndex--;
+                        if (slideIndex < 0) {
+                            slideIndex = totalSlides - 1;
+                            goToSlide(slideIndex, true);
+                            setTimeout(() => updateSlider(), 0);
+                        } else {
+                            updateSlider();
+                        }
+                    }
+                    resetAutoSlide();
+                });
+
+                // Função para iniciar rolagem automática
+                function startAutoSlide() {
+                    autoSlideInterval = setInterval(() => {
+                        slideIndex++;
+                        if (slideIndex >= totalSlides) {
+                            slideIndex = 0;
+                            goToSlide(slideIndex, true); // Transição instantânea
+                            setTimeout(() => updateSlider(), 0); // Reaplica transição suave
+                        } else {
+                            updateSlider();
+                        }
+                    }, 5000);
+                }
+
+                // Função para resetar o intervalo de rolagem automática
+                function resetAutoSlide() {
+                    clearInterval(autoSlideInterval);
+                    startAutoSlide();
+                }
+
                 updateSlider();
-                console.log("Slideshow de imagens renderizado com URLs:", imagensApresentacao);
+                startAutoSlide();
             } else {
                 apresentacaoContainer.innerHTML = `
                     <img src="${fallbackImagem}" alt="Apresentação" class="apresentacao-imagem">
                 `;
-                console.log("Imagem estática de fallback renderizada");
             }
         }
 
-        // Valores
         const valoresContainer = document.getElementById("valores");
-        console.log("Elemento #valores encontrado:", !!valoresContainer);
         if (valoresContainer && data.valores) {
             const valoresHTML = data.valores.map(valor => `
                 <div class="valor-card">
@@ -401,13 +450,10 @@ async function carregarTextos() {
                 </div>
             `).join("");
             valoresContainer.innerHTML = valoresHTML;
-            console.log("Valores renderizados:", valoresHTML);
         }
 
-        // Feedbacks
         const feedbacksSection = document.querySelector(".feedbacks-section");
         const feedbacksContainer = document.getElementById("feedbacks");
-        console.log("Elemento #feedbacks encontrado:", !!feedbacksContainer);
         if (feedbacksContainer && data.feedbacks && data.feedbacks.length > 0) {
             const feedbacksHTML = data.feedbacks.map(feedback => `
                 <div class="feedback-card">
@@ -419,11 +465,9 @@ async function carregarTextos() {
                 </div>
             `).join("");
             feedbacksContainer.innerHTML = feedbacksHTML;
-            feedbacksSection.style.display = "block"; // Exibe a seção se houver feedbacks
-            console.log("Feedbacks renderizados:", feedbacksHTML);
+            feedbacksSection.style.display = "block";
         } else {
-            feedbacksSection.style.display = "none"; // Oculta a seção se não houver feedbacks
-            console.log("Nenhum feedback disponível, seção ocultada");
+            feedbacksSection.style.display = "none";
         }
     } catch (error) {
         console.error("Erro ao carregar textos:", error);
@@ -433,42 +477,29 @@ async function carregarTextos() {
         const feedbacksSection = document.querySelector(".feedbacks-section");
         if (tituloPrincipal) {
             tituloPrincipal.textContent = "Bem-vindo ao Meu Lead Itapema";
-            console.log("Título principal revertido para padrão:", tituloPrincipal.textContent);
         }
         if (subtitulo) {
             subtitulo.textContent = "Encontre os melhores imóveis e leads para o seu negócio!";
-            console.log("Subtítulo revertido para padrão:", subtitulo.textContent);
         }
         if (apresentacaoContainer) {
             apresentacaoContainer.innerHTML = `
                 <img src="assets/apresentacao.jpg" alt="Apresentação" class="apresentacao-imagem">
             `;
-            console.log("Imagem estática de fallback renderizada devido a erro");
         }
         if (feedbacksSection) {
-            feedbacksSection.style.display = "none"; // Oculta a seção em caso de erro
-            console.log("Seção de feedbacks ocultada devido a erro");
+            feedbacksSection.style.display = "none";
         }
     }
 }
 
 // Função principal que inicializa a página
 async function inicializarPagina() {
-    console.log("Iniciando carregamento da página...");
-
-    // Primeiro carrega as cidades, que são uma dependência
     await carregarCidades();
-
-    // Depois carrega os outros elementos, que dependem das cidades
     await Promise.all([
         carregarTextos(),
         carregarImoveisPreview(),
         carregarLeadsPreview()
     ]);
-
-    console.log("Página inicializada com sucesso!");
-    
-    // Disparar evento personalizado para sinalizar o fim do carregamento
     window.dispatchEvent(new Event("carregamentoCompleto"));
 }
 

@@ -34,14 +34,16 @@
 
 .slider {
     display: flex;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* Transição suave já presente */
     width: 100%;
+    height: 60vh; /* Define altura fixa para consistência */
 }
 
 .slider img {
     width: 100vw;
-    height: 60vh;
-    object-fit: cover;
+    height: 100%; /* Usa 100% da altura do container pai (.slider) */
+    object-fit: cover; /* Mantém o corte */
+    object-position: center; /* Centraliza a imagem */
     flex-shrink: 0;
 }
 
@@ -512,8 +514,8 @@
     .slider-container {
         max-height: 50vh;
     }
-    .slider img {
-        height: 50vh;
+    .slider {
+        height: 50vh; /* Ajustado para responsividade */
     }
     .feedback-card {
         flex-direction: column;
@@ -544,19 +546,7 @@
     .slider-container {
         max-height: 40vh;
     }
-    .slider img {
-        height: 40vh;
+    .slider {
+        height: 40vh; /* Ajustado para responsividade */
     }
-}
-
-.dot {
-    width: 10px;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-.dot.active {
-    background: white;
 }
