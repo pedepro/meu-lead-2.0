@@ -156,6 +156,27 @@ async function confirmarCompra(leadId) {
         const result = await response.json();
         console.log("Resposta do backend:", result);
 
+        // Calcula o valor total dos leads selecionados
+        const totalPriceElement = document.querySelector(".total-price");
+        const totalPriceText = totalPriceElement ? totalPriceElement.textContent.replace("Total: ", "") : "0";
+        const totalValue = parseFloat(totalPriceText.replace("R$", "").replace(".", "").replace(",", "."));
+
+        // Envia o evento Purchase ao Facebook Pixel
+        if (window.fbq && window.facebookPixelId) {
+            window.fbq('track', 'Purchase', {
+                value: totalValue,
+                currency: 'BRL',
+                content_ids: selectedLeads.map(id => `lead_${id}`),
+                content_type: 'product'
+            });
+            console.log('Evento Purchase enviado ao Facebook Pixel:', {
+                value: totalValue,
+                currency: 'BRL',
+                content_ids: selectedLeads.map(id => `lead_${id}`),
+                content_type: 'product'
+            });
+        }
+
         document.querySelector(".checkout-overlay").remove();
 
         if (result.success && result.invoiceUrl) {

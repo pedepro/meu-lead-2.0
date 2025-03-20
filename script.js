@@ -1,4 +1,5 @@
 let appVersion = "1.0.0";
+let facebookPixelId = null;
 
 async function loadVersion() {
     try {
@@ -11,6 +12,63 @@ async function loadVersion() {
         console.log(`Versão da aplicação carregada: ${appVersion}`);
     } catch (error) {
         console.error('Erro ao carregar a versão, usando padrão:', error);
+    }
+}
+
+// Função para carregar o Facebook Pixel do backend
+async function loadFacebookPixel() {
+    try {
+        const response = await fetch('https://backand.meuleaditapema.com.br/ajustes/facebook-pixel');
+        if (!response.ok) throw new Error('Erro ao buscar o Facebook Pixel');
+        const data = await response.json();
+        facebookPixelId = data.facebook_pixel;
+        if (facebookPixelId) {
+            initializeFacebookPixel();
+        }
+    } catch (error) {
+        console.error('Erro ao carregar o Facebook Pixel:', error);
+    }
+}
+
+// Função para inicializar o script do Facebook Pixel
+function initializeFacebookPixel() {
+    if (!facebookPixelId || document.getElementById('facebook-pixel-script')) {
+        return; // Evita recarregar se já foi inicializado ou se não há Pixel
+    }
+
+    // Adiciona o script do Facebook Pixel ao <head>
+    const script = document.createElement('script');
+    script.id = 'facebook-pixel-script';
+    script.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${facebookPixelId}');
+        fbq('track', 'PageView');
+    `;
+    document.head.appendChild(script);
+
+    // Adiciona o <noscript> para fallback (opcional)
+    const noscript = document.createElement('noscript');
+    noscript.innerHTML = `
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=${facebookPixelId}&ev=PageView&noscript=1"/>
+    `;
+    document.head.appendChild(noscript);
+
+    console.log(`Facebook Pixel inicializado com ID: ${facebookPixelId}`);
+}
+
+// Função para enviar o evento PageView (usada após a inicialização)
+function trackFacebookPageView() {
+    if (window.fbq && facebookPixelId) {
+        window.fbq('track', 'PageView');
+        console.log('Evento PageView enviado ao Facebook Pixel');
     }
 }
 
@@ -240,6 +298,7 @@ async function loadContent(session) {
             }
 
             updateActiveSection(session);
+            trackFacebookPageView(); // Dispara o evento PageView após carregar o conteúdo
         })
         .catch(error => {
             if (session === 'home') {
@@ -284,11 +343,13 @@ document.addEventListener('click', (e) => {
 
 window.onload = async () => {
     await loadVersion();
+    await loadFacebookPixel(); // Carrega o Pixel antes de tudo
     syncCookiesToLocalStorage();
     await updateDropdown();
     const session = getSessionParam();
     await loadContent(session);
     syncLocalStorageToCookies();
+    trackFacebookPageView(); // Dispara o evento PageView no carregamento inicial
 };
 
 document.querySelectorAll('.sidebar a').forEach(link => {

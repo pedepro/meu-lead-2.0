@@ -1,4 +1,9 @@
-<div class="principal">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuração do Facebook Pixel</title>
   <style>
     .principal {
       max-width: 1200px;
@@ -7,21 +12,20 @@
       padding: 20px;
       width: 100%;
       background-color: #f5f6fa;
-
     }
 
     .section {
       margin-bottom: 40px;
       padding: 20px;
       border-radius: 8px;
-      display: flex; /* Usar flex para dividir em duas colunas */
-      align-items: flex-start; /* Alinhar itens no topo */
-      gap: 20px; /* Espaço entre as colunas */
-      width: 100%; /* Ocupar toda a largura disponível */
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      width: 100%;
     }
 
     .section-text {
-      flex: 1; /* O texto ocupa a largura disponível à esquerda */
+      flex: 1;
     }
 
     .section h3 {
@@ -43,11 +47,11 @@
       font-size: 14px;
       color: #666;
       line-height: 1.5;
-      margin-bottom: 0; /* Remover margem inferior para não criar espaço extra */
+      margin-bottom: 0;
     }
 
     .sub-section {
-      flex: 1; /* A sub-seção ocupa a largura disponível à direita */
+      flex: 1;
       background-color: #fff;
       padding: 20px;
       border-radius: 8px;
@@ -75,15 +79,6 @@
       margin-bottom: 10px;
     }
 
-    .sub-section ol a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .sub-section ol a:hover {
-      text-decoration: underline;
-    }
-
     .sub-section label {
       font-size: 14px;
       color: #666;
@@ -99,10 +94,6 @@
       border-radius: 4px;
       font-size: 14px;
       margin-bottom: 10px;
-    }
-
-    .sub-section input[readonly] {
-      background-color: #f8f9fa;
     }
 
     .sub-section button {
@@ -136,108 +127,33 @@
       max-height: 100%;
     }
   </style>
-
-  <div class="section">
-    <div class="section-text">
-      <h3>Adicione o Pixel do Facebook aqui</h3>
-      <p>O Pixel do Facebook é um código "invisível" que permite rastrear suas conversões na web.</p>
-    </div>
-    <div class="sub-section">
-      <div>
-        <h4>Facebook Pixel</h4>
-        <ol>
-          <li>Digite o "Gerenciador de eventos" da sua conta do Facebook.</li>
-          <li>Escolha o seu Pixel.</li>
-          <li>Copie o identificador do Pixel.</li>
-          <li>Insira o identificador do Pixel.</li>
-        </ol>
-        <label for="pixel-id">Insira o identificador do Pixel aqui</label>
-        <input type="text" id="pixel-id" placeholder="Insira o identificador aqui">
-        <button>Salvar</button>
+</head>
+<body>
+  <div class="principal">
+    <div class="section">
+      <div class="section-text">
+        <h3>Adicione o Pixel do Facebook aqui</h3>
+        <p>O Pixel do Facebook é um código "invisível" que permite rastrear suas conversões na web.</p>
       </div>
-      <!-- Placeholder para imagem do Facebook Pixel -->
-      <div class="image-placeholder">
-        <!-- Adicione a imagem aqui -->
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-text">
-      <h3>Adicione a verificação de domínio do Facebook aqui</h3>
-      <p>Ao verificar o domínio Meta (Facebook), você poderá gerenciar as permissões de edição de seus links e de seu conteúdo, tanto orgânico quanto pago, para ter acesso total à propriedade do seu domínio no Gerenciador de Negócios.</p>
-    </div>
-    <div class="sub-section">
-      <div>
-        <h4>Facebook Domain Verification</h4>
-        <ol>
-          <li>Localizado no painel principal do Gerenciador de Negócios, você deve clicar nas principais ferramentas Meta.</li>
-          <li>Clique em “Segurança da marca”</li>
-          <li>Dentro da opção "Brand Security", você será direcionado ao painel de verificação onde encontrará as configurações e opções para verificar seu domínio do Menu OlaClick.</li>
-          <li>Dentro do Painel na parte inferior abaixo do símbolo, você deve exibir e selecionar a opção "Adicionar uma meta tag"</li>
-          <li>Se tiver a meta tag correspondente ao seu menu, deve colá-la no campo 7.</li>
-          <li>Depois de colocar a meta tag, é o Facebook quem deve realizar a verificação. O tempo médio de verificação pelo Facebook é de 3 a 5 dias úteis.</li>
-          <li>Digite sua verificação de domínio recebida do Facebook aqui:</li>
-        </ol>
-        <label for="domain-verification">Cole aqui "/xzc-"</label>
-        <input type="text" id="domain-verification" placeholder="/xzc-">
-      </div>
-      <!-- Placeholder para imagem do Facebook Domain Verification -->
-      <div class="image-placeholder"> <img src="https://panels-legacy.olaclick.app/img/facebook-pixel.337a40b3.svg&quot" alt="facebook-pixel">
-        <!-- Adicione a imagem aqui -->
+      <div class="sub-section">
+        <div>
+          <h4>Facebook Pixel</h4>
+          <ol>
+            <li>Digite o "Gerenciador de eventos" da sua conta do Facebook.</li>
+            <li>Escolha o seu Pixel.</li>
+            <li>Copie o identificador do Pixel.</li>
+            <li>Insira o identificador do Pixel.</li>
+          </ol>
+          <label for="pixel-id">Insira o identificador do Pixel aqui</label>
+          <input type="text" id="pixel-id" placeholder="Insira o identificador aqui">
+          <button id="save-button">Salvar</button>
+        </div>
+        <div class="image-placeholder">
+          <img src="https://panels-legacy.olaclick.app/img/facebook-pixel.337a40b3.svg" alt="facebook-pixel">
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="section">
-    <div class="section-text">
-      <h3>Adicione o pixel do Google Tag Manager aqui</h3>
-      <p>O pixel do Tag Manager te ajuda a administrar etiquetas para a coleta de público e medição de seu menu com terceiros como Google Analytics o coleta de público para Google Adwords.</p>
-    </div>
-    <div class="sub-section">
-      <div>
-        <h4>Google Tag Manager</h4>
-        <ol>
-          <li>Crie sua conta no Google Tag Manager. <a href="#">Clique aqui</a> <a href="#">Clique aqui</a></li>
-          <li>Adicione a URL do seu menu OlaClick.</li>
-          <li>Configure o recipiente para website.</li>
-          <li>Copie o ID do recipiente.</li>
-          <li>Cole aqui o ID do recipiente.</li>
-        </ol>
-        <label for="gtm-id">Insira o (ID GTM-XXXXXX de GTM) aqui.</label>
-        <input type="text" id="gtm-id" placeholder="Insira o ID GTM-XXXXXX aqui">
-        <button>Salvar</button>
-      </div>
-      <!-- Placeholder para imagem do Google Tag Manager -->
-      <div class="image-placeholder">
-        <!-- Adicione a imagem aqui -->
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-text">
-      <h3>Adicione o pixel do Google Analytics aqui.</h3>
-      <p>O pixel do Analytics te oferece informação do tráfego que chega ao seu menu de acordo com o público, aquisição, comportamento e conversões que se registram.</p>
-    </div>
-    <div class="sub-section">
-      <div>
-        <h4>Google Analytics GA4</h4>
-        <ol>
-          <li>Criar conta com Google Analytics. <a href="#">Clique aqui</a>. <a href="#">Clique aqui</a></li>
-          <li>Clicar em Começar a medir / Configuração da conta.</li>
-          <li>Seguinte, Configuração de propriedade e clicar em Opções avançadas.</li>
-          <li>Habilitar "Criar uma propriedade Universal Analytics".</li>
-          <li>Selecionar "Criar uma propriedade Google Analytics 4 e outra Universal Analytics".</li>
-          <li>Cole aqui o ID do Google Analytics 4.</li>
-        </ol>
-        <label for="ga-id">G-5RR8QY1WCB</label>
-        <input type="text" id="ga-id" value="G-5RR8QY1WCB" readonly>
-      </div>
-      <!-- Placeholder para imagem do Google Analytics -->
-      <div class="image-placeholder">
-        <!-- Adicione a imagem aqui -->
-      </div>
-    </div>
-  </div>
-</div>
+  <script src="script.js"></script>
+</body>
+</html>
