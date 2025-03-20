@@ -1,0 +1,111 @@
+<div class="pedidos-container">
+    <div id="pending-delivery-banner" class="pending-delivery-banner" style="display: none;">
+        <span class="material-icons">warning</span>
+        <span>Existem pedidos pagos mas não entregues</span>
+    </div>
+    <div class="head">
+        <h1>Lista de Pedidos</h1>
+    </div>
+
+    <div class="filters-container">
+        <div class="filter-group busca-geral">
+            <label>Intervalo de Datas</label>
+            <div class="date-range">
+                <input type="date" id="startDate" placeholder="Início">
+                <input type="date" id="endDate" placeholder="Fim">
+            </div>
+        </div>
+        <div class="filters-bottom">
+            <div class="dropdowns-container">
+                <div class="filter-group">
+                    <label>Valor Mínimo</label>
+                    <input type="number" id="minValue" placeholder="Mínimo" min="0">
+                </div>
+                <div class="filter-group">
+                    <label>Valor Máximo</label>
+                    <input type="number" id="maxValue" placeholder="Máximo" min="0">
+                </div>
+                <div class="filter-group">
+                    <label>Entregue</label>
+                    <select id="entregue">
+                        <option value="">Todos</option>
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Pago</label>
+                    <select id="pago">
+                        <option value="">Todos</option>
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Com Imóveis</label>
+                    <select id="comImoveis">
+                        <option value="">Todos</option>
+                        <option value="true">Sim</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Com Leads</label>
+                    <select id="comLeads">
+                        <option value="">Todos</option>
+                        <option value="true">Sim</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Cancelado</label>
+                    <select id="cancelado">
+                        <option value="">Todos</option>
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="total-registros" id="totalRegistros"></div>
+
+    <div class="pedidos-table" id="pedidosList">
+        <div class="table-header">
+            <span>ID</span>
+            <span>Data</span>
+            <span>Valor Total</span>
+            <span>Entregue</span>
+            <span>Pago</span>
+            <span>Ações</span>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <span id="prevPage" class="disabled"><i class="material-icons">arrow_back_ios</i></span>
+        <span id="pageInfo"></span>
+        <span id="nextPage" class="disabled"><i class="material-icons">arrow_forward_ios</i></span>
+    </div>
+
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-content">
+            <h3>Detalhes do Pedido</h3>
+            <div id="modalContent"></div>
+            <div class="form-actions">
+                <button id="closeModal">Fechar</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-content">
+            <h3>Cancelar Pedido</h3>
+            <p>Escolha uma opção para o pedido ID: <span id="cancelPedidoId"></span></p>
+            <div class="cancel-options">
+                <button id="cancelOnly">Apenas Cancelar</button>
+                <button id="cancelAndRefund" style="display: none;">Cancelar e Devolver</button>
+            </div>
+            <div class="form-actions">
+                <button id="closeCancelModal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,12 @@
         "label": "Análise",
         "buttons": [
             { 
+                "id": "pedidos", 
+                "label": "Pedidos", 
+                "link": "/pedidos", 
+                "icon": "fa fa-cogs" 
+            },
+            { 
                 "id": "meus-clientes", 
                 "label": "Meus Clientes", 
                 "link": "/meus-clientes", 
@@ -19,6 +25,15 @@
                 "submenu": [
                     { "id": "cadastroimovel", "label": "Novo imóvel", "link": "/imoveis/novoimovel" },
                     { "id": "listaimoveis", "label": "Lista de imóveis", "link": "/imoveis/listaimoveis" }
+                ]
+            },
+            { 
+                "id": "corretores", 
+                "label": "corretores", 
+                "link": "/corretores", 
+                "icon": "fa fa-building",
+                "submenu": [
+                    { "id": "corretores", "label": "Corretores", "link": "/corretores/corretores" }
                 ]
             },
             { 

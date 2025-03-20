@@ -7,7 +7,7 @@
 }
 
 /* Container Principal */
-.pedidos-container {
+.corretores-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -46,12 +46,7 @@
     min-width: 100%;
 }
 
-.filters-container .filter-group.busca-geral .date-range {
-    display: flex;
-    gap: 10px;
-}
-
-.filters-container .filter-group.busca-geral input[type="date"] {
+.filters-container .filter-group.busca-geral .input-corretores {
     width: 100%;
     padding: 10px;
     border: 1px solid #dde4eb;
@@ -62,7 +57,7 @@
     transition: border-color 0.3s ease;
 }
 
-.filters-container .filter-group.busca-geral input[type="date"]:focus {
+.filters-container .filter-group.busca-geral .input-corretores:focus {
     border-color: #4a90e2;
     outline: none;
 }
@@ -115,6 +110,67 @@
     outline: none;
 }
 
+/* Cabeçalho de Seleção */
+.selection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.selection-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.selected-count {
+    background-color: #8e44ad; /* Roxo */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.select-all-btn {
+    padding: 6px 12px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.select-all-btn:hover {
+    background-color: #219653;
+}
+
+.selected-count.hidden,
+.select-all-btn.hidden,
+.send-message-global.hidden {
+    display: none;
+}
+
+.send-message-global {
+    padding: 8px 16px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-message-global:hover {
+    background-color: #357abd;
+}
+
 /* Total de Registros */
 .total-registros {
     font-size: 14px;
@@ -123,17 +179,17 @@
     font-weight: 500;
 }
 
-/* Tabela de Pedidos */
-.pedidos-table {
+/* Tabela de Corretores */
+.corretores-table {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
 
-.pedidos-table .table-header {
+.table-header {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 2fr 2fr 1.5fr 1fr;
     padding: 15px 20px;
     background-color: #f9fafc;
     border-bottom: 1px solid #dde4eb;
@@ -142,24 +198,20 @@
     color: #2c3e50;
 }
 
-.pedido-row {
+.corretor-row {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 2fr 2fr 1.5fr 1fr;
     padding: 15px 20px;
     border-bottom: 1px solid #f5f6fa;
     align-items: center;
     transition: background-color 0.2s ease;
 }
 
-.pedido-row:hover {
+.corretor-row:hover {
     background-color: #eef5fb;
 }
 
-.pedido-row.cancelado {
-    background-color: #fef2e8; /* Laranja suave para pedidos cancelados */
-}
-
-.pedido-row span {
+.corretor-row span {
     font-size: 13px;
     color: #333;
     white-space: nowrap;
@@ -167,78 +219,38 @@
     text-overflow: ellipsis;
 }
 
-/* Ícones de Ação */
-.action-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px; /* Bordas mais arredondadas */
-    padding: 6px; /* Padding interno */
+/* Checkbox Customizado */
+.select-corretor {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4a90e2;
+    border-radius: 4px;
+    background-color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 8px;
+    position: relative;
+    transition: all 0.2s ease;
 }
 
-.details-icon {
-    background-color: #e6f0fa; /* Azul clarinho */
+.select-corretor:checked {
+    background-color: #4a90e2;
+    border-color: #4a90e2;
 }
 
-.details-icon i {
-    color: #4a90e2; /* Azul mais visível */
-    width: 20px;
-    height: 20px;
-}
-
-.details-icon:hover {
-    background-color: #d0e0f5; /* Azul um pouco mais escuro no hover */
-}
-
-.cancel-icon {
-    background-color: #fff3e6; /* Laranja clarinho */
-}
-
-.cancel-icon i {
-    color: #f39c12; /* Laranja forte */
-    width: 20px;
-    height: 20px;
-}
-
-.cancel-icon:hover {
-    background-color: #ffe6cc; /* Laranja um pouco mais escuro no hover */
-}
-
-.cancel-icon:disabled {
-    background-color: #f0f0f0; /* Cinza claro para desabilitado */
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.cancel-icon:disabled i {
-    color: #b0b0b0; /* Ícone cinza quando desabilitado */
-}
-
-.cancel-icon:disabled:hover {
-    background-color: #f0f0f0; /* Mantém cinza no hover */
-}
-
-/* Banner de Pedidos Pendentes */
-.pending-delivery-banner {
-    position: sticky;
-    top: 0;
-    background-color: #ffedd5;
-    color: #d97706;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.select-corretor:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
     font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.select-corretor:hover {
+    border-color: #357abd;
 }
 
 /* Paginação */
@@ -289,10 +301,8 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    width: 600px;
+    width: 500px;
     max-width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     transform: scale(0.9);
     transition: transform 0.3s ease;
@@ -310,29 +320,94 @@
     font-weight: 600;
 }
 
-#modalContent .section {
-    margin-bottom: 20px;
+.tag-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-#modalContent .section h4 {
-    font-size: 16px;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-#modalContent .item {
+.tag-btn {
+    padding: 6px 12px;
     background-color: #f9fafc;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
     border: 1px solid #dde4eb;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #4a90e2;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-#modalContent .item p {
-    font-size: 13px;
+.tag-btn:hover {
+    background-color: #4a90e2;
+    color: white;
+}
+
+#messageText {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dde4eb;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f9fafc;
     color: #333;
-    margin: 5px 0;
+    resize: none;
+    height: 120px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease;
+}
+
+#messageText:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.schedule-group,
+.interval-group {
+    margin-bottom: 15px;
+}
+
+.schedule-group label,
+.interval-group label {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+#scheduleDate,
+#sendInterval {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #dde4eb;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: #f9fafc;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+#scheduleDate:focus,
+#sendInterval:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #555;
 }
 
 .form-actions {
@@ -350,48 +425,22 @@
     transition: background-color 0.3s ease;
 }
 
-#closeModal, #closeCancelModal {
+#sendMessage {
+    background-color: #4a90e2;
+    color: white;
+}
+
+#sendMessage:hover {
+    background-color: #357abd;
+}
+
+#closeModal {
     background-color: #e74c3c;
     color: white;
 }
 
-#closeModal:hover, #closeCancelModal:hover {
+#closeModal:hover {
     background-color: #c0392b;
-}
-
-/* Popup de Cancelamento */
-.cancel-options {
-    margin: 20px 0;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.cancel-options button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#cancelOnly {
-    background-color: #e74c3c;
-    color: white;
-}
-
-#cancelOnly:hover {
-    background-color: #c0392b;
-}
-
-#cancelAndRefund {
-    background-color: #f39c12;
-    color: white;
-}
-
-#cancelAndRefund:hover {
-    background-color: #e67e22;
 }
 
 /* Responsividade */
@@ -409,22 +458,32 @@
         max-width: 100%;
     }
 
-    .filters-container .filter-group.busca-geral .date-range {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .pedidos-table .table-header,
-    .pedido-row {
+    .table-header,
+    .corretor-row {
         grid-template-columns: 1fr;
         text-align: center;
     }
 
-    .pedido-row span {
+    .corretor-row span {
         margin: 5px 0;
     }
 
     .modal-content {
         width: 90%;
+    }
+
+    .tag-buttons {
+        justify-content: flex-start;
+    }
+
+    .selection-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .selection-left {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
       listaimoveis: listaImovel,
       estatisticas: estatisticas,
       Rastreamento: rastreamento,
-      configuracoes: configuracoes
+      configuracoes: configuracoes,
+      corretores: corretores
   };
 
   // Verifica se session é nulo, vazio ou corresponde a uma função existente
@@ -166,6 +167,24 @@ function configuracoes() {
             document.getElementById('dashboard-container').innerHTML = html;
             const script = document.createElement('script');
             script.src = 'configuracoes/script.js';
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Erro ao carregar o HTML clientes:", error));
+  }
+
+
+  function corretores() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'corretores/corretores.css';
+    document.head.appendChild(link);
+  
+    fetch('corretores/corretores.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('dashboard-container').innerHTML = html;
+            const script = document.createElement('script');
+            script.src = 'corretores/corretores.js';
             document.body.appendChild(script);
         })
         .catch(error => console.error("Erro ao carregar o HTML clientes:", error));

@@ -1,0 +1,95 @@
+<div class="corretores-container">
+    <div class="head">
+        <h1>Lista de Corretores</h1>
+    </div>
+
+    <div class="filters-container">
+        <div class="filter-group busca-geral">
+            <label>Buscar por Nome, Email ou WhatsApp</label>
+            <input type="text" id="inputCorretores" class="input-corretores" placeholder="Digite Nome, Email ou WhatsApp" />
+        </div>
+        <div class="filters-bottom">
+            <div class="dropdowns-container">
+                <div class="filter-group">
+                    <label>Ordenar por</label>
+                    <select id="sortBy">
+                        <option value="created_at">Data de Criação</option>
+                        <option value="name">Nome</option>
+                        <option value="email">Email</option>
+                        <option value="phone">Telefone</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Ordem</label>
+                    <select id="sortOrder">
+                        <option value="DESC">Decrescente</option>
+                        <option value="ASC">Crescente</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Pedidos (Mínimo)</label>
+                    <input type="number" id="minPedidos" placeholder="Mínimo" min="0">
+                </div>
+                <div class="filter-group">
+                    <label>Pedidos (Máximo)</label>
+                    <input type="number" id="maxPedidos" placeholder="Máximo" min="0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="selection-header">
+        <div class="selection-left">
+            <span id="selectedCount" class="selected-count hidden">0 corretores selecionados</span>
+            <button id="selectAllBtn" class="select-all-btn hidden">Selecionar Todos</button>
+        </div>
+        <button id="sendMessageBtn" class="send-message-global hidden">Enviar Mensagem</button>
+    </div>
+
+    <div class="total-registros" id="totalRegistros"></div>
+
+    <div class="corretores-table" id="corretoresList">
+        <div class="table-header">
+            <span>Selecionar</span>
+            <span>Nome</span>
+            <span>Email</span>
+            <span>WhatsApp</span>
+            <span>Pedidos</span>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <span id="prevPage" class="disabled"><i class="material-icons">arrow_back_ios</i></span>
+        <span id="pageInfo"></span>
+        <span id="nextPage" class="disabled"><i class="material-icons">arrow_forward_ios</i></span>
+    </div>
+
+    <div class="modal-overlay" id="messageModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Enviar Mensagem</h3>
+            <div class="tag-buttons">
+                <button class="tag-btn" data-tag="@name">@name</button>
+                <button class="tag-btn" data-tag="@mail">@mail</button>
+                <button class="tag-btn" data-tag="@phone">@phone</button>
+                <button class="tag-btn" data-tag="@qntdepedidos">@qntdepedidos</button>
+            </div>
+            <textarea id="messageText" placeholder="Digite sua mensagem..."></textarea>
+            <div class="schedule-group">
+                <label>Agendar Envio</label>
+                <input type="datetime-local" id="scheduleDate" step="60">
+            </div>
+            <div class="interval-group">
+                <label>Intervalo por Envio (segundos)</label>
+                <input type="number" id="sendInterval" min="1" placeholder="Ex.: 60">
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="sendEmail"> Enviar por Email</label>
+                <label><input type="checkbox" id="sendWhatsapp"> Enviar por WhatsApp</label>
+            </div>
+            <div class="form-actions">
+                <button id="sendMessage">Enviar</button>
+                <button id="closeModal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
