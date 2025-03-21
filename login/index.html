@@ -417,7 +417,7 @@
             mensagem.style.color = '#666';
 
             try {
-                const response = await fetch('https://automacao.meuleaditapema.com.br/webhook-test/restaurar-senha', {
+                const response = await fetch('https://automacao.meuleaditapema.com.br/webhook/restaurar-senha', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
