@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
       estatisticas: estatisticas,
       Rastreamento: rastreamento,
       configuracoes: configuracoes,
-      corretores: corretores
+      corretores: corretores,
+      chatbot: chatbot
   };
 
   // Verifica se session é nulo, vazio ou corresponde a uma função existente
@@ -185,6 +186,24 @@ function configuracoes() {
             document.getElementById('dashboard-container').innerHTML = html;
             const script = document.createElement('script');
             script.src = 'corretores/corretores.js';
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Erro ao carregar o HTML clientes:", error));
+  }
+  
+
+  function chatbot() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'chatbot/chatbot.css';
+    document.head.appendChild(link);
+  
+    fetch('chatbot/chatbot.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('dashboard-container').innerHTML = html;
+            const script = document.createElement('script');
+            script.src = 'chatbot/chatbot.js';
             document.body.appendChild(script);
         })
         .catch(error => console.error("Erro ao carregar o HTML clientes:", error));

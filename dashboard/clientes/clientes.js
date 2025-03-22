@@ -471,6 +471,9 @@ function openUniqueEditPopup(id = null) {
                 document.getElementById("leadWhatsapp").value = data.whatsapp || "";
                 atualizarValorExtenso('leadValor', 'leadValorExtenso');
                 atualizarValorExtenso('leadValorLead', 'leadValorLeadExtenso');
+                // Checkboxes não são preenchidos ao editar, pois são apenas para criação
+                document.getElementById("enviarEmail").checked = false;
+                document.getElementById("enviarWhatsapp").checked = false;
             })
             .catch(error => {
                 console.error("Erro ao carregar lead:", error);
@@ -481,6 +484,8 @@ function openUniqueEditPopup(id = null) {
         form.reset();
         document.getElementById("leadValorExtenso").textContent = "";
         document.getElementById("leadValorLeadExtenso").textContent = "";
+        document.getElementById("enviarEmail").checked = false; // Reset ao criar
+        document.getElementById("enviarWhatsapp").checked = false; // Reset ao criar
     }
 
     // Adiciona listeners para formatação e valor por extenso
@@ -511,6 +516,8 @@ document.getElementById("uniqueEditForm").addEventListener("submit", async (e) =
         valor: parseFloat(document.getElementById("leadValor").value.replace(/\./g, '').replace(',', '.')),
         valor_lead: parseFloat(document.getElementById("leadValorLead").value.replace(/\./g, '').replace(',', '.')),
         whatsapp: document.getElementById("leadWhatsapp").value,
+        enviarEmail: document.getElementById("enviarEmail").checked,
+        enviarWhatsapp: document.getElementById("enviarWhatsapp").checked
     };
 
     const isEditing = currentLeadId !== null;

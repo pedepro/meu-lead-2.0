@@ -18,16 +18,16 @@
     top: 0;
     background-color: #ffedd5;
     color: #d97706;
-    padding: 8px 12px; /* Reduzido de 10px 15px */
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 8px; /* Reduzido de 10px */
+    gap: 8px;
     font-size: 14px;
     font-weight: 500;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    margin-bottom: 15px; /* Reduzido de 20px */
+    margin-bottom: 15px;
 }
 
 /* Container de Notificações */
@@ -43,7 +43,7 @@
 }
 
 .notification {
-    padding: 10px 18px; /* Reduzido de 12px 20px */
+    padding: 10px 18px;
     border-radius: 8px;
     color: white;
     font-size: 14px;
@@ -91,18 +91,18 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 8px 0; /* Reduzido de 10px */
-    margin-bottom: 15px; /* Reduzido de 20px */
+    padding: 8px 0;
+    margin-bottom: 15px;
 }
 
 .head h1 {
-    font-size: 24px; /* Reduzido de 26px */
+    font-size: 24px;
     color: #2c3e50;
     font-weight: 600;
 }
 
 .head #btnCriarLead {
-    padding: 8px 16px; /* Reduzido de 10px 20px */
+    padding: 8px 16px;
     background-color: #4a90e2;
     color: white;
     border: none;
@@ -121,10 +121,10 @@
 .filters-container {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Reduzido de 20px */
-    margin-bottom: 20px; /* Reduzido de 25px */
+    gap: 15px;
+    margin-bottom: 20px;
     background-color: #fff;
-    padding: 12px; /* Reduzido de 15px */
+    padding: 12px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -136,7 +136,7 @@
 
 .filters-container .filter-group.busca-geral input {
     width: 100% !important;
-    padding: 10px; /* Reduzido de 12px */
+    padding: 10px;
     border: 1px solid #dde4eb;
     border-radius: 6px;
     font-size: 14px;
@@ -161,7 +161,7 @@
 .filters-container .filters-bottom .dropdowns-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px; /* Reduzido de 15px */
+    gap: 12px;
     justify-content: flex-start;
     flex-grow: 1;
 }
@@ -176,13 +176,13 @@
     display: block;
     font-size: 13px;
     color: #555;
-    margin-bottom: 4px; /* Reduzido de 6px */
+    margin-bottom: 4px;
     font-weight: 500;
 }
 
 .filters-container .filter-group select {
     width: 100%;
-    padding: 8px; /* Reduzido de 10px */
+    padding: 8px;
     border: 1px solid #dde4eb;
     border-radius: 6px;
     font-size: 13px;
@@ -197,7 +197,7 @@
 }
 
 #btnAplicarFiltros {
-    padding: 8px 16px; /* Reduzido de 10px 20px */
+    padding: 8px 16px;
     background-color: #4a90e2;
     color: white;
     border: none;
@@ -205,7 +205,7 @@
     font-size: 13px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-left: 12px; /* Reduzido de 15px */
+    margin-left: 12px;
 }
 
 #btnAplicarFiltros:hover {
@@ -216,19 +216,19 @@
 .leads-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px; /* Reduzido de 20px */
-    margin-bottom: 20px; /* Reduzido de 25px */
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 /* Cards de Leads */
 .card-lead {
     background-color: #fff;
     border-radius: 10px;
-    padding: 15px; /* Reduzido de 20px */
+    padding: 15px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
-    min-height: 220px; /* Reduzido de 240px */
+    min-height: 220px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -252,28 +252,28 @@
 /* Tag de IA */
 .ai-tag {
     position: absolute;
-    top: 8px; /* Reduzido de 10px */
-    left: 8px; /* Reduzido de 10px */
+    top: 8px;
+    left: 8px;
     background-color: #4a90e2;
     color: white;
-    padding: 3px 6px; /* Reduzido de 4px 8px */
+    padding: 3px 6px;
     border-radius: 4px;
-    font-size: 11px; /* Reduzido de 12px */
+    font-size: 11px;
     font-weight: 500;
     z-index: 1;
 }
 
 /* Informações do Lead */
 .lead-info {
-    margin-top: 25px; /* Reduzido de 30px */
+    margin-top: 25px;
     flex-grow: 1;
 }
 
 .lead-info h3 {
-    font-size: 15px; /* Reduzido de 16px */
+    font-size: 15px;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 6px; /* Reduzido de 8px */
+    margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -281,9 +281,9 @@
 }
 
 .lead-info p {
-    font-size: 12px; /* Reduzido de 13px */
+    font-size: 12px;
     color: #666;
-    margin: 3px 0; /* Reduzido de 4px */
+    margin: 3px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -293,10 +293,10 @@
 /* Botão de Excluir */
 .btn-excluir {
     position: absolute;
-    top: 12px; /* Reduzido de 15px */
-    right: 12px; /* Reduzido de 15px */
+    top: 12px;
+    right: 12px;
     color: #e74c3c;
-    font-size: 18px; /* Reduzido de 20px */
+    font-size: 18px;
     cursor: pointer;
     transition: color 0.3s ease;
     z-index: 1;
@@ -310,9 +310,9 @@
 .card-actions {
     display: flex;
     align-items: flex-end;
-    gap: 12px; /* Reduzido de 15px */
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 8px; /* Reduzido de 10px */
+    margin-top: 8px;
 }
 
 /* Estilo comum para toggles */
@@ -324,9 +324,9 @@
 }
 
 .toggle-label {
-    font-size: 10px; /* Reduzido de 11px */
+    font-size: 10px;
     color: #555;
-    margin-bottom: 3px; /* Reduzido de 4px */
+    margin-bottom: 3px;
 }
 
 .toggle-disponivel, .toggle-aprovado, .toggle-destaque {
@@ -344,8 +344,8 @@
 .toggle-aprovado .slider,
 .toggle-destaque .slider {
     position: relative;
-    width: 36px; /* Reduzido de 40px */
-    height: 18px; /* Reduzido de 20px */
+    width: 36px;
+    height: 18px;
     background-color: #ccc;
     border-radius: 18px;
     cursor: pointer;
@@ -357,8 +357,8 @@
 .toggle-destaque .slider:before {
     content: '';
     position: absolute;
-    width: 14px; /* Reduzido de 16px */
-    height: 14px; /* Reduzido de 16px */
+    width: 14px;
+    height: 14px;
     left: 2px;
     top: 2px;
     background-color: white;
@@ -375,7 +375,7 @@
 .toggle-disponivel input:checked + .slider:before,
 .toggle-aprovado input:checked + .slider:before,
 .toggle-destaque input:checked + .slider:before {
-    transform: translateX(18px); /* Ajustado para o novo tamanho */
+    transform: translateX(18px);
 }
 
 .toggle-disponivel input:disabled + .slider {
@@ -387,9 +387,9 @@
     background-color: #4a90e2;
     color: white;
     border: none;
-    padding: 5px 10px; /* Reduzido de 6px 12px */
+    padding: 5px 10px;
     border-radius: 6px;
-    font-size: 11px; /* Reduzido de 12px */
+    font-size: 11px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -406,14 +406,14 @@
 }
 
 .pagination span {
-    padding: 0 10px; /* Reduzido de 12px */
+    padding: 0 10px;
     cursor: pointer;
     color: #4a90e2;
     font-size: 14px;
 }
 
 .pagination span i {
-    font-size: 16px; /* Reduzido de 18px */
+    font-size: 16px;
 }
 
 .pagination span.disabled {
@@ -443,12 +443,12 @@
 
 .modal-content {
     background-color: #fff;
-    padding: 20px; /* Reduzido de 25px */
+    padding: 20px;
     border-radius: 10px;
-    width: 700px; /* Aumentado de 550px para usar mais espaço horizontal */
+    width: 700px;
     max-width: 90%;
-    max-height: 80vh; /* Adicionado para limitar a altura e permitir scroll se necessário */
-    overflow-y: auto; /* Adicionado para scroll vertical */
+    max-height: 80vh;
+    overflow-y: auto;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     transform: scale(0.9);
     transition: transform 0.3s ease;
@@ -459,17 +459,17 @@
 }
 
 .modal-content h3 {
-    font-size: 20px; /* Reduzido de 22px */
+    font-size: 20px;
     color: #2c3e50;
-    margin-bottom: 15px; /* Reduzido de 20px */
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 600;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Mantido 2 colunas para usar espaço horizontal */
-    gap: 6px 10px; /* Reduzido de 10px e ajustado para mais espaço horizontal */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 10px;
 }
 
 .form-item {
@@ -482,18 +482,18 @@
 }
 
 .form-item label {
-    font-size: 12px; /* Reduzido de 13px */
+    font-size: 12px;
     color: #555;
-    margin-bottom: 4px; /* Reduzido de 6px */
+    margin-bottom: 4px;
     font-weight: 500;
 }
 
 .form-item input,
 .form-item select {
-    padding: 6px; /* Reduzido de 10px */
+    padding: 6px;
     border: 1px solid #dde4eb;
     border-radius: 6px;
-    font-size: 12px; /* Reduzido de 13px */
+    font-size: 12px;
     background-color: #f9fafc;
     color: #333;
     transition: border-color 0.3s ease;
@@ -506,9 +506,9 @@
 }
 
 .valor-extenso {
-    font-size: 11px; /* Reduzido de 12px */
+    font-size: 11px;
     color: #666;
-    margin-top: 1px; /* Reduzido de 4px */
+    margin-top: 1px;
     display: block;
     font-style: italic;
     word-wrap: break-word;
@@ -517,15 +517,15 @@
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px; /* Reduzido de 10px */
-    margin-top: 15px; /* Reduzido de 20px */
+    gap: 8px;
+    margin-top: 15px;
 }
 
 .form-actions button {
-    padding: 8px 16px; /* Reduzido de 10px 20px */
+    padding: 8px 16px;
     border: none;
     border-radius: 6px;
-    font-size: 12px; /* Reduzido de 13px */
+    font-size: 12px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -548,6 +548,33 @@
     background-color: #c0392b;
 }
 
+/* Estilo para os Checkboxes */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    accent-color: #4a90e2; /* Cor do checkbox quando marcado */
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    font-size: 12px;
+    color: #555;
+    font-weight: 500;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .leads-grid {
@@ -555,7 +582,7 @@
     }
 
     .filters-container {
-        gap: 12px; /* Reduzido de 15px */
+        gap: 12px;
     }
 
     .filters-container .filters-bottom {
@@ -577,7 +604,7 @@
     }
 
     .form-grid {
-        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+        grid-template-columns: 1fr;
     }
 
     .head {
@@ -587,12 +614,12 @@
 
     .head #btnCriarLead {
         width: 100%;
-        margin-top: 8px; /* Reduzido de 10px */
+        margin-top: 8px;
     }
 
     .pending-ai-banner {
         font-size: 12px;
-        padding: 6px 8px; /* Reduzido de 8px 10px */
+        padding: 6px 8px;
     }
 
     .notification-container {
@@ -602,8 +629,8 @@
     }
 
     .modal-content {
-        width: 90%; /* Ajustado para telas menores */
-        padding: 15px; /* Reduzido de 20px */
+        width: 90%;
+        padding: 15px;
     }
 }
 
@@ -611,8 +638,8 @@
 .cotas-tag {
     position: absolute;
     top: 8px;
-    left: 80px; /* Ajustado para não sobrepor a ai-tag, se presente */
-    background-color: #e74c3c; /* Vermelho para destacar */
+    left: 80px;
+    background-color: #e74c3c;
     color: white;
     padding: 3px 6px;
     border-radius: 4px;

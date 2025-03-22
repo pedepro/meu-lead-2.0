@@ -1,0 +1,36 @@
+<div class="envios-em-massa-container">
+    <h2>Envios em Massa</h2>
+    <div id="enviosList" class="envios-list">
+        <!-- Lista de envios será preenchida via JS -->
+    </div>
+
+    <!-- Popup para detalhes dos corretores -->
+    <div id="corretoresPopup" class="popup">
+        <div class="popup-content">
+            <span id="closeCorretoresPopup" class="close-btn">×</span>
+            <h3>Corretores do Envio</h3>
+            <div id="corretoresList" class="corretores-list">
+                <!-- Lista de corretores será preenchida via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span id="closeEditModal" class="close-btn">×</span>
+            <h3>Editar Envio</h3>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editFinalizado">Finalizado:</label>
+                    <input type="checkbox" id="editFinalizado" name="finalizado">
+                </div>
+                <div class="form-group">
+                    <label for="editAgendado">Agendado:</label>
+                    <input type="datetime-local" id="editAgendado" name="agendado">
+                </div>
+                <button type="submit" class="save-btn">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>

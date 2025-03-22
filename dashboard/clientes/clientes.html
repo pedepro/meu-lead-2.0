@@ -82,68 +82,81 @@
     <div id="pagination" class="pagination"></div>
 
     <!-- Popup de Criação/Edição -->
-<div id="uniqueEditPopup" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <h3 id="popupTitle">Criar Novo Lead</h3>
-        <form id="uniqueEditForm">
-            <div class="form-grid">
-                <div class="form-item">
-                    <label for="leadTitulo">Título</label>
-                    <input type="text" id="leadTitulo" name="titulo" required placeholder="Digite o título" />
+    <div id="uniqueEditPopup" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="popupTitle">Criar Novo Lead</h3>
+            <form id="uniqueEditForm">
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label for="leadTitulo">Título</label>
+                        <input type="text" id="leadTitulo" name="titulo" required placeholder="Digite o título" />
+                    </div>
+                    <div class="form-item">
+                        <label for="leadNome">Nome</label>
+                        <input type="text" id="leadNome" name="nome" required placeholder="Digite o nome" />
+                    </div>
+                    <div class="form-item">
+                        <label for="leadCategoria">Categoria</label>
+                        <select id="leadCategoria" name="categoria" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="1">Médio Padrão</option>
+                            <option value="2">Alto Padrão</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="leadEndereco">Endereço</label>
+                        <input type="text" id="leadEndereco" name="endereco" required placeholder="Digite o endereço" />
+                    </div>
+                    <div class="form-item">
+                        <label for="leadTipoImovel">Tipo de Imóvel</label>
+                        <select id="leadTipoImovel" name="tipo_imovel" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Apartamento">Apartamento</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Terreno">Terreno</option>
+                            <option value="Comercial">Comercial</option>
+                            <option value="Rural">Rural</option>
+                            <option value="Studio">Studio</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="leadInteresse">Interesse</label>
+                        <input type="text" id="leadInteresse" name="interesse" required placeholder="Ex: Comprar imóvel" />
+                    </div>
+                    <div class="form-item">
+                        <label for="leadValor">Preço de Interesse Até (R$)</label>
+                        <input type="text" id="leadValor" name="valor" required placeholder="Ex: 500.000,00" />
+                        <span id="leadValorExtenso" class="valor-extenso"></span>
+                    </div>
+                    <div class="form-item">
+                        <label for="leadValorLead">Preço do Lead (R$)</label>
+                        <input type="text" id="leadValorLead" name="valor_lead" required placeholder="Ex: 1.000,00" />
+                        <span id="leadValorLeadExtenso" class="valor-extenso"></span>
+                    </div>
+                    <div class="form-item">
+                        <label for="leadWhatsapp">WhatsApp</label>
+                        <input type="text" id="leadWhatsapp" name="whatsapp" required placeholder="+5511999999999" />
+                    </div>
+                    <!-- Checkboxes adicionados -->
+                    <div class="form-item checkbox-group">
+                        <label for="enviarEmail" class="checkbox-label">
+                            <input type="checkbox" id="enviarEmail" name="enviarEmail">
+                            <span>Enviar por Email</span>
+                        </label>
+                    </div>
+                    <div class="form-item checkbox-group">
+                        <label for="enviarWhatsapp" class="checkbox-label">
+                            <input type="checkbox" id="enviarWhatsapp" name="enviarWhatsapp">
+                            <span>Enviar por WhatsApp</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="form-item">
-                    <label for="leadNome">Nome</label>
-                    <input type="text" id="leadNome" name="nome" required placeholder="Digite o nome" />
+                <div class="form-actions">
+                    <button type="submit">Salvar</button>
+                    <button type="button" onclick="closeUniquePopup()">Cancelar</button>
                 </div>
-                <div class="form-item">
-                    <label for="leadCategoria">Categoria</label>
-                    <select id="leadCategoria" name="categoria" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="1">Médio Padrão</option>
-                        <option value="2">Alto Padrão</option>
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label for="leadEndereco">Endereço</label>
-                    <input type="text" id="leadEndereco" name="endereco" required placeholder="Digite o endereço" />
-                </div>
-                <div class="form-item">
-                    <label for="leadTipoImovel">Tipo de Imóvel</label>
-                    <select id="leadTipoImovel" name="tipo_imovel" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Apartamento">Apartamento</option>
-                        <option value="Casa">Casa</option>
-                        <option value="Terreno">Terreno</option>
-                        <option value="Comercial">Comercial</option>
-                        <option value="Rural">Rural</option>
-                        <option value="Studio">Studio</option>
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label for="leadInteresse">Interesse</label>
-                    <input type="text" id="leadInteresse" name="interesse" required placeholder="Ex: Comprar imóvel" />
-                </div>
-                <div class="form-item">
-                    <label for="leadValor">Preço de Interesse Até (R$)</label>
-                    <input type="text" id="leadValor" name="valor" required placeholder="Ex: 500.000,00" />
-                    <span id="leadValorExtenso" class="valor-extenso"></span>
-                </div>
-                <div class="form-item">
-                    <label for="leadValorLead">Preço do Lead (R$)</label>
-                    <input type="text" id="leadValorLead" name="valor_lead" required placeholder="Ex: 1.000,00" />
-                    <span id="leadValorLeadExtenso" class="valor-extenso"></span>
-                </div>
-                <div class="form-item">
-                    <label for="leadWhatsapp">WhatsApp</label>
-                    <input type="text" id="leadWhatsapp" name="whatsapp" required placeholder="+5511999999999" />
-                </div>
-            </div>
-            <div class="form-actions">
-                <button type="submit">Salvar</button>
-                <button type="button" onclick="closeUniquePopup()">Cancelar</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
-</div>
-<div id="notification-container" class="notification-container"></div> <!-- Movido para fora da .leads-container -->
+<div id="notification-container" class="notification-container"></div>

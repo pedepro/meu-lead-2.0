@@ -191,14 +191,28 @@ const setupCheckboxListeners = () => {
 };
 
 const sendMassMessage = async (message, scheduleDate, sendInterval, sendEmail, sendWhatsapp) => {
-    const url = 'https://automacao.meuleaditapema.com.br/webhook-test/envio-em-massa';
+    const url = 'https://backand.meuleaditapema.com.br/envio-em-massa';
+
+    // Cria um objeto Date a partir do scheduleDate (formato YYYY-MM-DDTHH:MM)
+    const localDate = scheduleDate ? new Date(scheduleDate) : null;
+
+    // Converte para ISO ajustando o fuso horário local (exemplo: UTC-3 para Brasília)
+    let isoScheduleDate = null;
+    if (localDate) {
+        // Obtém o deslocamento do fuso horário local em minutos (ex.: -180 para UTC-3)
+        const timezoneOffset = localDate.getTimezoneOffset();
+        // Ajusta a data subtraindo o deslocamento para manter o horário local em UTC
+        const adjustedDate = new Date(localDate.getTime() - timezoneOffset * 60 * 1000);
+        isoScheduleDate = adjustedDate.toISOString();
+    }
+
     const payload = {
-        corretorIds: Array.from(selectedCorretores),
-        message,
-        scheduleDate: scheduleDate ? new Date(scheduleDate).toISOString() : null,
-        sendInterval: sendInterval ? parseInt(sendInterval) : null,
-        sendEmail,
-        sendWhatsapp
+        corretores: Array.from(selectedCorretores), // Mapeado de corretorIds para corretores
+        mensagem: message,                         // Mapeado de message para mensagem
+        email: sendEmail,                          // Mapeado diretamente
+        whatsapp: sendWhatsapp,                    // Mapeado diretamente
+        intervalo: sendInterval ? parseInt(sendInterval) : null, // Mapeado de sendInterval para intervalo
+        agendado: isoScheduleDate                  // Mapeado de scheduleDate para agendado
     };
 
     console.log('📩 Enviando requisição para envio em massa:', payload);
